@@ -1,0 +1,7 @@
+%h1 Редактирование примитива
+%ol.breadcrumb.row
+  %li
+    = link_to 'Примитивы', primitives_path
+  %li.active= @primitive.name
+
+= render 'form'

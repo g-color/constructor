@@ -1,0 +1,8 @@
+%section{ ng: { controller: 'EstimateController' } }
+  %h1 Редактирование сметы
+  %ol.breadcrumb.row
+    %li
+      = link_to 'Сметы', estimates_path
+    %li.active= @estimate.name
+
+  = render 'form'

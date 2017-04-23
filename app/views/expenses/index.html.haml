@@ -1,0 +1,26 @@
+%h1 Административные расходы
+
+%br
+
+.row.main-content.col-sm-offset-2.col-sm-8
+  .table-responsive
+    = form_tag :expenses_update, {:method => :post} do
+      %table.table.table-hover
+        %thead
+          %tr
+            %th.col-sm-10 Наименование
+            %th.col-sm-2
+              %button.btn.btn-sm.btn-success Сохранить
+        %tbody
+          - @expenses.each do |exp|
+            %tr
+              %td= exp.name
+              %td
+                .form-group
+                  .col-sm-10
+                    %input.form-control.col-sm{name: "values[#{exp.id}]", value: exp.percent.to_s.sub(/\.0+$/,'')}
+          %tr
+            %td
+              %b Итого
+            %td.text-center
+              %b= "#{Expense.total_sum.to_s.sub(/\.0+$/,'')} %"

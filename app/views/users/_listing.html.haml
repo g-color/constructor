@@ -1,0 +1,10 @@
+%tr
+  %td= user.full_name
+  %td= UserRole.fetch(user.role)
+  %td
+    %a{href: "https://artkarkas.megaplan.ru/staff/#{user.crm}/card/", target: 'blank', rel: 'no-follow'}= user.crm
+  %td
+    = link_to edit_user_path(user), class: 'btn btn-warning', title: 'Редактировать' do
+      %span.glyphicon.glyphicon-pencil
+    = link_to user, method: :delete, class: 'btn btn-danger', title: 'Удалить', data: {confirm: "Are you sure?"} do
+      %span.glyphicon.glyphicon-trash

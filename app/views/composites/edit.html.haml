@@ -1,0 +1,7 @@
+%h1 Редактирование объекта
+%ol.breadcrumb.row
+  %li
+    = link_to 'Объекты', composites_path
+  %li.active= @composite.name
+
+= render 'form'

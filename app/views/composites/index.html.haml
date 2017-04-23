@@ -1,0 +1,33 @@
+%h1 Список объектов
+%ol.breadcrumb.row
+  %li.active Объекты
+
+.action-buttons.row
+  = form_tag composites_path, :method => 'get' do
+    .col-sm-6
+      = text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Наименование'
+    .col-sm-3
+      = select_tag 'category', options_for_select(Category.where(product: false).collect{|x| [x.name, x.id]}), include_blank: true, class: 'form-control'
+
+    .col-sm-1
+      %button.btn.btn-default.col-sm-12 Поиск
+    .col-sm-2
+      = link_to 'Добавить объект', new_composite_path, class: 'btn btn-primary col-sm-12'
+
+%br
+
+- unless @composites.blank?
+  .row.main-content
+    .table-responsive
+      %table.table.table-hover
+        %thead
+          %tr
+            %th.col-sm-5 Наименование
+            %th.col-sm-2 Единица измерения
+            %th.col-sm-2 Категория
+            %th.col-sm-1 Цена
+            %th.col-sm-1 Действия
+
+        %tbody
+          - @composites.each do |composite|
+            = render 'listing', composite: composite

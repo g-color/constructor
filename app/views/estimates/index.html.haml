@@ -1,0 +1,77 @@
+%h1
+  Список смет
+
+%br
+.row.main-content
+  .table-responsive
+    %table.table.table-hover
+      %thead
+        %th.col-sm-3
+          Наименование
+        %th.col-sm-2
+          Общая стоимость
+        %th.col-sm-2
+          Стоимость м2
+        %th.col-sm-1
+          Площадь
+        %th.col-sm-2
+          Дата изменения
+        %th.col-sm-2
+          Действия
+      %tbody
+        - @estimates.each do |estimate|
+          = render 'listing', estimate: estimate
+
+    .modal.fade#delete-confirmation{ tabindex: "-1",  role: "dialog", 'aria-labelledby': "myModalLabel" }
+      .modal-dialog{role: "document"}
+        .modal-content
+          .modal-header
+            %button.close{type: "button", 'data-dismiss': "modal", 'aria-label': "Close" }
+              %span{ 'aria-hidden': true }
+                &times;
+            %h4.modal-title#myModalLabel
+              Удаление сметы
+          .modal-body
+            Вы действительно хотите удалить смету
+            %b
+              <Имя сметы>
+          .modal-footer
+            %button.btn.btn-default{ type: "button", 'data-dismiss': 'modal' }
+              Отмена
+            %button.btn.betn-danger{ type: "button" }
+              Удалить
+
+    .modal.fade#duplicate{ tabindex: "-1", role: "dialog", 'aria-labelledby': "myModalLabel" }
+      .modal-dialog{ role: "document" }
+        .modal-content
+          .modal-header
+            %button.close{ type: "button", 'data-dismiss': "modal", 'aria-label': "Close" }
+              %span{ 'aria-hidden': true }
+                &times;
+            %h4.modal-title#myModalLabel2
+              Создание копии
+          .modal-body
+            Введите новое имя для копии сметы 
+            %b
+              <Имя сметы>
+            .form-horizontal
+              %p
+              .form-group
+                %label.col-sm-3.control-label
+                  Новое имя
+                .col-sm-9
+                  %input.form-control{ placeholder: "Введите новое имя" }
+              .form-group
+                %label.col-sm-3.control-label
+                  Клиент
+                .col-sm-9
+                  %select.form-control
+                    %option
+                      first
+                    %option
+                      second
+          .modal-footer
+            %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" }
+              Отмена
+            %button.btn.btn-success{ type: "button", 'data-dismiss': "modal" }
+              Создать

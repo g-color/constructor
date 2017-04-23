@@ -1,0 +1,7 @@
+%h1 Редактирование единицы измерения
+%ol.breadcrumb.row
+  %li
+    = link_to 'Единицы измерения', units_path
+  %li.active= @unit.name
+
+= render 'form'

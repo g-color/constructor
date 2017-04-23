@@ -1,0 +1,17 @@
+.env
+log/*
+tmp/*
+coverage/*
+db/schema.rb
+.byebug_history
+config/deploy/staging.rb
+.idea/*
+test/reports/*
+.rake_tasks~
+public/system/dragonfly/*
+public/system/asset_files/*
+.DS_Store
+*.swp
+*.swo
+.hg/*
+.hgignore

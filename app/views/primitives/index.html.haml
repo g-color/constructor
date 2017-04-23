@@ -1,0 +1,37 @@
+%section{ ng: { controller: 'PrimitiveController' } }
+  %h1 Список примитивов
+  %ol.breadcrumb.row
+    %li.active Примитивы
+
+  .action-buttons.row
+    = form_tag primitives_path, :method => 'get' do
+      .col-sm-6
+        = text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Наименование'
+      .col-sm-3
+        = select_tag 'category', options_for_select(Category.where(product: false).collect{|x| [x.name, x.id]}), include_blank: true, class: 'form-control'
+
+      .col-sm-1
+        %button.btn.btn-default.col-sm-12 Поиск
+      .col-sm-2
+        = link_to 'Добавить примитив', new_primitive_path, class: 'btn btn-primary col-sm-12'
+
+  %br
+
+  - if @primitives.count > 0
+    .row.main-content
+      - Category.all.each do |category|
+        - if @primitives.where(category: category).count > 0
+          .table-responsive
+            %h4.stage= category.name
+            %table.table.table-hover.primitives-datatable
+              %thead
+                %tr
+                  %th.col-sm-6 Наименование
+                  %th.col-sm-2 Единица измерения
+                  %th.col-sm-1 Цена
+                  %th.col-sm-1 Дата
+                  %th.col-sm-1 Действия
+
+              %tbody
+                - @primitives.where(category: category).each do |primitive|
+                  = render 'listing', primitive: primitive

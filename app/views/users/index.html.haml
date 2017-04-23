@@ -1,0 +1,28 @@
+%h1 Список пользователей
+%ol.breadcrumb.row
+  %li.active Пользователи
+
+.action-buttons.row
+  = form_tag users_path, :method => 'get' do
+    .col-sm-7
+      = text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Имя'
+    .col-sm-1
+      %button.btn.btn-default.col-sm-12 Поиск
+    .col-sm-3.col-sm-offset-1
+      = link_to 'Добавить пользователя', new_user_path, class: 'btn btn-primary col-sm-12'
+
+%br
+
+- if @users.count > 0
+  .row.main-content
+    .table-responsive
+      %table.table.table-hover
+        %thead
+          %tr
+            %th.col-sm-4 Имя
+            %th.col-sm-2 Роль
+            %th.col-sm-2 ID в CRM
+            %th.col-sm-1 Действия
+        %tbody
+          - @users.each do |user|
+            = render 'listing', user: user

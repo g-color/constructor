@@ -1,0 +1,10 @@
+%tr
+  %td= composite.name
+  %td= composite.unit.name
+  %td= composite.category.name
+  %td= composite.price
+  %td
+    = link_to edit_composite_path(composite), title: 'Редактировать', class: 'btn btn-warning' do
+      %span.glyphicon.glyphicon-pencil
+    = link_to composite, method: :delete, title: 'Удалить', class: 'btn btn-danger', data: {confirm: 'Are you sure?'} do
+      %span.glyphicon.glyphicon-trash

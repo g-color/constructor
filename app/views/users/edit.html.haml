@@ -1,0 +1,7 @@
+%h1 Редактирование пользователя
+%ol.breadcrumb.row
+  %li
+    = link_to 'Пользователи', users_path
+  %li.active= "#{@user.first_name} #{@user.last_name}"
+
+= render 'form'

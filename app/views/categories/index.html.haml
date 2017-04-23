@@ -1,0 +1,25 @@
+%h1 Категории
+
+%br
+
+.row.main-content.col-sm-offset-1.col-sm-10
+  .table-responsive
+    %table.table.table-hover
+      %thead
+        %tr
+          %th.col-sm-10.text-center Категории для примитивов и объектов
+          %th.col-sm-2
+            = link_to 'Добавить', new_category_path, class: 'btn btn-sm btn-primary'
+      %tbody
+        - @categories.where(product: false).each do |category|
+          = render 'listing', category: category
+
+    %table.table.table-hover
+      %thead
+        %tr
+          %th.col-sm-10.text-center Категории для сметных продуктов
+          %th.col-sm-2
+            = link_to 'Добавить', new_category_path, class: 'btn btn-sm btn-primary'
+      %tbody
+        - @categories.where(product: true).each do |category|
+          = render 'listing', category: category

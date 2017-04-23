@@ -1,0 +1,7 @@
+%h1 Редактирование категории
+%ol.breadcrumb.row
+  %li
+    = link_to 'Категории', categories_path
+  %li.active= @category.name
+
+= render 'form'

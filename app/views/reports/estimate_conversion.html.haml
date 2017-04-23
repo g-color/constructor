@@ -1,0 +1,54 @@
+= render 'header_reports'
+
+%h4.stage
+  Эффективность сотрудников
+%br
+
+.row#estimate-conversion
+  .form-horizontal.row
+    .col-sm-4
+      %label.col-sm-4.control-label
+        Период от
+      .col-sm-8
+        = text_field_tag :date_start, Date.today
+    .col-sm-3
+      %label.col-sm-2.control-label
+        до
+      .col-sm-10
+        = text_field_tag :date_end, Date.today
+    .col-sm-1
+      %button.btn.btn-default.col-sm-12
+        Поиск
+  %br
+  .table-responsive.main-content
+    %table.table.table-hover
+      %thead
+        %tr
+          %th.col-sm-2
+            Пользователь
+          %th.col-sm-2
+            Смет посчитано
+          %th.col-sm-2
+            Смет подписано
+          %th.col-sm-2
+            Конверсия
+          %th.col-sm-2
+            Суммарный профит
+          %th.col-sm-2
+            Профит в месяц
+      %tbody
+        - @report.each do |row| 
+          %tr
+            %td>
+              = row[:user_name]
+            %td>
+              = row[:estimates_all]
+            %td>
+              = row[:estimates_signed]
+            %td>
+              = "1 / " + row[:conversion].to_s
+            %td>
+              = row[:profit]
+            %td>
+              ??
+            

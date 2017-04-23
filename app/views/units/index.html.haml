@@ -1,0 +1,21 @@
+%h1 Единицы измерения
+
+%br
+
+.row.main-content.col-sm-offset-1.col-sm-10
+  .table-responsive
+    %table.table.table-hover
+      %thead
+        %tr
+          %th.col-sm-10.text-center Наименование
+          %th.col-sm-2
+            = link_to 'Добавить', new_unit_path, class: 'btn btn-sm btn-primary'
+      %tbody
+        - @units.each do |unit|
+          %tr
+            %td= unit.name
+            %td
+              = link_to edit_unit_path(unit), class: 'btn btn-warning', title: 'Редактировать' do
+                %span.glyphicon.glyphicon-pencil
+              = link_to unit, method: :delete, data: { confirm: "Are you sure?" }, class: 'btn btn-danger', title: 'Удалить' do
+                %span.glyphicon.glyphicon-trash

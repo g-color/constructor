@@ -1,0 +1,27 @@
+%section{ ng: { controller: "ClientController" } }
+  %h1 Список клиентов
+  %ol.breadcrumb.row
+    %li.active Клиенты
+
+  .action-buttons.row
+    = form_tag clients_path, :method => 'get' do
+      .col-sm-5
+        = text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Имя'
+      .col-sm-1
+        %button.btn.btn-default.col-sm-12 Поиск
+      .col-sm-3
+        %label
+          = check_box_tag :archived
+          Показывать архивных клиентов
+
+      .col-sm-2.col-sm-offset-1
+        = link_to 'Добавить клиента', new_client_path, class: 'btn btn-primary col-sm-12'
+
+  %br
+
+  - if @owned.present? || @delegated.present?
+    .row.main-content
+      - if @owned.present?
+        = render 'table', header: 'Мои клиенты', user_clients: @owned
+      - if @delegated.present?
+        = render 'table', header: 'Доступные клиенты', user_clients: @delegated

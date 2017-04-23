@@ -1,0 +1,12 @@
+= simple_form_for @primitive, url: @primitive.new_record? ? primitives_path : primitive_path(@primitive), html: {class: 'form-horizontal'}, wrapper: :horizontal_form do |f|
+  .action-buttons.row
+    = link_to 'Отмена', primitives_path, class: 'btn btn-default'
+    = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
+  %br
+  .row.main-content
+    .form-horizontal.col-sm-offset-2.col-sm-8
+      %br
+      = f.input :name, label: 'Наименование', input_html: { placeholder: 'Введите наименование' }
+      = f.association :unit, label: 'Единица измерения'
+      = f.association :category, label: 'Категория', collection: Category.where(product: false)
+      = f.input :price, label: 'Цена'

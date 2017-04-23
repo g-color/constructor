@@ -1,0 +1,26 @@
+= simple_form_for @composite, html: {class: 'form-horizontal'}, wrapper: :horizontal_form do |f|
+  .action-buttons.row
+    = link_to 'Отмена', composites_path, class: 'btn btn-default'
+    = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
+  %br
+  .row.main-content
+    .form-horizontal.col-sm-offset-2.col-sm-8
+      %br
+      = f.input :name, label: 'Наименование', input_html: { placeholder: 'Введите наименование' }
+      = f.association :unit, label: 'Единица измерения'
+      = f.association :category, label: 'Категория', collection: Category.where(product: false)
+      = f.input :divisibility, label: 'Делимость', wrapper: :inline_checkbox
+
+    %br
+    #constructor_objects.row.col-sm-offset-2.col-sm-8
+      .input-group
+        = hidden_field_tag :search_id, '', id: 'constructor_object_constructor_object_id'
+        = autocomplete_field_tag :search, '', '/constructor_objects/autocomplete_constructor_object_name', id_element: '#constructor_object_constructor_object_id', class: 'form-control', placeholder: 'Введите наименование объекта или примитива', id: 'search', data: { 'update-elements' => 'false' }
+
+        %span.input-group-btn
+          = link_to_add_association '', f, :compositions, class: 'btn btn-default glyphicon glyphicon-plus', 'data-association-insertion-method': 'append', 'data-association-insertion-node': '#table-objects'
+      %p
+      %table#table-objects.table.table-hover
+        %tbody
+          = f.simple_fields_for :compositions do |composition|
+            = render 'composition_fields', f: composition

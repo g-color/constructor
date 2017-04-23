@@ -1,0 +1,26 @@
+= simple_form_for @product, html: {class: 'form-horizontal'}, wrapper: :horizontal_form do |f|
+  .action-buttons.row
+    = link_to 'Отмена', products_path, class: 'btn btn-default'
+    = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
+  %br
+  .row.main-content
+    .form-horizontal.col-sm-offset-1.col-sm-10
+      = f.input :name, label: 'Наименование', input_html: { placeholder: 'Введите наименование' }
+      = f.input :description, as: :text, label: 'Описание', input_html: { rows: 5, placeholder: 'Введите описание' }
+      = f.input :hint, as: :text, label: 'Подсказка', input_html: { rows: 5, placeholder: 'Введите подсказку' }
+      = f.association :unit, label: 'Единица измерения'
+      = f.association :category, label: 'Категория', collection: Category.where(product: true)
+      = f.input :stage, label: 'Этап', collection: [ [1, 1], [2, 2], [3, 3] ]
+      = f.input :profit, label: 'Прибыль'
+      = f.input :display_components, label: 'Отображать компоненты', wrapper: :inline_checkbox
+      = f.input :custom, label: 'Конфигурируемый продукт', wrapper: :inline_checkbox, input_html: { 'ng-model' => 'custom'}
+
+      = hidden_field_tag :product_compositions
+      = hidden_field_tag :product_templates
+      = hidden_field_tag :product_sets
+
+    %div.col-sm-offset-1.col-sm-10{ ng: { hide: 'custom' } }
+      = render 'custom_product_false'
+
+    %div{ ng: { show: 'custom' } }
+      = render 'custom_product_true'

@@ -1,0 +1,57 @@
+.form-group
+  %label.col-sm-3.control-label Список сборок
+  .col-sm-9
+    %table.table.table-hover
+      %tbody
+        %tr{ ng: { repeat: 'set in sets' } }
+          %td.name {{ set.name }}
+          %td.col-sm-3
+            %a.btn.btn-warning{ title: 'Редактировать', ng: { click: 'ctrl.editSet(set.id)'} }
+              %span.glyphicon.glyphicon-pencil
+            %a.btn.btn-danger{ title: 'Удалить', ng: { click: 'ctrl.removeSet(set.id)'} }
+              %span.glyphicon.glyphicon-trash
+
+    .btn.btn-primary.center-block{ data: { toggle: 'modal', target: '#new_set' } }
+      %span.glyphicon.glyphicon-plus
+      Добавить новый элемент
+
+#new_set.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ data: { dismiss: 'modal' }, aria: { label: 'Закрыть' } }
+          %span{ aria: { hidden: true } } &times;
+        %h4.modal-title Новая сборка
+      .modal-body
+        .form-horizontal
+          .form-group
+            %label.col-sm-3.control-label Наименование
+            .col-sm-9= text_field_tag :set_name, nil, class: 'form-control set-fields', placeholder: 'Введите наименование сборки'
+          .form-group{ ng: { repeat: 'template in templates' } }
+            %label.col-sm-3.control-label {{ template.name }}
+            = hidden_field_tag :search_id, '', 'ng-attr-id'=> "{{ 'set-template-value-' + template.id }}"
+            .col-sm-9= autocomplete_field_tag :search, '', '/constructor_objects/autocomplete_constructor_object_name', class: 'form-control set-fields set-template-value', placeholder: 'Введите наименование объекта или примитива', 'ng-attr-data-id-element' => "{{ '#set-template-value-' + template.id }}", data: { 'update-elements' => 'false' }
+      .modal-footer
+        %a.btn.btn-default{ data: { dismiss: 'modal' } } Отмена
+        %a.btn.btn-success{ ng: { click: 'ctrl.addSet()' }, data: { dismiss: 'modal' } } Добавить
+
+%div{ ng: { repeat: 'set in sets' } }
+  .modal.fade{ 'ng-attr-id' => "{{ 'edit-set-' + set.id }}" }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{ data: { dismiss: 'modal' }, aria: { label: 'Закрыть' } }
+            %span{ aria: { hidden: true } } &times;
+          %h4.modal-title Редактирование сборки
+        .modal-body
+          .form-horizontal
+            .form-group
+              %label.col-sm-3.control-label Наименование
+              .col-sm-9= text_field_tag :set_name, nil, class: 'form-control', 'ng-model' => 'set.name', 'ng-change' => 'ctrl.setProductSets()'
+            .form-group{ ng: { repeat: 'item in set.items' } }
+              %label.col-sm-3.control-label {{ item.name }}
+              = hidden_field_tag :search_id, '', 'ng-attr-id'=> "{{ 'edit-set-template-value-' + item.id }}", 'ng-model' => 'item.value.id', class: 'edit-set-template-value', data: { set: "{{ set.id }}", template: "{{ item.id }}"}
+              .col-sm-9= autocomplete_field_tag :search, '', '/constructor_objects/autocomplete_constructor_object_name', class: 'form-control', placeholder: 'Введите наименование объекта или примитива', 'ng-attr-data-id-element' => "{{ '#edit-set-template-value-' + item.id }}", 'ng-model' => 'item.value.name', 'ng-change' => 'ctrl.setProductSets()', data: { 'update-elements' => 'false' }
+        .modal-footer
+          %a.btn.btn-default{ data: { dismiss: 'modal' } } Закрыть
+

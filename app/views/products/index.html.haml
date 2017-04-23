@@ -1,0 +1,37 @@
+%h1 Список сметных продуктов
+%ol.breadcrumb.row
+  %li.active Сметные продукты
+
+.action-buttons.row
+  = form_tag products_path, :method => 'get' do
+    .col-sm-5
+      = text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Наименование'
+    .col-sm-3
+      = select_tag 'category', options_for_select(Category.where(product: true).collect{|x| [x.name, x.id]}), include_blank: 'Категория', class: 'form-control'
+
+    .col-sm-1
+      %button.btn.btn-default.col-sm-12 Поиск
+    .col-sm-3
+      = link_to 'Добавить сметный продукт', new_product_path, class: 'btn btn-primary col-sm-12'
+
+%br
+
+- unless @products.blank?
+  .row.main-content
+    - Category.all.each do |category|
+      - if @products.where(category: category).count > 0
+        .table-responsive
+          %h4.stage= category.name
+          %table.table.table-hover
+            %thead
+              %tr
+                %th.col-sm-5 Наименование
+                %th.col-sm-2 Единица измерения
+                %th.col-sm-1 Этап
+                %th.col-sm-1 Конфиг
+                %th.col-sm-1 Прибыль
+                %th.col-sm-1 Действия
+
+            %tbody
+              - @products.where(category: category).each do |product|
+                = render 'listing', product: product

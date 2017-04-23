@@ -1,0 +1,13 @@
+.table-responsive
+  %h4.stage= header
+  %table.table.table-hover.clients-datatable
+    %thead
+      %tr
+        %th.col-sm-6 Имя
+        %th.col-sm-2 ID в CRM
+        %th.col-sm-2 Количество смет
+        %th.col-sm-1 Действия
+
+    %tbody
+      - user_clients.each do |owner|
+        = render 'listing', client: owner.client

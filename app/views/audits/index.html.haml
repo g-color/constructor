@@ -1,0 +1,56 @@
+%section{ ng: { controller: 'AuditController' } }
+  %h1 История изменений
+  %ol.breadcrumb.row
+    %li.active История изменений
+
+  .form-horizontal.row
+    = form_tag audits_path, :method => 'get' do
+      .col-sm-2
+        %select.form-control{ name: 'search[user_id]' }
+          %option{value: ''} Пользователь
+          - User.all.each do |user|
+            %option{value: user.id}= user.full_name
+      .col-sm-2
+        %select.form-control{ name: 'search[auditable_type]' }
+          %option{ value: '' } Тип объекта
+          - ObjectClassName.values.each do |val|
+            %option{value: val[0]}= val[1]
+      .col-sm-4
+        %label.col-sm-4.control-label Период от
+        .col-sm-8
+          %input.form-control{ type: 'date', name: 'from' }
+      .col-sm-3
+        %label.col-sm-2.control-label до
+        .col-sm-10
+          %input.form-control{ type: 'date', name: 'till' }
+      .col-sm-1
+        %button.btn.btn-default.col-sm-12 Поиск
+
+  %br
+
+  .row.main-content
+    %table.table.table-hover.audits-datatable
+      %thead
+        %tr
+          %th.col-sm-2 Пользователь
+          %th.col-sm-1 Роль
+          %th.col-sm-2 Тип действия
+          %th.col-sm-2 Тип объекта
+          %th.col-sm-3 Объект
+          %th.col-sm-2 Время
+      %tbody
+        - @audits.each do |audit|
+          %tr
+            %td= audit.user.full_name
+            %td= UserRole.fetch(audit.user.role)
+            %td= AuditAction.fetch(audit.action)
+            %td= ObjectClassName.fetch(audit.auditable.class)
+            %td= link_to audit.auditable.to_s, audit.auditable.link
+            %td= audit.created_at.to_s(:db)
+
+  %br
+
+  .pull-right
+    %a.btn.btn-default{ ng: { click: 'ctrl.exportCsv()' } } Экспорт в .csv
+
+  / = paginate @audits, theme: 'twitter-bootstrap-3'

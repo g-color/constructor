@@ -1,0 +1,8 @@
+%section{ ng: { controller: "ClientController" } }
+  %h1 Редактирование клиента
+  %ol.breadcrumb.row
+    %li
+      = link_to 'Клиенты', clients_path
+    %li.active= @client.full_name
+
+  = render 'form'

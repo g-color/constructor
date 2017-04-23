@@ -1,0 +1,5 @@
+class RemoveIsPrimitiveFromConstructorObjects < ActiveRecord::Migration[5.0]
+  def change
+    remove_column :constructor_objects, :is_primitive
+  end
+end

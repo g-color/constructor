@@ -1,0 +1,10 @@
+%tr
+  %td= client.full_name
+  %td
+    %a{href: "https://artkarkas.megaplan.ru/staff/#{client.crm}/card/", target: 'blank', rel: 'no-follow'}= client.crm
+  %td
+  %td
+    = link_to edit_client_path(client), class: 'btn btn-warning', title: 'Редактировать' do
+      %span.glyphicon.glyphicon-pencil
+    = link_to client, method: :delete, class: 'btn btn-danger', title: 'Удалить', data: {confirm: "Are you sure?"} do
+      %span.glyphicon.glyphicon-trash

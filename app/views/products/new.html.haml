@@ -1,0 +1,8 @@
+%section{ ng: { controller: 'ProductController' } }
+  %h1 Создание сметного продукта
+  %ol.breadcrumb.row
+    %li
+      = link_to 'Сметные продукты', products_path
+    %li.active Создание сметного продукта
+
+  = render 'form'

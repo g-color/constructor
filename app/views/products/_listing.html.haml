@@ -1,0 +1,11 @@
+%tr
+  %td= product.name
+  %td= product.unit.name
+  %td= product.stage
+  %td= product.custom ? 'Да' : 'Нет'
+  %td= product.profit
+  %td
+    = link_to edit_product_path(product), title: 'Редактировать', class: 'btn btn-warning' do
+      %span.glyphicon.glyphicon-pencil
+    = link_to product, method: :delete, title: 'Удалить', class: 'btn btn-danger', data: {confirm: 'Are you sure?'} do
+      %span.glyphicon.glyphicon-trash

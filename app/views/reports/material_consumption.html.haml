@@ -1,0 +1,51 @@
+= render 'header_reports'
+
+%h4.stage
+  Расход материалов в месяц
+%br
+
+.row#material-consumption
+  .form-horizontal.row
+    .col-sm-2
+      = text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Наименование'
+    .col-sm-2
+      = select_tag 'category', options_for_select(Category.where(product: false).collect{|x| [x.name, x.id]}), include_blank: true, class: 'form-control'
+    .col-sm-1
+      %button.btn.btn-default.col-sm-12 
+        Поиск
+    .col-sm-4
+      %label.col-sm-4.control-label
+        Период от
+      .col-sm-8
+        %input.form-control{ type: "date" }
+    .col-sm-3
+      %label.col-sm-2.control-label
+        до
+      .col-sm-10
+        %input.form-control{ type: "date" }
+    .col-sm-1
+      %button.btn.btn-default.col-sm-12
+        Поиск
+  %br
+  .table-responsive.main-content
+    %table.table.table-hover
+      %thead
+        %tr>
+          %th.col-sm-6
+            Материал
+          %th.col-sm-2
+            Единицы измерения
+          %th.col-sm-2
+            Средний расход
+          %th.col-sm-2
+            Общий расход
+      %tbody
+        %tr
+          %td
+            primitive.name
+          %td
+            ед. изм
+          %td
+            ср. расх
+          %td
+            Общ расх

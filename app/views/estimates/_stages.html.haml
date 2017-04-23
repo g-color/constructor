@@ -1,0 +1,92 @@
+.row.main-content
+  %div{ ng: { repeat: 'stage in stages' } }
+    %br
+    %h4.stage {{ stage.text.name }}
+    %table.table.table-hover
+      %thead
+        %tr
+          %th.col-sm-5 Наименование
+          %th.col-sm-2 Количество
+          %th.col-sm-2 Стоимость
+          %th.col-sm-2 С работой
+          %th.col-sm-2
+            %a.btn.btn-sm.btn-primary{ ng: { click: 'ctrl.showAddModal(stage.number)' } } Добавить продукт
+      %tbody
+        %tr{ ng: { repeat: 'product in stage.products' } }
+          %td {{ product.name }}
+          %td {{ product.quantity }}
+          %td {{ product.price }}
+          %td
+            %input{ type: 'checkbox', checked: true }
+          %td
+            %a.btn.btn-warning{ 'data-toggle': 'modal', 'data-target': '.add-product', title: "Редактировать" }
+              %span.glyphicon.glyphicon-pencil{ 'aria-hidden': true }
+            %a.btn.btn-danger{ 'data-toggle': "modal", 'data-target': "#delete-confirmation", title: "Удалить" }
+              %span.glyphicon.glyphicon-trash{ 'aria-hidden': true }
+        %tr
+          %td.text-right{ colspan: 2 }
+            %b {{ stage.text.summ }}
+          %td{ colspan: 3 }
+            %b= f.object.price_by_stage.first.to_s + " (" + f.object.discount_by_stages.first.to_s + " руб. за м2)"
+        %tr
+          %td.text-right{ colspan: 2 }
+            %b {{ discount.name }} {{ stage.text.summ_dis }}:
+          %td{ colspan: 3}
+            %b.text-danger {{ ctrl.getDiscount(stage.number) }}
+        %tr
+          %td.text-right{ colspan: 2 }
+            %b {{ stage.text.discount }}
+          %td{ colspan: 3 }
+            %b= f.object.price_by_stage_aggregated_discounted.first.to_s + " (" + f.object.price_by_area_per_stage_discounted.first.to_s + " руб. за м2)"
+    %hr
+    %br
+
+  .modal.fade#add-product
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          %button.close{ type: 'button', 'data-dismiss': 'modal', 'aria-label': 'Close' }
+            %span{ 'aria-hidden': true } &times;
+          %h4.modal-title {{ addModal.header }}
+        .modal-body
+          .form-horizontal
+            .form-group
+              %label.col-sm-3.control-label Сметный продукт
+              .col-sm-9
+                %select.form-control{ ng: { model: 'selectedProductId', change: 'ctrl.setSelectedProduct()' } }
+                  %option Выберите сметный продукт
+                  %option{ ng: { repeat: 'product in addModal.products', value: 'product.id' } } {{ product.name }}
+
+            %div{ ng: { show: 'selectedProductId != "Выберите сметный продукт"' } }
+              %div{ ng: { hide: 'selectedProductCustom' } }
+                .form-group
+                  %label.col-sm-3.control-label Количество*
+                  .col-sm-8
+                    %div
+                      %input.form-control{ placeholder: "Введите количество", }
+                  .col-sm-1
+                    %h5 {{ selectedProduct.unit }}
+
+              %div{ ng: { show: 'selectedProductCustom' } }
+                .form-group
+                  %label.col-sm-3.control-label Сборка
+                  .col-sm-9
+                    %select#set.form-control{ ng: { model: 'selectedSetId', change: 'ctrl.setSelectedSet()' } }
+                      %option Выберите сборку
+                      %option{ ng: { repeat: 'set in selectedProduct.sets', value: 'set.id' } } {{ set.name }}
+
+                %table.table.table-hover
+                  %thead
+                    %tr
+                      %th.col-sm-3 Составляющие
+                      %th.col-sm-2 Количество
+                      %th.col-sm-2 Единица измерения
+                  %tbody
+                    %tr{ ng: { repeat: 'template in selectedSet.items' } }
+                      %td {{ template.value.name }}
+                      %td
+                        %input.form-control{ placeholder: "Введите количество" }
+                      %td {{ template.value.unit }}
+        .modal-footer
+          %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" } Отмена
+          %button.btn.btn-success{ type: 'button', 'data-dismiss': 'modal' } Сохранить

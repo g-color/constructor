@@ -1,0 +1,36 @@
+%section{ ng: { controller: 'ClientController' } }
+  = simple_form_for @client, html: {class: 'form-horizontal'}, wrapper: :horizontal_form do |f|
+    .action-buttons.row
+      = link_to 'Отмена', clients_path, class: 'btn btn-default'
+      - if can? :edit, @client
+        = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
+    %br
+    .row.main-content
+      .form-horizontal.col-sm-offset-2.col-sm-8
+        %br
+        = f.input :first_name,  label: 'Имя',         input_html: { placeholder: 'Введите имя' }
+        = f.input :last_name,   label: 'Фамилия',     input_html: { placeholder: 'Введите фамилию' }
+        = f.input :middle_name, label: 'Отчество',    input_html: { placeholder: 'Введите отчество' }
+        = f.input :crm,         label: 'ID в CRM',    input_html: { placeholder: 'Введите id' }
+        = f.input :archived,    label: 'Архивирован', wrapper: :inline_checkbox
+
+        %input#share-users{ hidden: true, name: 'client_users', ng: { value: 'shared_users_json' } }
+
+        .form-group
+          %label.col-sm-3.control-label Совместный доступ
+          .col-sm-7
+            %select.form-control
+              %option Выберите пользователя
+              %option{ ng: { repeat: 'user in users_list', value: 'user.id' } } {{ user.last_name }} {{ user.first_name }}
+          .col-sm-2
+            %a.btn.btn-default.col-sm-12{ ng: { click: 'ctrl.shareClient()' } } Добавить
+
+        .form-group
+          %label.col-sm-3.control-label
+          .col-sm-9
+            %table.table#shared-users
+              %tr{ ng: { repeat: 'user in shared_users' } }
+                %td {{user.last_name}} {{user.first_name}}
+                %td
+                  %a.btn.btn-danger.pull-right{ title: 'Удалить', ng: {click: "ctrl.removeSharedUser(user.id)" } }
+                    %span.glyphicon.glyphicon-trash

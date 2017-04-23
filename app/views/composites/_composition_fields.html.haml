@@ -1,0 +1,15 @@
+%tr.nested-fields
+  = f.hidden_field :children_id, class: 'children'
+  %td.constructor-object-name
+    = f.object.children.present? ? f.object.children.name : ''
+  %td
+    %span.pull-right
+      количество:
+    %td.col-sm-2
+      = f.input :value, label: false, class: 'form-control'
+    %td.unit-name
+      = f.object.children.present? ? f.object.children.unit.name : ''
+    %td
+      = link_to_remove_association f do
+        %button.btn.btn-danger.pull-right
+          %span.glyphicon.glyphicon-trash

@@ -1,0 +1,48 @@
+.form-group
+  %label.col-sm-3.control-label Список составляющих
+  .col-sm-9
+    %table.table.table-hover
+      %tbody
+        %tr{ ng: { repeat: 'template in templates' } }
+          %td.name {{ template.name }}
+          %td.col-sm-3
+            %a.btn.btn-warning{ title: 'Редактировать', ng: { click: 'ctrl.editTemplate(template.id)'} }
+              %span.glyphicon.glyphicon-pencil
+            %a.btn.btn-danger{ title: 'Удалить', ng: { click: 'ctrl.removeTemplate(template.id)'} }
+              %span.glyphicon.glyphicon-trash
+
+    .btn.btn-primary.center-block{ data: { toggle: 'modal', target: '#new_template' } }
+      %span.glyphicon.glyphicon-plus
+      Добавить новый элемент
+
+#new_template.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ data: { dismiss: 'modal' }, aria: { label: 'Закрыть' } }
+          %span{ aria: { hidden: true } } &times;
+        %h4.modal-title Новая составляющая
+      .modal-body
+        .form-horizontal
+          .form-group.no-margin
+            %label.col-sm-3.control-label Наименование
+            .col-sm-9= text_field_tag :template_name, nil, class: 'form-control'
+      .modal-footer
+        %a.btn.btn-default{ data: { dismiss: 'modal' } } Отмена
+        %a.btn.btn-success{ ng: { click: 'ctrl.addTemplate()' }, data: { dismiss: 'modal' } } Добавить
+
+%div{ ng: { repeat: 'template in templates' } }
+  .modal.fade{ 'ng-attr-id' => "{{ 'edit-template-' + template.id }}" }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{ data: { dismiss: 'modal' }, aria: { label: 'Закрыть' } }
+            %span{ aria: { hidden: true } } &times;
+          %h4.modal-title Редактирование составляющей
+        .modal-body
+          .form-horizontal
+            .form-group.no-margin
+              %label.col-sm-3.control-label Наименование
+              .col-sm-9= text_field_tag :template_name, nil, class: 'form-control', 'ng-model' => 'template.name', 'ng-change' => 'ctrl.updateTemplate(template.id)'
+        .modal-footer
+          %a.btn.btn-default{ data: { dismiss: 'modal' } } Закрыть

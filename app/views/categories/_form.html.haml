@@ -1,0 +1,10 @@
+= simple_form_for @category, html: {class: 'form-horizontal'}, wrapper: :horizontal_form do |f|
+  .action-buttons.row
+    = link_to 'Отмена', categories_path, class: 'btn btn-default'
+    = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
+  %br
+  .row.main-content
+    .form-horizontal.col-sm-offset-2.col-sm-8
+      %br
+      = f.input :name, label: 'Название', input_html: { placeholder: 'Введита название' }
+      = f.input :product, label: 'Для сметных продуктов', wrapper: :inline_checkbox

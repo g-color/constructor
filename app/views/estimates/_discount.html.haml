@@ -1,0 +1,38 @@
+.discount-area
+  .form-group
+    %label.col-sm-3.control-label
+      Скидки
+    %button.btn.btn-default{ type: 'button', 'data-toggle': 'collapse', 'data-target': "#discount", 'aria-expanded': false, 'aria-controls': "collapseExample", title: 'Показать скидки' }
+      Показать
+  %br
+  .collapse#discount
+    .well
+      .form-group
+        %label.col-sm-3.control-label
+          Название скидки
+        .col-sm-9
+          = f.input :discount_title, label: false, placeholder: 'Введите название скидки', input_html: { 'ng-model' => 'discount.name' }
+      .form-group
+        %label.col-sm-3.control-label
+          Первый этап
+        .col-sm-2
+          = f.input :discount_by_stages, label: false, class: 'form-control', input_html: { name: 'estimate[discount_by_stages][0]', value: f.object.discount_by_stages[0], 'ng-model' => 'discount.first_stage' }
+        .col-sm-1
+          %h5
+            = '%'
+      .form-group
+        %label.col-sm-3.control-label
+          Второй этап
+        .col-sm-2
+          = f.input :discount_by_stages, label: false, class: 'form-control', input_html: { name: 'estimate[discount_by_stages][1]', value: f.object.discount_by_stages[0], 'ng-model' => 'discount.second_stage' }
+        .col-sm-1
+          %h5
+            = '%'
+      .form-group
+        %label.col-sm-3.control-label
+          Третий этап
+        .col-sm-2
+          = f.input :discount_by_stages, label: false, class: 'form-control', input_html: { name: 'estimate[discount_by_stages][2]', value: f.object.discount_by_stages[0], 'ng-model' => 'discount.third_stage' }
+        .col-sm-1
+          %h5
+            = '%'

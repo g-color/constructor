@@ -1,0 +1,19 @@
+.row.col-sm-offset-3.col-sm-9
+  .input-group
+    = hidden_field_tag :autocomplete_composition_id, '', id: 'autocomplete_composition_id'
+    = autocomplete_field_tag :search, '', '/constructor_objects/autocomplete_constructor_object_name', id_element: '#autocomplete_composition_id', class: 'form-control', placeholder: 'Введите наименование объекта или примитива', id: 'search', data: { 'update-elements' => 'false' }
+    %span.input-group-btn
+      %a.btn.btn-default.glyphicon.glyphicon-plus{ ng: { click: 'ctrl.addComposition()' } }
+
+  %table.table.table-hover
+    %tbody
+      %tr{ ng: { repeat: 'composition in compositions' } }
+        %td {{ composition.name }}
+        %td
+          %span.pull-right количество:
+        %td.col-sm-2
+          %input.form-control{ ng: { model: 'composition.quantity', change: 'ctrl.setProductCompositions()' }}
+        %td.unit-name {{ composition.unit }}
+        %td
+          %a.btn.btn-danger.pull-right{ title: 'Удалить', ng: {click: 'ctrl.removeComposition(composition.id)'} }
+            %span.glyphicon.glyphicon-trash
