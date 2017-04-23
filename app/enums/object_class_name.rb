@@ -6,17 +6,12 @@ class ObjectClassName
   CATEGORY    = 'Category'
   USER        = 'User'
   OBJECT      = 'Composite'
+  PRODUCT     = 'Product'
+  ESTIMATE    = 'Estimate'
+  REPORT      = 'Report'
 
   def self.fetch(class_name)
-    {
-      UNIT      => 'Единица измерения',
-      CATEGORY  => 'Категория',
-      PRIMITIVE => 'Примитив',
-      CLIENT    => 'Клиент',
-      EXPENSE   => 'Админ. расход',
-      USER      => 'Пользователь',
-      OBJECT    => 'Объект',
-    }.fetch(class_name.to_s, nil)
+    values.fetch(class_name.to_s, nil)
   end
 
   def self.values
@@ -28,6 +23,9 @@ class ObjectClassName
       EXPENSE   => 'Административный расход',
       USER      => 'Пользователь',
       OBJECT    => 'Объект',
+      PRODUCT   => 'Сметный продукт',
+      ESTIMATE  => 'Смета',
+      REPORT    => 'Отчет',
     }
   end
 end

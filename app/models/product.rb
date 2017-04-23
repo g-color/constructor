@@ -103,6 +103,10 @@ class Product < ApplicationRecord
     end
   end
 
+  def to_s
+    name
+  end
+
   def link
     Rails.application.routes.url_helpers.edit_product_path(self)
   end

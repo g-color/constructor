@@ -25,7 +25,7 @@ class AuditsController < ApplicationController
   protected
 
   def check_ability
-    authorize! :manage, Report
+    authorize! :manage, Audit
   end
 
   def search?

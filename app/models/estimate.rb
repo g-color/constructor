@@ -59,4 +59,12 @@ class Estimate < ApplicationRecord
     return 1.5 if second_floor_height_min > 0 && third_floor_height_min < 1800
     1
   end
+
+  def to_s
+    name
+  end
+
+  def link
+    Rails.application.routes.url_helpers.edit_estimate_path(self)
+  end
 end
