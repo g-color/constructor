@@ -16,6 +16,7 @@ class EstimatesController < ApplicationController
           unit:   x.unit.name,
           custom: x.custom,
           sets:   x.get_sets,
+          price:  x.price,
         }
       end,
       Product.includes(:unit).where(stage: 2).map do |x|
@@ -25,6 +26,7 @@ class EstimatesController < ApplicationController
           unit:   x.unit.name,
           custom: x.custom,
           sets:   x.get_sets,
+          price:  x.price,
         }
       end,
       Product.includes(:unit).where(stage: 3).map do |x|
@@ -34,6 +36,7 @@ class EstimatesController < ApplicationController
           unit:   x.unit.name,
           custom: x.custom,
           sets:   x.get_sets,
+          price:  x.price,
         }
       end,
     ]

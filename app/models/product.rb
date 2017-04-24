@@ -103,6 +103,17 @@ class Product < ApplicationRecord
     end
   end
 
+  def price
+    price = 0
+    if custom
+    else
+      product_compositions.includes(:constructor_object).each do |composition|
+        price += composition.constructor_object.price if composition.constructor_object.price.present?
+      end
+    end
+    price
+  end
+
   def to_s
     name
   end

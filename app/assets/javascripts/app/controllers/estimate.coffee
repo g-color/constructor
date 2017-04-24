@@ -13,7 +13,8 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
           summ_dis: 'по первому этапу',
           discount: 'Итого по первому этапу со скидкой:'
         },
-        products: []
+        products: [],
+        price: 0,
       },
       {
         number: 2,
@@ -23,7 +24,8 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
           summ_dis: 'по второму этапу',
           discount: 'Итого по первому этапу со скидкой:'
         },
-        products: []
+        products: [],
+        price: 0,
       },
       {
         number: 3,
@@ -33,7 +35,8 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
           summ_dis: 'по третьему этапу',
           discount: 'Итого по первому этапу со скидкой:'
         },
-        products: []
+        products: [],
+        price: 0,
       }
     ]
     @scope.discount = {
@@ -44,11 +47,11 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     }
     @scope.products = @pHelper.get('products')
 
+    @scope.currentStage = null
     @scope.selectedProduct = null
     @scope.selectedProductId = 'Выберите сметный продукт'
     @scope.selectedProductUnit = null
     @scope.selectedProductCustom = false
-
     @scope.selectedSet = null
     @scope.selectedSetId = 'Выберите сборку'
 
@@ -88,6 +91,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     @scope.selectedProductCustom = false
     @scope.selectedSetId         = 'Выберите сборку'
     @scope.selectedSet           = null
+    @scope.currentStage          = stage
 
     $('#add-product').modal('show')
     true
@@ -104,3 +108,22 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     set_id = @scope.selectedSetId
     if set_id != 'Выберите сборку'
       @scope.selectedSet = this.getSet(set_id, product.sets)
+    else
+      @scope.selectedSet = null
+
+  addProduct: () ->
+    stage_number = @scope.currentStage
+    product = @scope.selectedProduct
+    quantity = $('#product-quantity').val()
+
+    stage = @scope.stages.find((x) -> x.number == stage_number)
+    stage.products.push(Object.assign(product, {quantity: quantity}))
+    stage.price += product.price * quantity
+    $('#product-quantity').val(null)
+    $('#add-product').modal('hide')
+    true
+
+  deleteProduct: (stage, id) ->
+    product = stage.products.find((x) -> x.id == id)
+    index = stage.products.indexOf(product)
+    stage.products.splice(index, 1)

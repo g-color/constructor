@@ -14,21 +14,22 @@
       %tbody
         %tr{ ng: { repeat: 'product in stage.products' } }
           %td {{ product.name }}
-          %td {{ product.quantity }}
-          %td {{ product.price }}
+          %td {{ product.quantity }} {{ product.unit }}
+          %td {{ product.price * product.quantity }}
           %td
             %input{ type: 'checkbox', checked: true }
           %td
             %a.btn.btn-warning{ 'data-toggle': 'modal', 'data-target': '.add-product', title: "Редактировать" }
               %span.glyphicon.glyphicon-pencil{ 'aria-hidden': true }
-            %a.btn.btn-danger{ 'data-toggle': "modal", 'data-target': "#delete-confirmation", title: "Удалить" }
+            %a.btn.btn-danger{ title: "Удалить", ng: { click: 'ctrl.deleteProduct(stage, product.id)' } }
               %span.glyphicon.glyphicon-trash{ 'aria-hidden': true }
+
         %tr
           %td.text-right{ colspan: 2 }
             %b {{ stage.text.summ }}
           %td{ colspan: 3 }
-            %b= f.object.price_by_stage.first.to_s + " (" + f.object.discount_by_stages.first.to_s + " руб. за м2)"
-        %tr
+            %b {{ stage.price }} (0 руб. за м2)
+          %tr
           %td.text-right{ colspan: 2 }
             %b {{ discount.name }} {{ stage.text.summ_dis }}:
           %td{ colspan: 3}
@@ -63,7 +64,7 @@
                   %label.col-sm-3.control-label Количество*
                   .col-sm-8
                     %div
-                      %input.form-control{ placeholder: "Введите количество", }
+                      %input.form-control#product-quantity{ placeholder: "Введите количество", }
                   .col-sm-1
                     %h5 {{ selectedProduct.unit }}
 
@@ -89,4 +90,4 @@
                       %td {{ template.value.unit }}
         .modal-footer
           %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" } Отмена
-          %button.btn.btn-success{ type: 'button', 'data-dismiss': 'modal' } Сохранить
+          %button.btn.btn-success{ type: "button", ng: { click: 'ctrl.addProduct()' } } Сохранить
