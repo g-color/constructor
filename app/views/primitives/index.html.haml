@@ -8,7 +8,7 @@
       .col-sm-6
         = text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Наименование'
       .col-sm-3
-        = select_tag 'category', options_for_select(Category.where(product: false).collect{|x| [x.name, x.id]}), include_blank: true, class: 'form-control'
+        = select_tag :category, options_for_select(Category.where(product: false).collect{|x| [x.name, x.id]}, selected: params[:category]), include_blank: 'Категория', class: 'form-control'
 
       .col-sm-1
         %button.btn.btn-default.col-sm-12 Поиск
