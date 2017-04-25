@@ -7,4 +7,4 @@
     .form-horizontal.col-sm-offset-2.col-sm-8
       %br
       = f.input :name, label: 'Название', input_html: { placeholder: 'Введита название' }
-      = f.input :product, label: 'Для сметных продуктов', wrapper: :inline_checkbox, input_html: params[:product].present? ? { checked: params[:product] } : {}
+      = f.input :product, label: 'Для сметных продуктов', wrapper: :inline_checkbox

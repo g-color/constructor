@@ -19,7 +19,7 @@
         %tr
           %th.col-sm-10.text-center Категории для сметных продуктов
           %th.col-sm-2
-            = link_to 'Добавить', new_category_path(product: 'checked'), class: 'btn btn-sm btn-primary'
+            = link_to 'Добавить', new_category_path, class: 'btn btn-sm btn-primary'
       %tbody
         - @categories.where(product: true).each do |category|
           = render 'listing', category: category

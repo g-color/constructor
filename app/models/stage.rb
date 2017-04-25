@@ -1,4 +1,4 @@
 class Stage < ApplicationRecord
-  belong_to :estimate
+  belongs_to :estimate
   has_many :stage_products
 end
