@@ -1,3 +1,3 @@
 class StageProduct < ApplicationRecord
-  belong_to :stage
+  belongs_to :stage
 end
