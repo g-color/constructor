@@ -42,7 +42,7 @@
           %li
             %a{ href: '#solutions' } Готовые решения
 
-          %a.btn.btn-primary.navbar-btn{ href: '#clients/estimate-edit?id=&client=' } Создать смету
+          = link_to 'Создать смету', new_estimate_path(client_id: params[:client_id]), class: 'btn btn-primary navbar-btn'
 
         %ul.nav.navbar-nav.navbar-right
           %li

@@ -11,11 +11,11 @@ Rails.application.routes.draw do
     match :info, to: 'constructor_objects#info', as: :info, on: :collection, via: [:get, :post]
     get  :autocomplete_constructor_object_name, on: :collection
   end
-  
+
   resources :products
   resources :clients
-
   resources :estimates
+
   post '/estimates/files', to: 'estimates#files', as: :estimates_files
 
 

@@ -3,7 +3,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
 
   constructor: (@scope, @http, @filter, @pHelper) ->
     @scope.ctrl   = @
-    @scope.area   = 0
+    @scope.estimate = @pHelper.get('estimate')
     @scope.stages = [
       {
         number: 1,
@@ -15,6 +15,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
         },
         products: [],
         price: 0,
+        total_price: 0,
       },
       {
         number: 2,
@@ -26,6 +27,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
         },
         products: [],
         price: 0,
+        total_price: 0,
       },
       {
         number: 3,
@@ -37,34 +39,40 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
         },
         products: [],
         price: 0,
+        total_price: 0,
       }
     ]
-    @scope.discount = {
-      name:         null,
-      first_stage:  0,
-      second_stage: 0,
-      third_stage:  0
-    }
+
+    discount        = @pHelper.get('discount')
+    discount.values = discount.values.map((x) -> parseFloat(x))
+
+    @scope.discount = discount
     @scope.products = @pHelper.get('products')
 
-    @scope.currentStage = null
-    @scope.selectedProduct = null
-    @scope.selectedProductId = 'Выберите сметный продукт'
-    @scope.selectedProductUnit = null
+    @scope.currentStage          = null
+    @scope.selectedProduct       = null
+    @scope.selectedProductId     = 'Выберите сметный продукт'
+    @scope.selectedProductUnit   = null
     @scope.selectedProductCustom = false
-    @scope.selectedSet = null
-    @scope.selectedSetId = 'Выберите сборку'
+    @scope.selectedSet           = null
+    @scope.selectedSetId         = 'Выберите сборку'
+
+    @scope.selectedEditProduct       = null
+    @scope.selectedEditProductId     = null
+    @scope.selectedEditProductCustom = false
+    @scope.selectedEditSet           = null
+    @scope.selectedEditSetId         = 'Выберите сборку'
 
     @scope.addModal = {
       header: 'Добавление сметного продукта.'
       products: []
     }
+    @scope.editModal = {
+      header: 'Редактирование сметного продукта.'
+      products: []
+    }
 
-  getDiscount: (number) ->
-    switch number
-      when 1 then '-' + @scope.discount.first_stage
-      when 2 then '-' + @scope.discount.second_stage
-      when 3 then '-' + @scope.discount.third_stage
+    true
 
   getProducts: (stage) ->
     @scope.products[stage - 1]
@@ -96,6 +104,23 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     $('#add-product').modal('show')
     true
 
+  showEditModal: (stage, product) ->
+    product = this.getProductFromStage(product)
+
+    @scope.currentStage              = stage
+    @scope.editModal.header          = 'Редактирование сметного продукта. Этап ' + stage
+    @scope.selectedEditProduct       = product
+    @scope.selectedEditProductId     = product.name
+    @scope.selectedEditProductCustom = product.custom
+
+    if product.custom
+      set = product.sets.find((x) -> x.selected == true)
+      @scope.selectedEditSetId         = set.id
+      @scope.selectedEditSet           = set
+
+    $('#edit-product').modal('show')
+    true
+
   setSelectedProduct: () ->
     product_id = @scope.selectedProductId
     if product_id != 'Выберите сметный продукт'
@@ -111,14 +136,43 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     else
       @scope.selectedSet = null
 
-  addProduct: () ->
-    stage_number = @scope.currentStage
-    product = @scope.selectedProduct
-    quantity = $('#product-quantity').val()
+  setSelectedEditSet: () ->
+    set_id = @scope.selectedEditSetId
+    stage = this.getStage(@scope.currentStage)
+    product = @scope.selectedEditProduct
+    $.each(product.sets, (i,v) ->
+      product.sets[i].selected = v.id == parseInt(set_id)
+      true
+    )
+    @scope.selectedEditSet = this.getSet(set_id, @scope.selectedEditProduct.sets)
+    this.recalcProduct()
 
-    stage = @scope.stages.find((x) -> x.number == stage_number)
-    stage.products.push(Object.assign(product, {quantity: quantity}))
-    stage.price += product.price * quantity
+  addProduct: () ->
+    estimate     = @scope.estimate
+    discount     = @scope.discount
+    stage_number = @scope.currentStage
+    product      = @scope.selectedProduct
+    quantity     = $('#product-quantity').val()
+
+    stage = this.getStage(stage_number)
+    if product.custom
+      product.price = 0
+      set_id = @scope.selectedSetId
+      set = product.sets.find((x) -> x.id == parseInt(set_id))
+      $.each($('.template-quantity'), (i, v) ->
+        set.selected   = true
+        set.items[i]   = Object.assign(set.items[i], {quantity: $(v).val()})
+        product.price += set.items[i].value.price * $(v).val()
+      )
+      product = Object.assign(product, {quantity: 1})
+    else
+      product = Object.assign(product, {quantity: quantity})
+
+    stage.products.push(product)
+
+    this.recalcStage(stage_number)
+    this.recalEstimate()
+
     $('#product-quantity').val(null)
     $('#add-product').modal('hide')
     true
@@ -127,3 +181,78 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     product = stage.products.find((x) -> x.id == id)
     index = stage.products.indexOf(product)
     stage.products.splice(index, 1)
+    this.recalcStage(stage.number)
+    this.recalEstimate()
+
+  getPrice: () ->
+    estimate = @scope.estimate
+    if estimate.price == 0 || estimate.area == 0
+      0
+    else
+      (estimate.price / estimate.area).toFixed(2)
+
+  getStageTotalPrice: (stage_number) ->
+    estimate = @scope.estimate
+    stage    = this.getStage(stage_number)
+    if stage.total_price == 0 || estimate.area == 0
+      0
+    else
+      (stage.total_price / estimate.area).toFixed(2)
+
+  getStagePrice: (stage_number) ->
+    estimate = @scope.estimate
+    stage    = this.getStage(stage_number)
+    if stage.price == 0 || estimate.area == 0
+      0
+    else
+      (stage.price / estimate.area).toFixed(2)
+
+  recalcStage: (number) ->
+    discount    = @scope.discount
+    stage       = this.getStage(number)
+    stage.price = 0
+    $.each(stage.products, (i,p) ->
+      if p.custom
+        stage.price += p.price
+      else
+        stage.price += p.price * p.quantity
+    )
+    if discount.values[number - 1] < 0
+      discount.values[number - 1] = 0
+
+    discount = discount.values[number - 1]
+    stage.total_price = stage.price - (stage.price * discount / 100)
+
+  getStage: (number) ->
+    @scope.stages.find((x) -> x.number == number)
+
+  recalEstimate: () ->
+    estimate = @scope.estimate
+    stages   = @scope.stages
+
+    $('#estimate_json_stages').val(JSON.stringify(stages))
+
+    estimate.price = 0
+    $.each(stages, (i,v) -> estimate.price += v.total_price)
+
+  getProductFromStage: (product_id) ->
+    stages = @scope.stages
+    product = undefined
+    $.each(stages, (i,v) ->
+      if product == undefined
+        product = v.products.find((x) -> x.id == product_id)
+    )
+    product
+
+  recalcProduct: () ->
+    stage = @scope.currentStage
+    product = @scope.selectedEditProduct
+    product.price = 0
+    $.each(product.sets, (i,v) ->
+      if v.selected
+        $.each(v.items, (y,x) ->
+          product.price += x.quantity * x.value.price
+        )
+    )
+    this.recalcStage(stage)
+    this.recalEstimate()

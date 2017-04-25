@@ -1,4 +1,4 @@
-= simple_form_for @estimate, wrapper: :horizontal_form do |f|
+= simple_form_for @estimate,  wrapper: :horizontal_form do |f|
   .action-buttons.row
     = link_to 'Отмена', estimates_path, class: 'btn btn-default'
     = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
@@ -7,10 +7,10 @@
     %br
       .form-horizontal.col-sm-offset-2.col-sm-8
         %br
+        = hidden_field_tag :json_stages, nil, id: 'estimate_json_stages'
         = f.input :name, label: 'Наименование', placeholder: 'Введите наименование'
         .form-group
-          %label.col-sm-3.control-label
-            Клиент*
+          %label.col-sm-3.control-label Клиент*
           .col-sm-6
             = f.input :client_id, label: false, as: :select, collection: Client.select(:id, :first_name, :last_name, :middle_name).collect {|c| [ c.full_name, c.id ] }, class: 'form-control'
           .col-sm-3
@@ -20,14 +20,12 @@
           %label.col-sm-3.control-label
             Общая стоимость
           .col-sm-9
-            %h5
-              = f.object.price_by_stage_aggregated_discounted.last.to_s + " руб. (" + f.object.price_by_area_per_stage_discounted.last.to_s + " руб. за м2)"
+            %h5 {{ estimate.price }} руб. ({{ ctrl.getPrice() }} руб. за м2)
 
-        = f.input :area, label: 'Площадь', placeholder: 'Введите площадь'
+        = f.input :area, label: 'Площадь', placeholder: 'Введите площадь', input_html: { 'ng-model' => 'estimate.area' }
 
         .form-group
-          %label.col-sm-3.control-label
-            Высота первого этажа*
+          %label.col-sm-3.control-label Высота первого этажа*
           .col-sm-7
             = f.input :first_floor_height, label: false, placeholder: 'Введите высоту в мм'
           .col-sm-2
@@ -36,35 +34,28 @@
         .collapse#floors
           .well
             .form-group
-              %label.col-sm-3.control-label
-                Высота второго этажа
+              %label.col-sm-3.control-label Высота второго этажа
               .col-sm-1
-                %h5.text-right
-                  от
+                %h5.text-right от
               .col-sm-3
                 = f.input :second_floor_height_min, label: false, placeholder: 'Введите высоту в мм', class: 'form-control'
               .col-sm-offset-1.col-sm-1
-                %h5.text-right
-                  до
+                %h5.text-right до
               .col-sm-3
                 = f.input :second_floor_height_max, label: false, placeholder: 'Введите высоту в мм', class: 'form-control'
             .form-group
-              %label.col-sm-3.control-label
-                Высота третьего этажа
+              %label.col-sm-3.control-label Высота третьего этажа
               .col-sm-1
-                %h5.text-right
-                  от
+                %h5.text-right от
               .col-sm-3
                 = f.input :third_floor_height_min, label: false, placeholder: 'Введите высоту в мм', class: 'form-control'
               .col-sm-offset-1.col-sm-1
-                %h5.text-right
-                  до
+                %h5.text-right до
               .col-sm-3
                 = f.input :third_floor_height_max, label: false, placeholder: 'Введите высоту в мм', class: 'form-control'
             %hr
         .form-group.client-files-div
-          %label.col-sm-3.control-label
-            Планы и фасады
+          %label.col-sm-3.control-label Планы и фасады
           .col-sm-3
             = file_field_tag :data, as: :file, multiple: true, class: 'client-file'
           /  %button.col-sm-3.btn.btn-default.form-control{ type: 'button' }
@@ -82,8 +73,7 @@
 
         %hr
         .form-group.technical-files-div
-          %label.col-sm-3.control-label
-            Тех. файлы
+          %label.col-sm-3.control-label Тех. файлы
           .col-sm-3
             /%button.col-sm-3.btn.btn-default.form-control{ type: 'button' }
             /  %input.choose{ type: 'file' }
@@ -107,18 +97,15 @@
 
   %p
   .row.main-content
-    %h3.text-center
-      Экспорт
+    %h3.text-center Экспорт
     %br
     .button-block.text-center
       %button.btn.btn-default{ type: 'button' }
         Экспорт в
-        %b
-          = ".pdf"
+        %b .pdf
       %button.btn.btn-default{ type: "button" }
         Экспорт в
-        %b
-          = ".doc"
+        %b .doc
     %br
     .button-block.text-center
       %button.btn.btn-default{ type: "button" }

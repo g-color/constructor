@@ -32,6 +32,7 @@ class Estimate < ApplicationRecord
   validates :client, presence: true
 
   has_many :client_files
+  has_many :stages
   accepts_nested_attributes_for :client_files, reject_if: :all_blank, allow_destroy: true
 
   has_many :technical_files

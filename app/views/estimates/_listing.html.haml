@@ -1,14 +1,9 @@
 %tr
-  %td
-    = estimate.name
-  %td
-    = estimate.price
-  %td
-    = estimate.price_by_area
-  %td
-    = estimate.area
-  %td
-    = estimate.updated_at
+  %td= estimate.name
+  %td= estimate.price
+  %td= estimate.price_by_area
+  %td= estimate.area
+  %td= estimate.updated_at
   %td
     %button.btn.btn-default{ 'data-toggle': "modal", 'data-target': "#duplicate", title: "Создать копию сметы" }
       %span.glyphicon.glyphicon-duplicate{ 'aria-hidden': true }

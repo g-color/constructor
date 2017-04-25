@@ -4,43 +4,33 @@ class EstimatesController < ApplicationController
 
   def index
     @estimates = Estimate.all
+    @estimates = @estimates.where(client_id: params[:client_id]) if params[:client_id]
   end
 
   def new
-    @estimate = Estimate.new
+    if params[:client_id].present?
+      @estimate = Client.find(params[:client_id]).estimates.build
+    else
+      @estimate = Estimate.new
+    end
+
+    @products = Product.includes(:unit)
     products = [
-      Product.includes(:unit).where(stage: 1).map do |x|
-        {
-          id:     x.id,
-          name:   x.name,
-          unit:   x.unit.name,
-          custom: x.custom,
-          sets:   x.get_sets,
-          price:  x.price,
-        }
-      end,
-      Product.includes(:unit).where(stage: 2).map do |x|
-        {
-          id:     x.id,
-          name:   x.name,
-          unit:   x.unit.name,
-          custom: x.custom,
-          sets:   x.get_sets,
-          price:  x.price,
-        }
-      end,
-      Product.includes(:unit).where(stage: 3).map do |x|
-        {
-          id:     x.id,
-          name:   x.name,
-          unit:   x.unit.name,
-          custom: x.custom,
-          sets:   x.get_sets,
-          price:  x.price,
-        }
-      end,
+      @products.where(stage: 1).map_for_estimate,
+      @products.where(stage: 2).map_for_estimate,
+      @products.where(stage: 3).map_for_estimate,
     ]
-    gon.push(products: products)
+    gon.push(
+      products: products,
+      discount: {
+        name: nil,
+        values: @estimate.discount_by_stages
+      },
+      estimate: {
+        area:  0,
+        price: 0,
+      }
+    )
   end
 
   def create
@@ -60,9 +50,27 @@ class EstimatesController < ApplicationController
   end
 
   def edit
+    @products = Product.includes(:unit)
+    products = [
+      @products.where(stage: 1).map_for_estimate,
+      @products.where(stage: 2).map_for_estimate,
+      @products.where(stage: 3).map_for_estimate,
+    ]
+    gon.push(
+      products: products,
+      discount: {
+        name: nil,
+        values: @estimate.discount_by_stages
+      },
+      estimate: {
+        area:  @estimate.area,
+        price: @estimate.price,
+      }
+    )
   end
 
   def update
+    byebug
     if @estimate.update(estimate_params)
       @estimate.calc_parameters
       redirect_to estimates_path
@@ -92,9 +100,14 @@ class EstimatesController < ApplicationController
   end
 
   def estimate_params
-    params.require(:estimate).permit(:name, :client_id, :area, :first_floor_height, :discount_by_stages,
-      client_files_attributes: [:id, :asset_file_id, :_destroy],
-      technical_files_attributes: [:id, :asset_file_id, :_destroy]
+    params.require(:estimate).permit(
+      :name, :client_id, :area, :first_floor_height, :discount_by_stages, :json_stages,
+      client_files_attributes:    [:id, :asset_file_id, :_destroy],
+      technical_files_attributes: [:id, :asset_file_id, :_destroy],
     )
+  end
+
+  def map_product
+
   end
 end

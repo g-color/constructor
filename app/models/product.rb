@@ -16,6 +16,19 @@ class Product < ApplicationRecord
   has_many :product_templates, through: :product_template_sets
   has_many :product_sets,      through: :product_template_sets
 
+  def self.map_for_estimate
+    all.map do |x|
+      {
+        id:     x.id,
+        name:   x.name,
+        unit:   x.unit.name,
+        custom: x.custom,
+        sets:   x.get_sets,
+        price:  x.price,
+      }
+    end
+  end
+
   def save_compositions(compositions)
     ids = compositions.map { |c| c['id'] }
     product_compositions.where.not(id: ids).destroy_all
@@ -95,7 +108,8 @@ class Product < ApplicationRecord
             value: {
               id:   y.constructor_object.id,
               name: y.constructor_object.name,
-              unit: y.constructor_object.unit.name
+              unit: y.constructor_object.unit.name,
+              price: y.constructor_object.price,
             }
           }
         end
