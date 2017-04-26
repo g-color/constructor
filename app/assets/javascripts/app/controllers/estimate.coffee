@@ -3,45 +3,12 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
 
   constructor: (@scope, @http, @filter, @pHelper) ->
     @scope.ctrl   = @
-    @scope.estimate = @pHelper.get('estimate')
-    @scope.stages = [
-      {
-        number: 1,
-        text: {
-          name:     'Первый этап',
-          summ:     'Итого по первому этапу:',
-          summ_dis: 'по первому этапу',
-          discount: 'Итого по первому этапу со скидкой:'
-        },
-        products: [],
-        price: 0,
-        total_price: 0,
-      },
-      {
-        number: 2,
-        text: {
-          name:     'Второй этап',
-          summ:     'Итого по двум этапам:',
-          summ_dis: 'по второму этапу',
-          discount: 'Итого по первому этапу со скидкой:'
-        },
-        products: [],
-        price: 0,
-        total_price: 0,
-      },
-      {
-        number: 3,
-        text: {
-          name:     'Третий этап',
-          summ:     'Итого по трем этапам:',
-          summ_dis: 'по третьему этапу',
-          discount: 'Итого по первому этапу со скидкой:'
-        },
-        products: [],
-        price: 0,
-        total_price: 0,
-      }
-    ]
+    estimate = @pHelper.get('estimate')
+    @scope.estimate = {
+      area: parseFloat(estimate.area),
+      price: parseFloat(estimate.price),
+    }
+    @scope.stages = @pHelper.get('stages')
 
     discount        = @pHelper.get('discount')
     discount.values = discount.values.map((x) -> parseFloat(x))
@@ -72,6 +39,9 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       products: []
     }
 
+    for i in [1..3]
+      this.recalcStage(i)
+    $('#estimate_json_stages').val(JSON.stringify(@scope.stages))
     true
 
   getProducts: (stage) ->
@@ -162,7 +132,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       $.each($('.template-quantity'), (i, v) ->
         set.selected   = true
         set.items[i]   = Object.assign(set.items[i], {quantity: $(v).val()})
-        product.price += set.items[i].value.price * $(v).val()
+        product.price += parseFloat(set.items[i].value.price) * $(v).val()
       )
       product = Object.assign(product, {quantity: 1})
     else
@@ -186,26 +156,26 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
 
   getPrice: () ->
     estimate = @scope.estimate
-    if estimate.price == 0 || estimate.area == 0
+    if parseFloat(estimate.price) == 0 || parseFloat(estimate.area) == 0
       0
     else
-      (estimate.price / estimate.area).toFixed(2)
+      (parseFloat(estimate.price) / parseFloat(estimate.area)).toFixed(2)
 
   getStageTotalPrice: (stage_number) ->
     estimate = @scope.estimate
     stage    = this.getStage(stage_number)
-    if stage.total_price == 0 || estimate.area == 0
+    if parseFloat(stage.total_price) == 0 || parseFloat(estimate.area) == 0
       0
     else
-      (stage.total_price / estimate.area).toFixed(2)
+      (parseFloat(stage.total_price) / parseFloat(estimate.area)).toFixed(2)
 
   getStagePrice: (stage_number) ->
     estimate = @scope.estimate
     stage    = this.getStage(stage_number)
-    if stage.price == 0 || estimate.area == 0
+    if parseFloat(stage.price) == 0 || parseFloat(estimate.area) == 0
       0
     else
-      (stage.price / estimate.area).toFixed(2)
+      (parseFloat(stage.price) / parseFloat(estimate.area)).toFixed(2)
 
   recalcStage: (number) ->
     discount    = @scope.discount
@@ -213,15 +183,16 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     stage.price = 0
     $.each(stage.products, (i,p) ->
       if p.custom
-        stage.price += p.price
+        stage.price += parseFloat(p.price)
       else
-        stage.price += p.price * p.quantity
+        stage.price += parseFloat(p.price) * parseFloat(p.quantity)
     )
     if discount.values[number - 1] < 0
       discount.values[number - 1] = 0
 
     discount = discount.values[number - 1]
-    stage.total_price = stage.price - (stage.price * discount / 100)
+    stage.total_price = parseFloat(stage.price) - (parseFloat(stage.price) * discount / 100)
+    this.recalEstimate()
 
   getStage: (number) ->
     @scope.stages.find((x) -> x.number == number)
@@ -229,11 +200,10 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
   recalEstimate: () ->
     estimate = @scope.estimate
     stages   = @scope.stages
-
-    $('#estimate_json_stages').val(JSON.stringify(stages))
-
     estimate.price = 0
     $.each(stages, (i,v) -> estimate.price += v.total_price)
+    $('#estimate_json_stages').val(JSON.stringify(stages))
+    true
 
   getProductFromStage: (product_id) ->
     stages = @scope.stages
@@ -251,7 +221,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     $.each(product.sets, (i,v) ->
       if v.selected
         $.each(v.items, (y,x) ->
-          product.price += x.quantity * x.value.price
+          product.price += parseFloat(x.quantity) * parseFloat(x.value.price)
         )
     )
     this.recalcStage(stage)

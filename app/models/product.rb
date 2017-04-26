@@ -5,6 +5,8 @@ class Product < ApplicationRecord
   belongs_to :unit
   belongs_to :category
 
+  scope :filter_name, -> (name) { where("name ILIKE ?", "%#{name}%") if name.present? }
+
   validates :name,        presence: true
   validates :unit_id,     presence: true
   validates :category_id, presence: true
@@ -134,5 +136,11 @@ class Product < ApplicationRecord
 
   def link
     Rails.application.routes.url_helpers.edit_product_path(self)
+  end
+
+  def update_report_primitivies(estimate, quantity)
+    self.product_compositions.each do |product_composition|
+      product_composition.update_report_primitivies(estimate, quantity)
+    end
   end
 end

@@ -13,4 +13,8 @@ class Composition < ApplicationRecord
   validates :children, presence: true
   validates :children, parent_child: true
 
+  def update_report_primitivies(estimate, quantity)
+    self.children.update_report_primitivies(estimate, quantity * self.value)
+  end
+
 end

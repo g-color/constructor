@@ -54,4 +54,18 @@ class ConstructorObject < ApplicationRecord
     ans.uniq
   end
 
+  def is_primitive?
+    self.type == 'Primitive'
+  end
+
+  def update_report_primitivies(estimate, quantity)
+    if is_primitive?
+      ReportPrimitive.create(constructor_object: self, amount: quantity, signing_date: estimate.signing_date, estimate: estimate)
+    else
+      self.compositions.each do |composition|
+        composition.update_report_primitivies(estimate, quantity)
+      end
+    end
+  end
+
 end
