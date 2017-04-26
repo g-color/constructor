@@ -1,5 +1,4 @@
 .env
-log/*
 tmp/*
 coverage/*
 db/schema.rb
