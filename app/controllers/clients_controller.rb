@@ -18,6 +18,8 @@ class ClientsController < ApplicationController
   end
 
   def new
+    session[:return_to] ||= request.referer
+
     @client = Client.new
     @shared_users = []
     gon.push(
@@ -32,7 +34,7 @@ class ClientsController < ApplicationController
     if @client.save
       @client.assign_owner(current_user)
       @client.share(params[:client_users])
-      redirect_to clients_path
+      redirect_to session.delete(:return_to)
     else
       render 'new'
     end

@@ -69,7 +69,6 @@ class Estimate < ApplicationRecord
       stage.stage_products.where.not(product_id: product_ids).destroy_all
       # Добавляем или обновляем продукты которые пришли
       s['products'].each do |p|
-        byebug
         product = stage.stage_products.find_or_initialize_by(product_id: p['id'])
         product.update(
           quantity:   p['quantity'],
