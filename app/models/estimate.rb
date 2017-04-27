@@ -71,8 +71,10 @@ class Estimate < ApplicationRecord
       s['products'].each do |p|
         product = stage.stage_products.find_or_initialize_by(product_id: p['id'])
         product.update(
-          quantity:   p['quantity'],
-          price:      p['price'].present? ? p['price'] : 0,
+          quantity:           p['quantity'],
+          with_work:          p['with_work'],
+          price_with_work:    p['price_with_work'].present?    ? p['price_with_work'] : 0,
+          price_without_work: p['price_without_work'].present? ? p['price_without_work'] : 0,
         )
         if p['custom']
           # Удаляем сеты которые не пришли
@@ -134,13 +136,16 @@ class Estimate < ApplicationRecord
           total_price: stage.total_price,
           products:    stage.stage_products.includes(:stage_product_sets, :product, product: [:unit] ).map do |stage_product|
             {
-              id:       stage_product.product.id,
-              name:     stage_product.product.name,
-              unit:     stage_product.product.unit.name,
-              custom:   stage_product.product.custom,
-              price:    stage_product.price,
-              quantity: stage_product.quantity,
-              sets:     stage_product.product.custom ? get_stage_product_set(stage_product) : []
+              id:                 stage_product.product.id,
+              name:               stage_product.product.name,
+              unit:               stage_product.product.unit.name,
+              custom:             stage_product.product.custom,
+              profit:             stage_product.product.profit,
+              price_with_work:    stage_product.price_with_work,
+              price_without_work: stage_product.price_without_work,
+              with_work:          stage_product.with_work,
+              quantity:           stage_product.quantity,
+              sets:               stage_product.product.custom ? get_stage_product_set(stage_product) : []
             }
           end
         }
@@ -163,7 +168,8 @@ class Estimate < ApplicationRecord
               id:     item.constructor_object.id,
               name:   item.constructor_object.name,
               unit:   item.constructor_object.unit.name,
-              price:  item.constructor_object.price
+              price:  item.constructor_object.price,
+              work_primitive: item.constructor_object.work_primitive?
             },
           }
         end
@@ -185,14 +191,14 @@ class Estimate < ApplicationRecord
         name:     'Второй этап',
         summ:     'Итого по двум этапам:',
         summ_dis: 'по второму этапу',
-        discount: 'Итого по первому этапу со скидкой:'
+        discount: 'Итого по двум этапам со скидкой:'
       }
     when 3
       {
         name:     'Третий этап',
         summ:     'Итого по трем этапам:',
         summ_dis: 'по третьему этапу',
-        discount: 'Итого по первому этапу со скидкой:'
+        discount: 'Итого по трем этапам со скидкой:'
       }
     end
   end

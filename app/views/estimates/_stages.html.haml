@@ -16,9 +16,9 @@
           %td {{ product.name }}
           %td
             %span{ ng: { hide: 'product.custom' } } {{ product.quantity }} {{ product.unit }}
-          %td {{ product.price * product.quantity }}
+          %td {{ (product.price * product.quantity).toFixed(2) }}
           %td
-            %input{ type: 'checkbox', checked: true }
+            %input{ type: 'checkbox', ng: { model: 'product.with_work', change: 'ctrl.recalcProductPrice(stage, product)' } }
           %td
             %a.btn.btn-warning{ title: "Редактировать", ng: { click: 'ctrl.showEditModal(stage.number, product.id)' } }
               %span.glyphicon.glyphicon-pencil{ 'aria-hidden': true }
@@ -29,17 +29,17 @@
           %td.text-right{ colspan: 2 }
             %b {{ stage.text.summ }}
           %td{ colspan: 3 }
-            %b {{ stage.price }} ({{ ctrl.getStagePrice(stage.number) }} руб. за м2)
+            %b {{ stage.aggregated_price.toFixed(2) }} ({{ ctrl.getPriceByArea(stage.aggregated_price) }} руб. за м2)
           %tr
           %td.text-right{ colspan: 2 }
             %b {{ discount.name }} {{ stage.text.summ_dis }}:
           %td{ colspan: 3}
-            %b.text-danger -{{ (estimate.price * discount.values[stage.number - 1] / 100).toFixed(2) }}
+            %b.text-danger -{{ ctrl.getDiscountValue(stage) }}
         %tr
           %td.text-right{ colspan: 2 }
             %b {{ stage.text.discount }}
           %td{ colspan: 3 }
-            %b {{ stage.total_price.toFixed(2) }} ({{ ctrl.getStageTotalPrice(stage.number) }} руб. за м2)
+            %b {{ ctrl.getPriceWithDiscount(stage) }} ({{ ctrl.getPriceByArea(ctrl.getPriceWithDiscount(stage)) }} руб. за м2)
     %hr
     %br
 

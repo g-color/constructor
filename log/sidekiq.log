@@ -1,0 +1,15 @@
+2017-04-27T00:29:55.311Z 19999 TID-gnh0xh158 INFO: Running in ruby 2.3.1p112 (2016-04-26 revision 54768) [x86_64-linux]
+2017-04-27T00:29:55.411Z 19999 TID-gnh0xh158 INFO: See LICENSE and the LGPL-3.0 for licensing details.
+2017-04-27T00:29:55.411Z 19999 TID-gnh0xh158 INFO: Upgrade to Sidekiq Pro for more features and support: http://sidekiq.org
+2017-04-27T00:29:55.412Z 19999 TID-gnh0xh158 INFO: Booting Sidekiq 4.2.10 with redis options {:url=>nil}
+2017-04-27T00:29:55.455Z 19999 TID-gnh0xh158 INFO: Starting processing, hit Ctrl-C to stop
+2017-04-27T00:29:55.501Z 19999 TID-gnh1qxg1c PriceUpdateJob JID-4fed22c659dfbf7d479dfdee INFO: start
+2017-04-27T00:29:55.836Z 19999 TID-gnh1qxg1c PriceUpdateJob JID-4fed22c659dfbf7d479dfdee INFO: done: 0.334 sec
+2017-04-27T00:30:18.329Z 19999 TID-gnh1qxop0 PriceUpdateJob JID-fc3c2196f7186a106a26ee9e INFO: start
+2017-04-27T00:30:18.375Z 19999 TID-gnh1qxop0 PriceUpdateJob JID-fc3c2196f7186a106a26ee9e INFO: done: 0.046 sec
+2017-04-27T00:31:38.231Z 19999 TID-gnh1qxop0 PriceUpdateJob JID-b189f55bb55c69321bfa0dbc INFO: start
+2017-04-27T00:31:38.347Z 19999 TID-gnh1qxop0 PriceUpdateJob JID-b189f55bb55c69321bfa0dbc INFO: done: 0.116 sec
+2017-04-27T00:32:20.964Z 19999 TID-gnh1qxop0 PriceUpdateJob JID-5c9aa85a1f5f1496e60f5b38 INFO: start
+2017-04-27T00:34:58.699Z 19999 TID-gnh1qxop0 PriceUpdateJob JID-5c9aa85a1f5f1496e60f5b38 INFO: done: 157.734 sec
+2017-04-27T00:35:26.690Z 19999 TID-gnh1qxn7o PriceUpdateJob JID-0f284e549a21af408c4c1e90 INFO: start
+2017-04-27T00:35:26.845Z 19999 TID-gnh1qxn7o PriceUpdateJob JID-0f284e549a21af408c4c1e90 INFO: done: 0.155 sec

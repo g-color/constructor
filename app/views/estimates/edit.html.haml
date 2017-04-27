@@ -2,7 +2,7 @@
   %h1 Редактирование сметы
   %ol.breadcrumb.row
     %li
-      = link_to 'Сметы', estimates_path
+      = link_to 'Сметы', estimates_path(client_id: params[:client_id])
     %li.active= @estimate.name
 
   = render 'form'

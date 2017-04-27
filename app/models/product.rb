@@ -21,12 +21,14 @@ class Product < ApplicationRecord
   def self.map_for_estimate
     all.map do |x|
       {
-        id:     x.id,
-        name:   x.name,
-        unit:   x.unit.name,
-        custom: x.custom,
-        sets:   x.get_sets,
-        price:  x.price,
+        id:                 x.id,
+        name:               x.name,
+        unit:               x.unit.name,
+        custom:             x.custom,
+        sets:               x.get_sets,
+        profit:             x.profit,
+        price_with_work:    x.price,
+        price_without_work: x.price_without_work
       }
     end
   end
@@ -112,6 +114,7 @@ class Product < ApplicationRecord
               name: y.constructor_object.name,
               unit: y.constructor_object.unit.name,
               price: y.constructor_object.price,
+              work_primitive: y.constructor_object.work_primitive?
             }
           }
         end
@@ -121,10 +124,21 @@ class Product < ApplicationRecord
 
   def price
     price = 0
-    if custom
-    else
+    unless custom
       product_compositions.includes(:constructor_object).each do |composition|
-        price += composition.constructor_object.price if composition.constructor_object.price.present?
+        child  = composition.constructor_object
+        price += child.price unless child.price.blank?
+      end
+    end
+    price
+  end
+
+  def price_without_work
+    price = 0
+    unless custom
+      product_compositions.includes(:constructor_object).each do |composition|
+        child  = composition.constructor_object
+        price += child.price unless child.price.blank? || child.work_primitive?
       end
     end
     price

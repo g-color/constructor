@@ -58,6 +58,10 @@ class ConstructorObject < ApplicationRecord
     self.type == 'Primitive'
   end
 
+  def work_primitive?
+    is_primitive? && category_id == ENV['WORK_CATEGORY'].to_i
+  end
+
   def update_report_primitivies(estimate, quantity)
     if is_primitive?
       ReportPrimitive.create(constructor_object: self, amount: quantity, signing_date: estimate.signing_date, estimate: estimate)
@@ -67,5 +71,4 @@ class ConstructorObject < ApplicationRecord
       end
     end
   end
-
 end

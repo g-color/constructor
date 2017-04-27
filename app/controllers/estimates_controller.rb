@@ -4,8 +4,11 @@ class EstimatesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @estimates = Estimate.all
-    @estimates = @estimates.where(client_id: params[:client_id]) if params[:client_id]
+    return redirect_to clients_path unless params[:client_id].present?
+
+    @client    = Client.includes(:estimates).find(params[:client_id])
+    @estimates = @client.estimates
+    @estimates = @estimates.where("lower(name) like ?", "%#{params[:name].downcase}%") if params[:name].present?
   end
 
   def new
@@ -16,6 +19,7 @@ class EstimatesController < ApplicationController
     end
 
     gon.push(
+      expense: Expense.find(ENV['EXPENSE_ID']),
       products: @products,
       discount: {
         name: nil,
@@ -40,9 +44,10 @@ class EstimatesController < ApplicationController
     if @estimate.save
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters
-      redirect_to estimates_path
+      redirect_to estimates_path(client_id: @estimate.client_id)
     else
       gon.push(
+        expense: Expense.find(ENV['EXPENSE_ID']),
         products: @products,
         discount: {
           name: nil,
@@ -60,6 +65,7 @@ class EstimatesController < ApplicationController
 
   def edit
     gon.push(
+      expense: Expense.find(ENV['EXPENSE_ID']),
       products: @products,
       discount: {
         name: @estimate.discount_title,
@@ -77,9 +83,10 @@ class EstimatesController < ApplicationController
     if @estimate.update(estimate_params)
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters
-      redirect_to estimates_path
+      redirect_to estimates_path(client_id: @estimate.client_id)
     else
       gon.push(
+        expense: Expense.find(ENV['EXPENSE_ID']),
         products: @products,
         discount: {
           name: @estimate.discount_title,
@@ -96,8 +103,9 @@ class EstimatesController < ApplicationController
   end
 
   def destroy
+    client_id = @estimate.client_id
     @estimate.destroy
-    redirect_to estimates_path
+    redirect_to estimates_path(client_id: client_id)
   end
 
   def files
@@ -116,8 +124,8 @@ class EstimatesController < ApplicationController
   end
 
   def estimate_params
-    params.require(:estimate).permit(
-      :name, :client_id, :area, :first_floor_height, :discount_title, :discount_by_stages, :price,
+    params.require(:estimate).permit(:name, :client_id, :area,
+      :first_floor_height, :discount_title, :discount_by_stages, :price,
       client_files_attributes:    [:id, :asset_file_id, :_destroy],
       technical_files_attributes: [:id, :asset_file_id, :_destroy],
     )
