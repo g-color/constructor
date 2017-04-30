@@ -3,6 +3,8 @@ class User < ApplicationRecord
   # :trackable, :confirmable, :lockable, :registerable, :recoverable, :timeoutable and :omniauthable
   devise :database_authenticatable, :rememberable, :validatable
 
+  scope :engineers, -> { where('role = ?', UserRole::ENGINEER) }
+
   validates :email,      presence: true, uniqueness: true
   validates :first_name, presence: true
   validates :last_name,  presence: true

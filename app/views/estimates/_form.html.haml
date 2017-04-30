@@ -1,6 +1,7 @@
 = simple_form_for @estimate,  wrapper: :horizontal_form do |f|
+  = hidden_field_tag :export, '', id: 'export-type'
   .action-buttons.row
-    = link_to 'Отмена', estimates_path(client_id: params[:client_id]), class: 'btn btn-default'
+    = link_to 'Отмена', solutions_path, class: 'btn btn-default'
     = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
   %p
   .row.main-content
@@ -58,10 +59,6 @@
           %label.col-sm-3.control-label Планы и фасады
           .col-sm-3
             = file_field_tag :data, as: :file, multiple: true, class: 'client-file'
-          /  %button.col-sm-3.btn.btn-default.form-control{ type: 'button' }
-          /    %input.choose{ type: 'file' }
-          /    Выберите файл
-
           %div{ style: 'dislpay: none' }
             = link_to_add_association '', f, :client_files, id: 'create-file', 'data-association-insertion-method': 'append', 'data-association-insertion-node': '#client-files'
 
@@ -69,7 +66,7 @@
           %label.col-sm-3.control-label
           .col-sm-9#client-files
             = f.simple_fields_for :client_files do |client_file|
-              = render 'client_file_fields', f: client_file
+              = render 'budget/budget_files', f: client_file
 
         %hr
         .form-group.technical-files-div
@@ -88,22 +85,24 @@
           %label.col-sm-3.control-label
           .col-sm-9#technical-files
             = f.simple_fields_for :technical_files do |technical_file|
-              = render 'technical_file_fields', f: technical_file
+              = render 'budget/budget_files', f: technical_file
 
-        = render 'discount', f: f
-
-  %p
-  = render 'stages', f: f
+        = render 'budgets/discount', f: f, model: 'estimate', show: false
 
   %p
+  = render 'budgets/stages', f: f, show: false
+  %p
+
   .row.main-content
     %h3.text-center Экспорт
     %br
     .button-block.text-center
-      %button.btn.btn-default{ type: 'button' }
+      /= link_to estimates_export_pdf_path(f.object.id), target: '_blank' do
+      %button.btn.btn-default#btn-export-pdf
         Экспорт в
         %b .pdf
-      %button.btn.btn-default{ type: "button" }
+      /= link_to estimates_export_doc_path(f.object.id) do
+      %button.btn.btn-default#btn-export-doc
         Экспорт в
         %b .doc
     %br
@@ -126,31 +125,29 @@
           %h4.modal-title
             Выберите инженера
         .modal-body
-          %form
-            %ul.list-group
+          %ul.list-group
+            - @engineers.each do |engineer|
               %li.list-group-item
                 .radio
                   %label
-                    %input{ type: "radio", name: "optradio" }
-                      {{engineer.lastName + " " + engineer.firstName}}
-          .checkbox
-            %label
-              %input{ type: "checkbox" }
-                Подписан договор
+                    = radio_button_tag 'engineer', engineer.id
+                    = engineer.full_name
+          = f.input :signed, label: 'Подписан договор', wrapper: :inline_checkbox
         .modal-footer
           %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" }
             Отмена
-          %button.btn.btn-success{ type: "button", 'data-dismiss': "modal" }
+          %button.btn.btn-success#btn-export-engineer
             Отправить
 
-  .modal.fade.bs-example-modal-lg.image-preview{ tabindex: -1, role: "dialog", 'aria-labelledby': "myLargeModalLabel" }
-    .modal-dialog.modal-lg{ role: "document" }
-      .modal-content
-        .modal-header
-          %button.close{ type: "button", 'data-dismiss':"modal", 'aria-label': "Close" }
-            %spa{ 'aria-hidden': true }
-              &times;
-          %h4.modal-title
-            {{"Просмотр изображения: "
-        .modal-body
-          %img.img-rounded.img-responsive
+
+.modal.fade.bs-example-modal-lg.image-preview{ tabindex: -1, role: "dialog", 'aria-labelledby': "myLargeModalLabel" }
+  .modal-dialog.modal-lg{ role: "document" }
+    .modal-content
+      .modal-header
+        %button.close{ type: "button", 'data-dismiss':"modal", 'aria-label': "Close" }
+          %spa{ 'aria-hidden': true }
+            &times;
+        %h4.modal-title
+          {{"Просмотр изображения: "
+      .modal-body
+        %img.img-rounded.img-responsive

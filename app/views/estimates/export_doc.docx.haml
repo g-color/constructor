@@ -1,0 +1,86 @@
+%html
+  %head
+    %meta{charset: 'utf-8'}
+    = stylesheet_link_tag wicked_pdf_asset_base64("pdf")
+  %body{style: 'font-size: 12px;'}
+    %h3
+      Расчет стоимости строительства энергосберегающего жилого дома
+
+    .name
+      %p
+        Проект:
+        = @estimate[:name]
+      %p
+        Дата расчета:
+        = @estimate[:date]
+
+    .floors
+      %p 
+        Высота потолка первого этажа: 
+        = @estimate[:first_floor_height]
+        м
+      %p 
+        Высота потолка второго этажа: 
+        от
+        = @estimate[:second_floor_height_min]
+        м
+        до
+        = @estimate[:second_floor_height_max]
+        м2
+
+      %p 
+        Высота потолка третьего этажа: 
+        от
+        = @estimate[:third_floor_height_min]
+        м
+        до
+        = @estimate[:third_floor_height_max]
+        м
+      %p 
+        Площадь строительства
+        = @estimate[:area]
+        м2
+
+    - @estimate[:stages].each do |stage|
+      - unless stage[:products].empty?
+        %h4
+          = stage[:number]
+          Этап
+        %h5
+          = Stage::NAME[stage[:number]-1]
+
+        %table.table{border: 1}
+          %thead
+            %th
+              Наименование выполняемых работ
+            %th
+              Стоимость, рублей
+          %tbody
+            - stage[:products].each do |product|
+              %tr
+                %td
+                  = product[:name] + (product[:custom] ? " | #{product[:set_name]}" : (product[:display_components] ? ", #{product[:quantity].to_s} #{product[:unit]}" : ""))
+                  %br
+                  - if product[:custom] && product[:display_components]
+                    - product[:items].each do |item|
+                      = "- #{item[:name]} - #{item[:quantity].to_s} #{item[:unit]}"
+                      %br
+                  = product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа")
+                  %br
+                %td
+                  = product[:price_result] * product[:quantity]
+        = "Итого по #{stage[:number]} этапу: #{@estimate[:price_by_stage_aggregated][stage[:number]-1]} (~ #{@estimate[:price_by_area_per_stage][stage[:number]-1]} за м2)"
+        %br
+        = "#{@estimate[:discount_title]} по #{stage[:number]} этапу: -#{@estimate[:discount_amount][stage[:number]-1]}"
+        %br
+        = "Итого по #{stage[:number]} этапу(ам): #{@estimate[:price_by_stage_aggregated_discounted][stage[:number]-1]} (~ #{@estimate[:price_by_area_per_stage_discounted][stage[:number]-1]} за м2)"
+
+
+    %p
+      Жилье для бригады рабочих из 2-3 человек на период монтажа (2-3 недели) обеспечивается Заказчиком (кроме г. Симферополь и Симферопольского района). Доставка по всему Крыму – бесплатно. Гарантия на дом — 10 лет. Срок эксплуатации – 70 лет. Только сертифицированные и качественные строительные материалы.
+
+    %p{style: @estimate[:area] <= 99 ? 'display: none' : ''}
+      Черновая рабочая лестница из сосны камерной сушки или кондиционер — В ПОДАРОК!            
+    
+    %p{style: @estimate[:stages].third[:products].empty? ? 'display: none' : ''}
+      Внутридомовые инженерные сети (вода, канализация, а также электроразводка по дому) детально просчитываются после выполнения первого этапа и уточнения всех деталей с Заказчиком В общей стоимости здания данные позиции суммарно занимают ориентировочно 3-6%.

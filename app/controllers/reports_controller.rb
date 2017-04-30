@@ -65,5 +65,5 @@ class ReportsController < ApplicationController
     authorize! :view_report, :report
   end
 
- 
+
 end

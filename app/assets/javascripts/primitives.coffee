@@ -1,7 +1,7 @@
 $(document).on 'turbolinks:load', () ->
   $('.update-price-link').on 'click', ->
     $(this).closest('tr').find('form').submit()
-    return false
+    false
 
   $('.primitives-datatable').DataTable({
     searching: false,

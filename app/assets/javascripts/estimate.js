@@ -56,4 +56,17 @@ $(document).on('turbolinks:load', function() {
       { "orderable": false }
     ]
   })
+
+  $('#btn-export-pdf').click(function() {
+    $('#export-type').val('pdf');
+  });
+
+  $('#btn-export-doc').click(function() {
+    $('#export-type').val('doc');
+  });
+
+  $('#btn-export-engineer').click(function() {
+    $('#export-type').val('engineer');
+  });
+
 });

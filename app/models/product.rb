@@ -157,4 +157,16 @@ class Product < ApplicationRecord
       product_composition.update_report_primitivies(estimate, quantity)
     end
   end
+
+  def get_primitives(undivisibilty_objects: false)
+    result = {}
+    self.product_compositions.each do |product_composition|
+      primitives = product_composition.get_primitives(undivisibilty_objects: undivisibilty_objects)
+      primitives.each do |key, value|
+        result[key] = 0 if result[key].nil?
+        result[key] += value
+      end
+    end
+    result
+  end
 end

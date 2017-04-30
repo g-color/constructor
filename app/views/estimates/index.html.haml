@@ -34,25 +34,24 @@
     .modal.fade{ id: "duplicate-estimate-#{estimate.id}" }
       .modal-dialog
         .modal-content
-          .modal-header
-            %button.close{ type: "button", data: { dismiss: "modal" } }
-              %span &times;
-            %h4.modal-title#myModalLabel2 Создание копии
-          .modal-body
-            Введите новое имя для копии сметы
-            %b= estimate.name
-            .form-horizontal
+          = form_tag estimate_copy_path(estimate) do |f|
+            .modal-header
+              %button.close{ type: "button", data: { dismiss: "modal" } }
+                %span &times;
+              %h4.modal-title#myModalLabel2 Создание копии
+            .modal-body
+              Введите новое имя для копии сметы
+              %b= estimate.name
               %p
-              .form-group
-                %label.col-sm-3.control-label Новое имя
-                .col-sm-9
-                  %input.form-control{ placeholder: "Введите новое имя" }
-              .form-group
-                %label.col-sm-3.control-label Клиент
-                .col-sm-9
-                  %select.form-control
-                    - Client.where(archived: false).each do |client|
-                      %option{ value: client.id }= client.full_name
-          .modal-footer
-            %button.btn.btn-default{ type: "button", data: { dismiss: "modal" } } Отмена
-            %button.btn.btn-success{ type: "button", data: { dismiss: "modal" } } Создать
+              .form-horizontal
+                .form-group
+                  %label.col-sm-3.control-label Новое имя
+                  .col-sm-9
+                    = text_field_tag :name, nil, placeholder: 'Введите новое имя', class: 'form-control'
+                .form-group
+                  %label.col-sm-3.control-label Клиент
+                  .col-sm-9
+                    = select_tag :client_id, options_for_select(current_user.clients.all.map{ |u| [u.full_name, u.id] }), class: 'form-control'
+            .modal-footer
+              %button.btn.btn-default{ type: "button", data: { dismiss: "modal" } } Отмена
+              = submit_tag 'Создать', class: 'btn btn-success'

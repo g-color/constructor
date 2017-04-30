@@ -9,9 +9,9 @@
         = text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Имя'
       .col-sm-1
         %button.btn.btn-default.col-sm-12 Поиск
-      .col-sm-3
+      .col-sm-3{ style: 'padding-top: 7px' }
         %label
-          = check_box_tag :archived
+          = check_box_tag :archived, nil, params[:archived].present?
           Показывать архивных клиентов
 
       .col-sm-2.col-sm-offset-1

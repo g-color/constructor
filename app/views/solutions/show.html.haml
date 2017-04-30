@@ -1,0 +1,113 @@
+%section{ ng: { controller: 'EstimateController' } }
+  %h1 Просмотр готового решения
+  %ol.breadcrumb.row
+    %li= link_to 'Готовые решения', solutions_path
+    %li.active @estimate.name
+
+  = simple_form_for @solution,  wrapper: :horizontal_form do |f|
+    .action-buttons.row
+      = link_to 'Отмена', solutions_path, class: 'btn btn-default'
+      - if @solution.proposed
+        .btn-group.pull-right
+          = link_to solution_accept_path(@solution), class: 'btn btn-success' do
+            %span.glyphicon.glyphicon-ok{"aria-hidden" => "true"}
+          = link_to solution_path(@solution), method: :delete, data: {confirm: 'Are you sure?'}, class: 'btn btn-danger' do
+            %span.glyphicon.glyphicon-remove{"aria-hidden" => "true"}
+    %p
+    .row.main-content
+      %br
+        .form-horizontal.col-sm-offset-2.col-sm-8
+          %br
+          = hidden_field_tag 'solution[price]', nil, 'ng-value' => 'estimate.price'
+          = hidden_field_tag :json_stages, nil, id: 'estimate_json_stages'
+          .form-group
+            %label.col-sm-3.control-label Наименование
+            .col-sm-9
+              %h5= @solution.name
+
+          .form-group
+            %label.col-sm-3.control-label Ссылка на сайт
+            .col-sm-9
+              %h5
+                = link_to @solution.url, @solution.url, target: :blank
+
+          .form-group
+            %label.col-sm-3.control-label Общая стоимость
+            .col-sm-9
+              %h5 {{ estimate.price.toFixed(2) }} руб. ({{ ctrl.getPriceByArea(estimate.price) }} руб. за м2)
+
+          .form-group
+            %label.col-sm-3.control-label Площадь
+            .col-sm-9
+              %h5= @solution.area
+
+          .form-group
+            %label.col-sm-3.control-label Высота первого этажа*
+            .col-sm-7
+              %h5= @solution.first_floor_height
+
+          - if @solution.second_floor_height_min > 0
+            .form-group
+              %label.col-sm-3.control-label Высота второго этажа
+              .col-sm-1
+                %h5.text-right от
+              .col-sm-3
+                %h5 @solution.second_floor_height_min
+              .col-sm-offset-1.col-sm-1
+                %h5.text-right до
+              .col-sm-3
+                %h5 @solution.second_floor_height_max
+
+          - if @solution.third_floor_height_min > 0
+            .form-group
+              %label.col-sm-3.control-label Высота третьего этажа
+              .col-sm-1
+                %h5.text-right от
+              .col-sm-3
+                %h5 @solution.third_floor_height_min
+              .col-sm-offset-1.col-sm-1
+                %h5.text-right до
+              .col-sm-3
+                %h5 @solution.third_floor_height_max
+
+          - if @solution.client_files.present?
+            .form-group.client-files-div
+              %label.col-sm-3.control-label Планы и фасады
+              .col-sm-3
+                = file_field_tag :data, as: :file, multiple: true, class: 'client-file'
+              /  %button.col-sm-3.btn.btn-default.form-control{ type: 'button' }
+              /    %input.choose{ type: 'file' }
+              /    Выберите файл
+
+              %div{ style: 'dislpay: none' }
+                = link_to_add_association '', f, :client_files, id: 'create-file', 'data-association-insertion-method': 'append', 'data-association-insertion-node': '#client-files'
+
+            .form-group
+              %label.col-sm-3.control-label
+              .col-sm-9#client-files
+                = f.simple_fields_for :client_files do |client_file|
+                  = render 'budget/budget_files', f: client_file
+
+          %hr
+
+          - if @solution.technical_files.present?
+
+            .form-group.technical-files-div
+              %label.col-sm-3.control-label Тех. файлы
+              .col-sm-3
+                = file_field_tag :data, as: :file, multiple: true, class: 'technical-file'
+
+              %div{ style: 'dislpay: none' }
+                = link_to_add_association '', f, :technical_files, id: 'create-technical-file', 'data-association-insertion-method': 'append', 'data-association-insertion-node': '#technical-files'
+
+            .form-group
+              %label.col-sm-3.control-label
+              .col-sm-9#technical-files
+                = f.simple_fields_for :technical_files do |technical_file|
+                  = render 'budget/budget_files', f: technical_file
+
+          - unless @solution.discount_title.blank?
+            = render 'budgets/discount', f: f, model: 'solution', show: true
+
+    %p
+    = render 'budgets/stages', f: f, show: true

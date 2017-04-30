@@ -10,7 +10,8 @@
           %th.col-sm-2 Стоимость
           %th.col-sm-2 С работой
           %th.col-sm-2
-            %a.btn.btn-sm.btn-primary{ ng: { click: 'ctrl.showAddModal(stage.number)' } } Добавить продукт
+            - unless show
+              %a.btn.btn-sm.btn-primary{ ng: { click: 'ctrl.showAddModal(stage.number)' } } Добавить продукт
       %tbody
         %tr{ ng: { repeat: 'product in stage.products' } }
           %td {{ product.name }}
@@ -18,12 +19,13 @@
             %span{ ng: { hide: 'product.custom' } } {{ product.quantity }} {{ product.unit }}
           %td {{ (product.price * product.quantity).toFixed(2) }}
           %td
-            %input{ type: 'checkbox', ng: { model: 'product.with_work', change: 'ctrl.recalcProductPrice(stage, product)' } }
+            %input{ type: 'checkbox', disabled: show.present?, ng: { model: 'product.with_work', change: 'ctrl.recalcProductPrice(stage, product)' } }
           %td
-            %a.btn.btn-warning{ title: "Редактировать", ng: { click: 'ctrl.showEditModal(stage.number, product.id)' } }
-              %span.glyphicon.glyphicon-pencil{ 'aria-hidden': true }
-            %a.btn.btn-danger{ title: "Удалить", ng: { click: 'ctrl.deleteProduct(stage, product.id)' } }
-              %span.glyphicon.glyphicon-trash{ 'aria-hidden': true }
+            - unless show
+              %a.btn.btn-warning{ title: "Редактировать", ng: { click: 'ctrl.showEditModal(stage.number, product.id)' } }
+                %span.glyphicon.glyphicon-pencil{ 'aria-hidden': true }
+              %a.btn.btn-danger{ title: "Удалить", ng: { click: 'ctrl.deleteProduct(stage, product.id)' } }
+                %span.glyphicon.glyphicon-trash{ 'aria-hidden': true }
 
         %tr
           %td.text-right{ colspan: 2 }

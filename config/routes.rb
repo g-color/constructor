@@ -14,10 +14,17 @@ Rails.application.routes.draw do
 
   resources :products
   resources :clients
-  resources :estimates
-
-  post '/estimates/files', to: 'estimates#files', as: :estimates_files
-
+  resources :estimates do
+    post :copy,  to: 'estimates#copy',  as: :copy
+    post :files, to: 'estimates#files', as: :estimates_files, on: :collection
+    get 'export_pdf', to: 'estimates#export_pdf', as: :export_pdf
+    get 'export_doc', to: 'estimates#export_doc', as: :export_doc, format: 'docx'
+    get 'estimates_engineer', to: 'estimates#estimates_engineer', as: :engineer
+  end
+  resources :solutions do
+    post :copy,   to: 'solutions#copy',   as: :copy
+    get  :accept, to: 'solutions#accept', as: :accept
+  end
 
   get  :audits,                       to: 'audits#index',                 as: :audits
   get  :expenses,                     to: 'expenses#index',               as: :expenses

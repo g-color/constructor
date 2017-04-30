@@ -13,3 +13,6 @@
 2017-04-27T00:34:58.699Z 19999 TID-gnh1qxop0 PriceUpdateJob JID-5c9aa85a1f5f1496e60f5b38 INFO: done: 157.734 sec
 2017-04-27T00:35:26.690Z 19999 TID-gnh1qxn7o PriceUpdateJob JID-0f284e549a21af408c4c1e90 INFO: start
 2017-04-27T00:35:26.845Z 19999 TID-gnh1qxn7o PriceUpdateJob JID-0f284e549a21af408c4c1e90 INFO: done: 0.155 sec
+2017-04-27T02:43:41.343Z 19999 TID-gnh1qxpww ERROR: Error fetching job: Error connecting to Redis on 127.0.0.1:6379 (Errno::ECONNREFUSED)
+2017-04-27T02:43:41.352Z 19999 TID-gnh1qxpww ERROR: /home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/redis-3.3.3/lib/redis/client.rb:345:in `rescue in establish_connection'
+2017-04-27T02:43:41.352Z 19999 TID-gnh1qxpww ERROR: /home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/redis-3.3.3/lib/redis/client.rb:331:in `establish_connection'

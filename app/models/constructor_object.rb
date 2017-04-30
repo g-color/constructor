@@ -71,4 +71,22 @@ class ConstructorObject < ApplicationRecord
       end
     end
   end
+
+  def get_primitives(undivisibilty_objects: false)
+    result = {}
+    if is_primitive? || (undivisibilty_objects && !self.divisibility)
+      result = {
+        self.id => 1
+      }
+    else
+      self.compositions.each do |composition|
+        primitives = composition.get_primitives(undivisibilty_objects: undivisibilty_objects)
+        primitives.each do |key, value|
+          result[key] = 0 if result[key].nil?
+          result[key] += value
+        end
+      end
+    end
+    result
+  end
 end

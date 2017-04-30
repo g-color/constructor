@@ -49,6 +49,9 @@ gem 'sidekiq'
 gem 'rails4-autocomplete'
 
 gem 'paperclip'
+gem 'htmltoword'
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
 
 # gem 'cancancan'
 # https://github.com/rubysherpas/paranoia

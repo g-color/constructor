@@ -1,0 +1,24 @@
+%tr
+  %td= solution.name
+  %td= solution.price
+  %td= solution.price_by_area
+  %td= solution.get_floor
+  %td= solution.area
+  %td{ data: { order: solution.updated_at.to_i } }= solution.updated_at
+  %td
+    .btn-group
+      %button.btn.btn-default.dropdown-toggle{ type: "button", data: { toggle: "dropdown" } }
+        Действия
+        %span.caret
+      %ul.dropdown-menu
+        - unless current_user.admin?
+          %li= link_to 'Просмотреть', solution_path(solution)
+        - if solution.url.present?
+          %li= link_to 'Ссылка на сайт', solution.url, target: :blank
+        %li
+          %a{ data: { toggle: 'modal', target: "#create-estimate-#{solution.id}"} } Дублировать как смету
+        %li= link_to nil, 'Скачать в .pdf'
+        - if current_user.admin?
+          %li.divider
+          %li= link_to 'Редактировать', edit_solution_path(solution)
+          %li= link_to 'Удалить', solution_path(solution), method: :delete, data: {confirm: 'Are you sure?'}

@@ -121,7 +121,6 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     stage.products.push(product)
 
     this.recalcStage(stage.number)
-    this.recalEstimate()
 
     $('#product-quantity').val(null)
     $('#add-product').modal('hide')
@@ -134,14 +133,12 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       price = product.price_without_work
     product.price = price + (price / 100 * (@scope.expense.percent + product.profit))
     this.recalcStage(stage.number)
-    this.recalEstimate()
 
   deleteProduct: (stage, id) ->
     product = stage.products.find((x) -> x.id == parseInt(id))
     index = stage.products.indexOf(product)
     stage.products.splice(index, 1)
     this.recalcStage(stage.number)
-    this.recalEstimate()
 
   getPriceByArea: (price) ->
     estimate = @scope.estimate
@@ -227,7 +224,6 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     product.price = price + (price / 100 * (expense.percent + product.profit))
 
     this.recalcStage(stage)
-    this.recalEstimate()
 
   saveJsonValue: () ->
     $('#estimate_json_stages').val(JSON.stringify(@scope.stages))
