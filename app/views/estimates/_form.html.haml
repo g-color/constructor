@@ -1,7 +1,7 @@
 = simple_form_for @estimate,  wrapper: :horizontal_form do |f|
   = hidden_field_tag :export, '', id: 'export-type'
   .action-buttons.row
-    = link_to 'Отмена', solutions_path, class: 'btn btn-default'
+    = link_to 'Отмена', estimates_path(client_id: params[:client_id] || @estimate.client_id), class: 'btn btn-default'
     = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
   %p
   .row.main-content
@@ -106,13 +106,10 @@
         Экспорт в
         %b .doc
     %br
-    .button-block.text-center
-      %button.btn.btn-default{ type: "button" }
-        Предложить как готовое решение
-      %button.btn.btn-default{ type: "button" }
-        Сделать готовым решением
-      %button.btn.btn-default{ type: "button", 'data-toggle': "modal", 'data-target': "#modal-engineer" }
-        Экспорт для инженера
+    - unless @estimate.new_record?
+      .button-block.text-center
+        = link_to 'Сделать готовым решением', estimate_propose_path(@estimate), class: 'btn btn-default', method: :post
+        %button.btn.btn-default{ type: "button", data: { toggle: "modal", target: "#modal-engineer" } } Экспорт для инженера
     %br
 
   #modal-engineer.modal.fade{ tabindex: -1, role: "dialog", 'aria-labelledby': "myLargeModalLabel" }

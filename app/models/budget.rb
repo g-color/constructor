@@ -100,9 +100,9 @@ class Budget < ApplicationRecord
     self.calc_parameters
   end
 
-  def copy(name:, client:, propose: false)
+  def copy(name:, client:)
     new_estimate = self.dup
-    new_estimate.update(name: name, client_id: client.id, type: propose ? 'Solution' : 'Estimate')
+    new_estimate.update(name: name, client_id: client&.id,)
     self.stages.includes(:stage_products).each do |stage|
       new_stage = stage.dup
       new_stage.update(budget: new_estimate)
@@ -132,6 +132,7 @@ class Budget < ApplicationRecord
         new_file.update(budget: new_estimate)
       end
     end
+    new_estimate
   end
 
   def get_stages

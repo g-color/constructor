@@ -25,7 +25,7 @@ class EstimatesController < ApplicationController
 
   def create
     @engineers = User.engineers
-    @estimate = Estimate.new(estimate_params)
+    @estimate = Estimate.new(estimate_params.merge(user_id: current_user.id))
     params[:estimate][:discount_by_stages].each do |key, value|
       @estimate.discount_by_stages[key.to_i] = value
     end
@@ -33,7 +33,7 @@ class EstimatesController < ApplicationController
     if @estimate.save
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters
-        
+
       return redirect_to estimates_export_pdf_path(@estimate.id) if params[:export] == 'pdf'
       return redirect_to estimates_export_doc_path(@estimate.id) if params[:export] == 'doc'
       redirect_to estimates_path(client_id: @estimate.client_id)
@@ -91,6 +91,13 @@ class EstimatesController < ApplicationController
     estimate.copy(name: params[:name], client: client)
 
     redirect_to estimates_path(client_id: client.id)
+  end
+
+  def propose
+    estimate = Estimate.includes(:stages, :client_files, :technical_files).find(params[:estimate_id])
+    solution = estimate.copy(name: estimate.name, client: estimate.client)
+
+    redirect_to estimates_path(client_id: estimate.client_id)
   end
 
   def files
