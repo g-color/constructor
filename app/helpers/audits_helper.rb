@@ -21,6 +21,6 @@ module AuditsHelper
 
   def get_record_link(id, type)
     record = get_record(id, type)
-    record.link
+    record&.link
   end
 end
