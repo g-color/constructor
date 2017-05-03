@@ -11,13 +11,21 @@ Rails.application.routes.draw do
     match :info, to: 'constructor_objects#info', as: :info, on: :collection, via: [:get, :post]
     get  :autocomplete_constructor_object_name, on: :collection
   end
-  
+
   resources :products
   resources :clients
-
-  resources :estimates
-  post '/estimates/files', to: 'estimates#files', as: :estimates_files
-
+  resources :estimates do
+    post :copy,    to: 'estimates#copy',    as: :copy
+    post :propose, to: 'estimates#propose', as: :propose
+    post :files,   to: 'estimates#files',   as: :estimates_files, on: :collection
+    get 'export_pdf', to: 'estimates#export_pdf', as: :export_pdf
+    get 'export_doc', to: 'estimates#export_doc', as: :export_doc, format: 'docx'
+    get 'estimates_engineer', to: 'estimates#estimates_engineer', as: :engineer
+  end
+  resources :solutions do
+    post :copy,   to: 'solutions#copy',   as: :copy
+    get  :accept, to: 'solutions#accept', as: :accept
+  end
 
   get  :audits,                       to: 'audits#index',                 as: :audits
   get  :expenses,                     to: 'expenses#index',               as: :expenses

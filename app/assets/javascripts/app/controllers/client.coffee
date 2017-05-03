@@ -34,3 +34,9 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
     index = shared_users_json.indexOf(user.id)
     shared_users_json.splice(index, 1)
     @scope.shared_users_json = JSON.stringify(shared_users_json)
+
+  openEstimates: (id) ->
+    host     = window.location.host
+    protocol = window.location.protocol
+    url      = protocol + "//" + host + "/estimates?client_id=" + id
+    window.location.href = url

@@ -23,6 +23,7 @@ class ConstructorObject < ApplicationRecord
               association_foreign_key: :parent_id
 
   accepts_nested_attributes_for :compositions, reject_if: :all_blank, allow_destroy: true
+  validates :price, presence: true, numericality: { greater_than: 0 }
 
   def to_s
     name
@@ -54,4 +55,39 @@ class ConstructorObject < ApplicationRecord
     ans.uniq
   end
 
+  def is_primitive?
+    self.type == 'Primitive'
+  end
+
+  def work_primitive?
+    is_primitive? && category_id == ENV['WORK_CATEGORY'].to_i
+  end
+
+  def update_report_primitivies(estimate, quantity)
+    if is_primitive?
+      ReportPrimitive.create(constructor_object: self, amount: quantity, signing_date: estimate.signing_date, estimate: estimate)
+    else
+      self.compositions.each do |composition|
+        composition.update_report_primitivies(estimate, quantity)
+      end
+    end
+  end
+
+  def get_primitives(undivisibilty_objects: false)
+    result = {}
+    if is_primitive? || (undivisibilty_objects && !self.divisibility)
+      result = {
+        self.id => 1
+      }
+    else
+      self.compositions.each do |composition|
+        primitives = composition.get_primitives(undivisibilty_objects: undivisibilty_objects)
+        primitives.each do |key, value|
+          result[key] = 0 if result[key].nil?
+          result[key] += value
+        end
+      end
+    end
+    result
+  end
 end

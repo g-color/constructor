@@ -37,7 +37,11 @@ class PrimitivesController < ApplicationController
   end
 
   def destroy
-    @primitive.destroy
+    if cantbe_destroy?
+      flash[:alert] = "Can't be destroyed"
+    else
+      @primitive.destroy
+    end
     redirect_to primitives_path
   end
 
@@ -45,6 +49,10 @@ class PrimitivesController < ApplicationController
 
   def check_ability
     authorize! :manage, Primitive
+  end
+
+  def cantbe_destroy?
+    Composition.exists?(children_id: @primitive.id) || ProductComposition.exists?(constructor_object_id: @primitive.id) || StageProductSetValue.exists?(constructor_object_id: @primitive.id)
   end
 
   def price_equal?

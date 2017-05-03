@@ -1,0 +1,34 @@
+%html
+  %head
+    %meta{charset: 'utf-8'}
+    = stylesheet_link_tag wicked_pdf_asset_base64("pdf")
+  %body
+    Объект:
+    = @estimate.name
+    %table
+      %thead
+        %th Наименование
+        %th Ед. изм
+        %th Расценка, руб.
+        %th Количество
+        %th Стоимость, руб.
+      %tbody
+        - @data.each do |row|
+          %tr
+            %td
+              =row[:name]
+            %td
+              =row[:unit]
+            %td
+              =row[:price]
+            %td 
+              =row[:quantity]
+            %td
+              =row[:sum]
+        %tr
+          %td
+          %td
+          %td
+          %td Итого
+          %td
+            = @res

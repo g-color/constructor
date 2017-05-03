@@ -1,0 +1,7 @@
+%section{ ng: { controller: 'EstimateController' } }
+  %h1 Редактирование готового решения
+  %ol.breadcrumb.row
+    %li= link_to 'Готовые рещения', solutions_path
+    %li.active= @solution.name
+
+  = render 'form'
