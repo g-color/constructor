@@ -7,10 +7,9 @@ class ObjectClassName
   USER        = 'User'
   OBJECT      = 'Composite'
   PRODUCT     = 'Product'
+  REPORT      = 'Report'
   ESTIMATE    = 'Estimate'
   SOLUTION    = 'Solution'
-  REPORT      = 'Report'
-  BUDGET      = 'Budget'
 
   def self.fetch(class_name)
     values.fetch(class_name.to_s, class_name.to_s)
@@ -29,7 +28,6 @@ class ObjectClassName
       REPORT    => 'Отчет',
       ESTIMATE  => 'Смета',
       SOLUTION  => 'Готовое решение',
-      BUDGET    => 'Смета/Готовое решение'
     }
   end
 end
