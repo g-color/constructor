@@ -7,15 +7,15 @@
   .form-horizontal.row
     = form_tag reports_product_popularity_path, :method => 'get' do
       .col-sm-2= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Наименование'
-      .col-sm-2= select_tag 'category', options_for_select(Category.where(product: false).collect{|x| [x.name, x.id]}, selected: params[:category]), include_blank: 'Категория', class: 'form-control'
+      .col-sm-2= select_tag 'category', options_for_select(Category.where(product: true).collect{|x| [x.name, x.id]}, selected: params[:category]), include_blank: 'Категория', class: 'form-control'
       .col-sm-1
         %button.btn.btn-default.col-sm-12 Поиск
       .col-sm-4
         %label.col-sm-4.control-label Период от
-        .col-sm-8= text_field_tag :date_start, Date.today, type: 'date', class: 'form-control'
+        .col-sm-8= text_field_tag :date_start, params[:date_start], type: 'date', class: 'form-control'
       .col-sm-3
         %label.col-sm-2.control-label до
-        .col-sm-10= text_field_tag :date_end, Date.today, type: 'date', class: 'form-control'
+        .col-sm-10= text_field_tag :date_end, params[:date_end], type: 'date', class: 'form-control'
   %br
   .table-responsive.main-content
     %table.table.table-hover#product-popularity

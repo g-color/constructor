@@ -16,8 +16,8 @@ class Budget < ApplicationRecord
 
   scope :by_floor,    -> (floor)      { where('floors = ?', floor) }
   scope :only_signed, ->              { where('signed') }
-  scope :date_start,  -> (date_start) { where('signing_date >= ?', date_start - 1.day) if date_start.present? }
-  scope :date_end,    -> (date_end)   { where('signing_date <= ?', date_end + 1.day) if date_end.present? }
+  scope :date_start,  -> (date_start) { where('signing_date >= ?', date_start.to_datetime - 1.day) if date_start.present? }
+  scope :date_end,    -> (date_end)   { where('signing_date <= ?', date_end.to_datetime + 1.day) if date_end.present? }
   scope :area_start,  -> (area_start) { where('area >= ?', area_start) if area_start.present? }
   scope :area_end,    -> (area_end)   { where('area < ?', area_end) if area_end.present? }
 

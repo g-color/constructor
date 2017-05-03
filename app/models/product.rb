@@ -5,7 +5,8 @@ class Product < ApplicationRecord
   belongs_to :unit
   belongs_to :category
 
-  scope :filter_name, -> (name) { where("name ILIKE ?", "%#{name}%") if name.present? }
+  scope :filter_name, -> (name)        { where("name ILIKE ?", "%#{name}%") if name.present? }
+  scope :category,    -> (category_id) { where(category_id: category_id) if category_id.present? }
 
   validates :name,        presence: true
   validates :unit_id,     presence: true

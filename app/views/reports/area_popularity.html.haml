@@ -8,10 +8,10 @@
     = form_tag reports_area_popularity_path, :method => 'get' do
       .col-sm-4
         %label.col-sm-4.control-label Период от
-        .col-sm-8= text_field_tag :date_start, Date.today, type: 'date', class: 'form-control'
+        .col-sm-8= text_field_tag :date_start, params[:date_start], type: 'date', class: 'form-control'
       .col-sm-3
         %label.col-sm-2.control-label до
-        .col-sm-10= text_field_tag :date_end, Date.today, type: 'date', class: 'form-control'
+        .col-sm-10= text_field_tag :date_end, params[:date_end], type: 'date', class: 'form-control'
       .col-sm-1
         %button.btn.btn-default.col-sm-12 Поиск
   %br
