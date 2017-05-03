@@ -13,4 +13,14 @@ module AuditsHelper
       clazz.with_deleted.find(id)
     end
   end
+
+  def get_record_name(id, type)
+    record = get_record(id, type)
+    record.to_s
+  end
+
+  def get_record_link(id, type)
+    record = get_record(id, type)
+    record.link
+  end
 end
