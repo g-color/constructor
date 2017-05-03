@@ -13,22 +13,16 @@
         %th Количество
         %th Стоимость, руб.
       %tbody
-        - @data.each do |row|
+        - @data[:primitives].each do |row|
           %tr
-            %td
-              =row[:name]
-            %td
-              =row[:unit]
-            %td
-              =row[:price]
-            %td 
-              =row[:quantity]
-            %td
-              =row[:sum]
+            %td= row[:name]
+            %td= row[:unit]
+            %td= row[:price]
+            %td= row[:quantity]
+            %td= row[:sum]
         %tr
           %td
           %td
           %td
           %td Итого
-          %td
-            = @res
+          %td= @data[:res]

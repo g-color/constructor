@@ -1,5 +1,4 @@
 = simple_form_for @estimate,  wrapper: :horizontal_form do |f|
-  = hidden_field_tag :export, '', id: 'export-type'
   .action-buttons.row
     = link_to 'Отмена', estimates_path(client_id: params[:client_id] || @estimate.client_id), class: 'btn btn-default'
     = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
@@ -93,48 +92,50 @@
   = render 'budgets/stages', f: f, show: false
   %p
 
-  .row.main-content
-    %h3.text-center Экспорт
-    %br
-    .button-block.text-center
-      /= link_to estimates_export_pdf_path(f.object.id), target: '_blank' do
-      %button.btn.btn-default#btn-export-pdf
-        Экспорт в
-        %b .pdf
-      /= link_to estimates_export_doc_path(f.object.id) do
-      %button.btn.btn-default#btn-export-doc
-        Экспорт в
-        %b .doc
-    %br
-    - unless @estimate.new_record?
+  - unless @estimate.new_record?
+    .row.main-content
+      %h3.text-center Экспорт
+      %br
+      .button-block.text-center
+        = link_to estimate_export_pdf_path(f.object.id), target: '_blank', class: 'btn btn-default' do
+          Экспорт в
+          %b .pdf
+        = link_to estimate_export_doc_path(f.object.id), target: '_blank', class: 'btn btn-default' do
+          Экспорт в
+          %b .doc
+      %br
+
       .button-block.text-center
         = link_to 'Сделать готовым решением', estimate_propose_path(@estimate), class: 'btn btn-default', method: :post
         %button.btn.btn-default{ type: "button", data: { toggle: "modal", target: "#modal-engineer" } } Экспорт для инженера
     %br
 
-  #modal-engineer.modal.fade{ tabindex: -1, role: "dialog", 'aria-labelledby': "myLargeModalLabel" }
-    .modal-dialog{ role: "document" }
-      .modal-content
-        .modal-header
-          %button.close{ type: "button", 'data-dismiss': "modal", 'aria-label':"Close" }
-            %span{ 'aria-hidden': true }
-              &times;
-          %h4.modal-title
-            Выберите инженера
-        .modal-body
-          %ul.list-group
-            - @engineers.each do |engineer|
-              %li.list-group-item
-                .radio
-                  %label
-                    = radio_button_tag 'engineer', engineer.id
-                    = engineer.full_name
-          = f.input :signed, label: 'Подписан договор', wrapper: :inline_checkbox
-        .modal-footer
-          %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" }
-            Отмена
-          %button.btn.btn-success#btn-export-engineer
-            Отправить
+      #modal-engineer.modal.fade{ tabindex: -1, role: "dialog", 'aria-labelledby': "myLargeModalLabel" }
+        .modal-dialog{ role: "document" }
+          .modal-content
+            = form_tag estimate_engineer_path(@estimate.id), :method => 'get', remote: true do
+              .modal-header
+                %button.close{ type: "button", 'data-dismiss': "modal", 'aria-label':"Close" }
+                  %span{ 'aria-hidden': true }
+                    &times;
+                %h4.modal-title
+                  Выберите инженера
+              .modal-body
+                %ul.list-group
+                  - first = true
+                  - @engineers.each do |engineer|
+                    %li.list-group-item
+                      .radio
+                        %label
+                          = radio_button_tag 'engineer', engineer.id
+                          = engineer.full_name
+                = check_box_tag :signed
+                Подписан договор
+              .modal-footer
+                %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" }
+                  Отмена
+                %button.btn.btn-success#btn-export-engineer
+                  Отправить
 
 
 .modal.fade.bs-example-modal-lg.image-preview{ tabindex: -1, role: "dialog", 'aria-labelledby': "myLargeModalLabel" }

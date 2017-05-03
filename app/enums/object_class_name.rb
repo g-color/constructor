@@ -7,11 +7,12 @@ class ObjectClassName
   USER        = 'User'
   OBJECT      = 'Composite'
   PRODUCT     = 'Product'
-  ESTIMATE    = 'Estimate'
   REPORT      = 'Report'
+  ESTIMATE    = 'Estimate'
+  SOLUTION    = 'Solution'
 
   def self.fetch(class_name)
-    values.fetch(class_name.to_s, nil)
+    values.fetch(class_name.to_s, class_name.to_s)
   end
 
   def self.values
@@ -24,8 +25,9 @@ class ObjectClassName
       USER      => 'Пользователь',
       OBJECT    => 'Объект',
       PRODUCT   => 'Сметный продукт',
-      ESTIMATE  => 'Смета',
       REPORT    => 'Отчет',
+      ESTIMATE  => 'Смета',
+      SOLUTION  => 'Готовое решение',
     }
   end
 end

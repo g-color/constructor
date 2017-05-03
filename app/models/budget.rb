@@ -16,15 +16,19 @@ class Budget < ApplicationRecord
 
   scope :by_floor,    -> (floor)      { where('floors = ?', floor) }
   scope :only_signed, ->              { where('signed') }
-  scope :date_start,  -> (date_start) { where('signing_date >= ?', date_start - 1.day) if date_start.present? }
-  scope :date_end,    -> (date_end)   { where('signing_date <= ?', date_end + 1.day) if date_end.present? }
+  scope :date_start,  -> (date_start) { where('signing_date >= ?', date_start.to_datetime - 1.day) if date_start.present? }
+  scope :date_end,    -> (date_end)   { where('signing_date <= ?', date_end.to_datetime + 1.day) if date_end.present? }
   scope :area_start,  -> (area_start) { where('area >= ?', area_start) if area_start.present? }
   scope :area_end,    -> (area_end)   { where('area < ?', area_end) if area_end.present? }
 
   validates :name,               presence: true
-  validates :price,              presence: true
-  validates :area,               presence: true
-  validates :first_floor_height, presence: true
+  validates :area,               presence: true, numericality: { greater_than: 0 }
+  validates :first_floor_height, presence: true, numericality: { greater_than: 0 }
+
+  validates :second_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :second_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :third_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :third_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
 
   belongs_to :user
   belongs_to :proposer, class_name: "User", foreign_key: :proposer_id
@@ -58,9 +62,9 @@ class Budget < ApplicationRecord
       # Добавляем или обновляем этапы
       stage = self.stages.find_or_initialize_by(number: s['number'])
       stage.update(
-        number:      s['number'],
-        price:       s['price'],
-        total_price: s['total_price'].round(2),
+        number:              s['number'],
+        price:               s['price'],
+        price_with_discount: s['price_with_discount'].round(2),
       )
       # Удаляем продукты которые не пришли
       product_ids = s['products'].map { |p| p['id'] }
@@ -140,27 +144,28 @@ class Budget < ApplicationRecord
       new_stages = []
       (1..3).each do |i|
         new_stages.push(
-          number:      i,
-          text:        get_stage_text(i),
-          products:    [],
-          price:       0,
-          total_price: 0,
+          number:              i,
+          text:                get_stage_text(i),
+          products:            [],
+          price:               0,
+          price_with_discount: 0,
         )
       end
       new_stages
     else
       stages.includes(:stage_products).map do |stage|
         {
-          number:      stage.number,
-          text:        get_stage_text(stage.number),
-          price:       stage.price,
-          total_price: stage.total_price,
+          number:              stage.number,
+          text:                get_stage_text(stage.number),
+          price:               stage.price,
+          price_with_discount: stage.price_with_discount,
           products:    stage.stage_products.includes(:stage_product_sets, :product, product: [:unit] ).map do |stage_product|
             {
               id:                 stage_product.product.id,
               name:               stage_product.product.name,
               unit:               stage_product.product.unit.name,
               custom:             stage_product.product.custom,
+              hint:               stage_product.product.hint,
               profit:             stage_product.product.profit,
               price_with_work:    stage_product.price_with_work,
               price_without_work: stage_product.price_without_work,
@@ -240,6 +245,58 @@ class Budget < ApplicationRecord
     self.stages.each do |stage|
       stage.update_report_primitivies
     end
+  end
+
+  def for_export_zp
+    data = {}
+    primitives = self.get_primitives
+    data[:primitives] = []
+    data[:res] = 0
+    primitives.each do |key, value|
+      primitive = Primitive.find(key.to_i)
+      if primitive.category.id == ENV['WORK_CATEGORY'].to_i
+        data[:primitives] << {
+          name: primitive.name,
+          unit: primitive.unit.name,
+          price: primitive.price,
+          quantity: value,
+          sum: value * primitive.price
+        }
+        data[:res] += value * primitive.price
+      end
+    end
+    data
+  end
+
+  def for_export_primitives
+    data = {}
+    stage_products = []
+    self.stages.each do |stage|
+      stage_products += stage.stage_products.to_a
+    end
+
+    data[:result] = {}
+    data[:products] = []
+    stage_products.each do |stage_product|
+      primitives = stage_product.get_primitives
+      product = stage_product.product
+      data[:products] << product.name
+      primitives.each do |p, quantity|
+        primitive = Primitive.find(p)
+        if primitive.category.id != ENV['WORK_CATEGORY'].to_i && primitive.category.id != ENV['STOCK_CATEGORY'].to_i
+          if data[:result][primitive.name].nil?
+            data[:result][primitive.name] = {}
+            data[:result][primitive.name][:all] = 0
+            data[:result][primitive.name][:unit] = primitive.unit.name
+          end
+          data[:result][primitive.name][product.name] = 0 if data[:result][primitive.name][product.name].nil?
+          data[:result][primitive.name][product.name] += quantity
+          data[:result][primitive.name][:all] += quantity
+        end
+      end
+    end
+    data[:products] = data[:products].uniq
+    data
   end
 
   def solution?

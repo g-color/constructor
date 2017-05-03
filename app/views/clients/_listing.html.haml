@@ -1,8 +1,8 @@
 %tr
-  %td{ ng: { click: "ctrl.openEstimates(#{client.id})" } }= client.full_name
-  %td{ ng: { click: "ctrl.openEstimates(#{client.id})" } }
-    %a{href: "https://artkarkas.megaplan.ru/staff/#{client.crm}/card/", target: 'blank', rel: 'no-follow'}= client.crm
-  %td{ ng: { click: "ctrl.openEstimates(#{client.id})" } }= client.estimates.count
+  %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(#{client.id})" } }= client.full_name
+  %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(#{client.id})" } }
+    %a{href: "https://artkarkas.megaplan.ru/crm/#{client.crm}/card/", target: 'blank', rel: 'no-follow'}= client.crm
+  %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(#{client.id})" } }= client.estimates.count
   %td
     = link_to edit_client_path(client), class: 'btn btn-warning', title: 'Редактировать' do
       %span.glyphicon.glyphicon-pencil

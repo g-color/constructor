@@ -16,3 +16,12 @@
 2017-04-27T02:43:41.343Z 19999 TID-gnh1qxpww ERROR: Error fetching job: Error connecting to Redis on 127.0.0.1:6379 (Errno::ECONNREFUSED)
 2017-04-27T02:43:41.352Z 19999 TID-gnh1qxpww ERROR: /home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/redis-3.3.3/lib/redis/client.rb:345:in `rescue in establish_connection'
 2017-04-27T02:43:41.352Z 19999 TID-gnh1qxpww ERROR: /home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/redis-3.3.3/lib/redis/client.rb:331:in `establish_connection'
+2017-05-03T20:25:46.058Z 13130 TID-go4oxsvtg INFO: Running in ruby 2.3.1p112 (2016-04-26 revision 54768) [x86_64-linux]
+2017-05-03T20:25:46.140Z 13130 TID-go4oxsvtg INFO: See LICENSE and the LGPL-3.0 for licensing details.
+2017-05-03T20:25:46.140Z 13130 TID-go4oxsvtg INFO: Upgrade to Sidekiq Pro for more features and support: http://sidekiq.org
+2017-05-03T20:25:46.140Z 13130 TID-go4oxsvtg INFO: Booting Sidekiq 4.2.10 with redis options {:url=>nil}
+2017-05-03T20:25:46.525Z 13130 TID-go4oxsvtg INFO: Starting processing, hit Ctrl-C to stop
+2017-05-03T20:25:46.555Z 13130 TID-go4pn4aao PriceUpdateJob JID-eb01db6b6d0ecf2ee61c8dba INFO: start
+2017-05-03T20:25:46.560Z 13130 TID-go4pn4ba8 PriceUpdateJob JID-6e0aea6acf7a20055d088864 INFO: start
+2017-05-03T20:25:46.949Z 13130 TID-go4pn4ba8 PriceUpdateJob JID-6e0aea6acf7a20055d088864 INFO: done: 0.389 sec
+2017-05-03T20:25:46.989Z 13130 TID-go4pn4aao PriceUpdateJob JID-eb01db6b6d0ecf2ee61c8dba INFO: done: 0.434 sec

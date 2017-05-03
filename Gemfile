@@ -37,6 +37,7 @@ gem "cancan"
 gem "gon"
 gem 'haml'
 gem 'haml-rails', '~> 0.9'
+gem 'ng-toaster-rails'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'bootstrap-kaminari-views'

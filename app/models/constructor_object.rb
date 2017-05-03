@@ -22,6 +22,10 @@ class ConstructorObject < ApplicationRecord
               foreign_key: :children_id,
               association_foreign_key: :parent_id
 
+  scope :filter_name, -> (name)        { where("name ILIKE ?", "%#{name}%") if name.present? }
+  scope :category,    -> (category_id) { where(category_id: category_id) if category_id.present? }
+
+
   accepts_nested_attributes_for :compositions, reject_if: :all_blank, allow_destroy: true
 
   def to_s

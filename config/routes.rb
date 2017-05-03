@@ -20,7 +20,7 @@ Rails.application.routes.draw do
     post :files,   to: 'estimates#files',   as: :estimates_files, on: :collection
     get 'export_pdf', to: 'estimates#export_pdf', as: :export_pdf
     get 'export_doc', to: 'estimates#export_doc', as: :export_doc, format: 'docx'
-    get 'estimates_engineer', to: 'estimates#estimates_engineer', as: :engineer
+    get 'engineer', to: 'estimates#estimates_engineer', as: :engineer
   end
   resources :solutions do
     post :copy,   to: 'solutions#copy',   as: :copy

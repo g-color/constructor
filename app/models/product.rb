@@ -5,7 +5,8 @@ class Product < ApplicationRecord
   belongs_to :unit
   belongs_to :category
 
-  scope :filter_name, -> (name) { where("name ILIKE ?", "%#{name}%") if name.present? }
+  scope :filter_name, -> (name)        { where("name ILIKE ?", "%#{name}%") if name.present? }
+  scope :category,    -> (category_id) { where(category_id: category_id) if category_id.present? }
 
   validates :name,        presence: true
   validates :unit_id,     presence: true
@@ -25,6 +26,7 @@ class Product < ApplicationRecord
         name:               x.name,
         unit:               x.unit.name,
         custom:             x.custom,
+        hint:               x.hint,
         sets:               x.get_sets,
         profit:             x.profit,
         price_with_work:    x.price,
@@ -87,7 +89,7 @@ class Product < ApplicationRecord
   def get_templates
     return [] unless custom
 
-    self.product_templates.map do |x|
+    self.product_templates.distinct.map do |x|
       {
         id:   x.id,
         name: x.name
@@ -127,7 +129,7 @@ class Product < ApplicationRecord
     unless custom
       product_compositions.includes(:constructor_object).each do |composition|
         child  = composition.constructor_object
-        price += child.price unless child.price.blank?
+        price += child.price * composition.value unless child.price.blank?
       end
     end
     price

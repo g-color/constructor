@@ -15,11 +15,14 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     this.parseExpense()
     this.parseDiscount()
     this.parseStages()
+    for i in [1..3]
+      this.recalcStage(i)
     this.saveJsonValue()
 
   showAddModal: (stage) ->
     @scope.addModal.header       = 'Добавление сметного продукта. Этап ' + stage
     @scope.addModal.products     = this.getProducts(stage)
+    @scope.selectedProduct       = null
     @scope.selectedProductId     = 'Выберите сметный продукт'
     @scope.selectedProductCustom = false
     @scope.selectedSetId         = 'Выберите сборку'
@@ -145,16 +148,22 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     return 0 if price == 0 || estimate.area == 0
     (price / estimate.area).toFixed(2)
 
-  getPriceWithDiscount: (stage) ->
-    discount = @scope.discount
-    estimate = @scope.estimate
-    discount_value = estimate.price * discount.values[stage.number - 1] / 100
-    (stage.aggregated_price - discount_value).toFixed(2)
+  getStagePrice: (stage) ->
+    price = 0
+    for i in [1..stage.number]
+      price += this.getStage(i).price
+    price.toFixed(2)
+
+  getStageDiscountPrice: (stage) ->
+    price = 0
+    for i in [1..stage.number]
+      price += this.getStage(i).price_with_discount
+    price.toFixed(2)
 
   getDiscountValue: (stage) ->
     discount = @scope.discount
     estimate = @scope.estimate
-    (estimate.price * discount.values[stage.number - 1] / 100).toFixed(2)
+    (stage.price * discount.values[stage.number - 1] / 100).toFixed(2)
 
   getProductFromStage: (product_id) ->
     stages = @scope.stages
@@ -184,7 +193,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       discount.values[number - 1] = 0
 
     discount = discount.values[number - 1]
-    stage.total_price = stage.price - (stage.price * discount / 100)
+    stage.price_with_discount = stage.price - (stage.price * discount / 100)
 
     this.recalcStages()
     this.recalEstimate()
@@ -198,7 +207,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     estimate = @scope.estimate
     stages   = @scope.stages
     estimate.price = 0
-    $.each(stages, (i,v) -> estimate.price += v.total_price)
+    $.each(stages, (i,v) -> estimate.price += v.price_with_discount)
     this.saveJsonValue()
 
   recalcProduct: () ->
@@ -284,8 +293,8 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     expense = @scope.expense
 
     $.each(stages, (i,stage) ->
-      stages[i].price       = parseFloat(stage.price)
-      stages[i].total_price = parseFloat(stage.total_price)
+      stages[i].price               = parseFloat(stage.price)
+      stages[i].price_with_discount = parseFloat(stage.price_with_discount)
       $.each(stage.products, (i,product) ->
         stage.products[i].price_with_work     = parseFloat(product.price_with_work)
         stage.products[i].price_without_work  = parseFloat(product.price_without_work)

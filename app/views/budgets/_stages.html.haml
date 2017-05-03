@@ -31,7 +31,7 @@
           %td.text-right{ colspan: 2 }
             %b {{ stage.text.summ }}
           %td{ colspan: 3 }
-            %b {{ stage.aggregated_price.toFixed(2) }} ({{ ctrl.getPriceByArea(stage.aggregated_price) }} руб. за м2)
+            %b {{ ctrl.getStagePrice(stage) }} ({{ ctrl.getPriceByArea(ctrl.getStagePrice(stage)) }} руб. за м2)
           %tr
           %td.text-right{ colspan: 2 }
             %b {{ discount.name }} {{ stage.text.summ_dis }}:
@@ -41,7 +41,7 @@
           %td.text-right{ colspan: 2 }
             %b {{ stage.text.discount }}
           %td{ colspan: 3 }
-            %b {{ ctrl.getPriceWithDiscount(stage) }} ({{ ctrl.getPriceByArea(ctrl.getPriceWithDiscount(stage)) }} руб. за м2)
+            %b {{ ctrl.getStageDiscountPrice(stage) }} ({{ ctrl.getPriceByArea(ctrl.getStageDiscountPrice(stage)) }} руб. за м2)
     %hr
     %br
 
@@ -54,6 +54,12 @@
           %h4.modal-title {{ addModal.header }}
         .modal-body
           .form-horizontal
+            %button.btn.btn-default.btn-xs{ "ng-show" => "selectedProduct.hint", :title => "Показать подсказку", type: 'button', data: { target: "#productHint", toggle: "collapse"} }
+              %span.glyphicon.glyphicon.glyphicon-info-sign{"aria-hidden" => "true"}
+            %p
+            #productHint.collapse{ "ng-show" => "selectedProduct.hint" }
+              .well {{ selectedProduct.hint }}
+
             .form-group
               %label.col-sm-3.control-label Сметный продукт
               .col-sm-9
@@ -87,7 +93,7 @@
                       %th.col-sm-2 Единица измерения
                   %tbody
                     %tr{ ng: { repeat: 'template in selectedSet.items' } }
-                      %td {{ template.value.name }}
+                      %td {{ template.name }}
                       %td
                         %input.form-control.template-quantity{ placeholder: "Введите количество", ng: { model: 'template.quantity' } }
                       %td {{ template.value.unit }}
@@ -134,7 +140,7 @@
                       %th.col-sm-2 Единица измерения
                   %tbody
                     %tr{ ng: { repeat: 'template in selectedEditSet.items' } }
-                      %td {{ template.value.name }}
+                      %td {{ template.name }}
                       %td
                         %input.form-control{ placeholder: "Введите количество", ng: { model: 'template.quantity', change: 'ctrl.recalcProduct()' } }
                       %td {{ template.value.unit }}

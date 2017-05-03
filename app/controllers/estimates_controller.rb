@@ -1,6 +1,6 @@
 class EstimatesController < ApplicationController
   before_action :get_products,  only: [:new,  :create, :edit, :update]
-  before_action :find_estimate, only: [:edit, :update, :destroy, :estimates_engineer]
+  before_action :find_estimate, only: [:edit, :update, :destroy]
   before_action :authenticate_user!
 
   def index
@@ -33,9 +33,6 @@ class EstimatesController < ApplicationController
     if @estimate.save
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters
-
-      return redirect_to estimates_export_pdf_path(@estimate.id) if params[:export] == 'pdf'
-      return redirect_to estimates_export_doc_path(@estimate.id) if params[:export] == 'doc'
       redirect_to estimates_path(client_id: @estimate.client_id)
     else
       discount = @estimate.discount_title
@@ -63,11 +60,6 @@ class EstimatesController < ApplicationController
     if @estimate.update(estimate_params)
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters
-      if params[:export] == 'engineer'
-        export_engineer(params)
-      end
-      return redirect_to estimate_export_pdf_path(@estimate.id) if params[:export] == 'pdf'
-      return redirect_to estimate_export_doc_path(@estimate.id) if params[:export] == 'doc'
       redirect_to estimates_path(client_id: @estimate.client_id)
     else
       discount = @estimate.discount_title
@@ -109,7 +101,7 @@ class EstimatesController < ApplicationController
     }
   end
 
-  def export_engineer(params)
+  def export_engineer
     @estimate.send_email_engineer(params[:engineer])
     primitives = @estimate.get_primitives
     @data = []
@@ -189,8 +181,9 @@ class EstimatesController < ApplicationController
     end
   end
 
-  def estimates_engineer(params)
-    engineer = User.find(params[:engineer])
+  def estimates_engineer
+    @estimate = Estimate.find(params[:estimate_id])
+    engineer = User.find_by(id: params[:engineer])
     signed = params[:signed]
 
     @estimate.user = current_user
@@ -199,6 +192,19 @@ class EstimatesController < ApplicationController
       @estimate.signing_date = Time.now
     end
     @estimate.save
+
+    @estimate.send_email_engineer(params[:engineer])
+    @data = @estimate.for_export_zp
+    pdf = WickedPdf.new.pdf_from_string(render_to_string('export_zp'))
+    File.open(Rails.root.join('pdfs',"Ведомость ЗП на объект.pdf"), 'wb') do |file|
+      file << pdf
+    end
+
+    @data = @estimate.for_export_primitives
+    pdf = WickedPdf.new.pdf_from_string(render_to_string('export_primitives'))
+    File.open(Rails.root.join('pdfs',"Перечень материалов на объект.pdf"), 'wb') do |file|
+      file << pdf
+    end
 
     render json: {
       engineer: engineer,

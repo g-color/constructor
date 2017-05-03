@@ -27,7 +27,10 @@ class ReportsController < ApplicationController
   end
 
   def material_consumption
-    @primitivies = Primitive.all
+    date_start = params[:date_start].present? ? params[:date_start].to_datetime : Estimate.order(:created_at).first.created_at
+    date_end = params[:date_end].present? ? params[:date_end].to_datetime : DateTime.now
+    @month = (date_end - date_start).to_i / 30
+    @primitivies = Primitive.category(params[:category]).filter_name(params[:name])
   end
 
   def estimate_conversion
@@ -50,12 +53,11 @@ class ReportsController < ApplicationController
     end
   end
 
-
   def product_popularity
     @stage_products = StageProduct.estimate_signed
-    @stage_products = @stage_products.where('estimates.signing_date > ?', params[:date_start]) if params[:date_start].present?
-    @stage_products = @stage_products.where('estimates.signing_date < ?', params[:date_end]) if params[:date_end].present?
-    @products = Product.filter_name(params[:name])
+    @stage_products = @stage_products.where('budgets.signing_date > ?', params[:date_start]) if params[:date_start].present?
+    @stage_products = @stage_products.where('budgets.signing_date < ?', params[:date_end]) if params[:date_end].present?
+    @products = Product.filter_name(params[:name]).category(params[:category])
   end
 
 

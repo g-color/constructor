@@ -9,18 +9,18 @@
       %thead
         %th Наименование
         %th Ед. изм.
-        - @products.each do |product|
+        - @data[:products].each do |product|
           %th
             = product
         %th Общее количество
       %tbody
-        - @result.each do |key, value|
+        - @data[:result].each do |key, value|
           %tr
             %td
               = key
             %td
               = value[:unit]
-            - @products.each do |product|
+            - @data[:products].each do |product|
               %td
                 = value[product]
             %td

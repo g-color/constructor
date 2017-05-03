@@ -11,7 +11,7 @@
       = f.association :unit, label: 'Единица измерения'
       = f.association :category, label: 'Категория', collection: Category.where(product: true)
       = f.input :stage, label: 'Этап', collection: [ [1, 1], [2, 2], [3, 3] ]
-      = f.input :profit, label: 'Прибыль'
+      = f.input :profit, label: 'Прибыль (%)'
       = f.input :display_components, label: 'Отображать компоненты', wrapper: :inline_checkbox
       = f.input :custom, label: 'Конфигурируемый продукт', wrapper: :inline_checkbox, input_html: { 'ng-model' => 'custom'}
 

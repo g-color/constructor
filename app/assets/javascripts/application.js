@@ -21,6 +21,7 @@
 //= require angular
 //= require angular-animate
 //= require angular-resource
+//= require toaster
 //= require cocoon
 //= require turbolinks
 //= require_tree .
