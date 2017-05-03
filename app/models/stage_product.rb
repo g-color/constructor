@@ -4,7 +4,7 @@ class StageProduct < ApplicationRecord
 
   has_many :stage_product_sets
 
-  scope :estimate_signed, ->              { joins(:stage => :estimate).where('estimates.signed') }
+  scope :estimate_signed, ->              { joins(:stage => :budget).where('budgets.signed') }
   scope :by_product,      -> (product_id) { where('product_id = ?', product_id) }
 
   def items

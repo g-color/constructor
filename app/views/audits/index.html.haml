@@ -41,8 +41,8 @@
       %tbody
         - @audits.each do |audit|
           %tr
-            %td= audit.user.full_name
-            %td= UserRole.fetch(audit.user.role)
+            %td= audit.user&.full_name
+            %td= UserRole.fetch(audit.user&.role)
             %td= AuditAction.fetch(audit.action)
             %td= ObjectClassName.fetch(audit.auditable.class)
             %td= link_to audit.auditable.to_s, audit.auditable.link

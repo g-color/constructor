@@ -9,7 +9,7 @@ class Composition < ApplicationRecord
             class_name: "ConstructorObject",
             foreign_key: :children_id
 
-  validates :value, presence: true
+  validates :value, presence: true, numericality: { greater_than: 0 }
   validates :children, presence: true
   validates :children, parent_child: true
 

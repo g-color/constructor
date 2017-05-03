@@ -22,9 +22,14 @@ class Budget < ApplicationRecord
   scope :area_end,    -> (area_end)   { where('area < ?', area_end) if area_end.present? }
 
   validates :name,               presence: true
-  validates :price,              presence: true
-  validates :area,               presence: true
-  validates :first_floor_height, presence: true
+  validates :price,              presence: true, numericality: { greater_than: 0 }
+  validates :area,               presence: true, numericality: { greater_than: 0 }
+  validates :first_floor_height, presence: true, numericality: { greater_than: 0 }
+
+  validates :second_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :second_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :third_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :third_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
 
   belongs_to :user
   belongs_to :proposer, class_name: "User", foreign_key: :proposer_id
