@@ -1,12 +1,19 @@
-%h1 Отчеты
+%h1
+  Отчеты
+
 .dropdown
-  %button.btn.btn-default.dropdown-toggle#dropdownMenu1{ type: "button", data: { toggle: "dropdown" } }
+  %button.btn.btn-default.dropdown-toggle#dropdownMenu1{ type: "button", 'data-toggle': "dropdown", 'aria-haspopup': true, 'aria-expanded': true }
     Выберите отчет
     %span.caret
-  %ul.dropdown-menu
-    %li= link_to 'Популярность сметных продуктов', reports_product_popularity_path
-    %li= link_to 'Популярность этажности',         reports_floor_popularity_path
-    %li= link_to 'Популярность площади',           reports_area_popularity_path
-    %li= link_to 'Расход материалов в месяц',      reports_material_consumption_path
-    %li= link_to 'Эффективность сотрудников',      reports_estimate_conversion_path
+  %ul.dropdown-menu{ 'aria-labelledby': "dropdownMenu1" }
+    %li
+      = link_to 'Популярность сметных продуктов', reports_product_popularity_path
+    %li
+      = link_to 'Популярность этажности', reports_floor_popularity_path
+    %li
+      = link_to 'Популярность площади', reports_area_popularity_path
+    %li
+      = link_to 'Расход материалов в месяц', reports_material_consumption_path
+    %li
+      = link_to 'Эффективность сотрудников', reports_estimate_conversion_path
 %br

@@ -27,37 +27,27 @@ class ReportsController < ApplicationController
   end
 
   def material_consumption
-    @primitivies = Primitive.all
+    Primitive.all.each do |primitive|
+      parents = primitive.parent_compositions
+    end
   end
 
   def estimate_conversion
     @report = []
     User.all.each do |user|
-      date_start = params[:date_start].present? ? Time.new(params[:date_start]) : user.created_at
-      date_end = params[:date_end].present? ? Time.new(params[:date_end]) : Time.now
-      interval = ((date_end - date_start) / (3600 * 24 * 30)).to_i + 1
-      estimates = user.estimates.date_start(date_start).date_end(date_end)
-      all = estimates.count
-      signed = estimates.only_signed.count
+      all = user.estimates.count
+      signed = user.estimates.only_signed.count
       @report << {
         user_name: user.full_name,
-        estimates_all: estimates.count,
-        estimates_signed: estimates.only_signed.count,
+        estimates_all: user.estimates.count,
+        estimates_signed: user.estimates.only_signed.count,
         conversion: signed.zero? ? 0 : all / signed,
-        profit: user.estimates.only_signed.sum(:price),
-        profit_month: interval.zero? ? 0 : (user.estimates.only_signed.sum(:price) / interval).to_i
+        profit: user.estimates.only_signed.sum(:price)
+        #profit_month: user.estimates.only_signed.sum(:price)
       }
     end
+
   end
-
-
-  def product_popularity
-    @stage_products = StageProduct.estimate_signed
-    @stage_products = @stage_products.where('estimates.signing_date > ?', params[:date_start]) if params[:date_start].present?
-    @stage_products = @stage_products.where('estimates.signing_date < ?', params[:date_end]) if params[:date_end].present?
-    @products = Product.filter_name(params[:name])
-  end
-
 
   protected
 
@@ -65,5 +55,5 @@ class ReportsController < ApplicationController
     authorize! :view_report, :report
   end
 
-
+ 
 end

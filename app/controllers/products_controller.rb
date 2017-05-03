@@ -71,11 +71,7 @@ class ProductsController < ApplicationController
   end
 
   def destroy
-    if StageProduct.exists?(product_id: @product.id)
-      flash[:alert] = "Can't be destroyed"
-    else
-      @product.destroy
-    end
+    @product.destroy
     redirect_to products_path
   end
 

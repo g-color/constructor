@@ -11,8 +11,9 @@
     = render 'layouts/header'
     = Gon::Base.render_data
 
-    %div{ ng: { controller: 'FlashController' }, data: { notice: notice, alert: alert } }
-    %toaster-container
+    - if notice || alert
+      %p.notice= notice
+      %p.alert= alert
 
     .container
       = yield

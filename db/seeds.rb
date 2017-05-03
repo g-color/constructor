@@ -71,14 +71,4 @@ units.each do |unit|
   Unit.create(name: unit[:name])
 end
 
-(1..10).each do |i|
-  Primitive.create(
-    name:        "Примитив #{i}",
-    unit_id:     rand(1..6),
-    category_id: rand(1..8),
-    price:       i * 10,
-    date:        Date.today,
-  )
-end
-
 Audit.destroy_all

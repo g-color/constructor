@@ -35,11 +35,7 @@ class CompositesController < ApplicationController
   end
 
   def destroy
-    if cantbe_destroy?
-      flash[:alert] = "Can't be destroyed"
-    else
-      @composite.destroy
-    end
+    @composite.destroy
     redirect_to composites_path
   end
 
@@ -47,10 +43,6 @@ class CompositesController < ApplicationController
 
   def check_ability
     authorize! :manage, Composite
-  end
-
-  def cantbe_destroy?
-    Composition.exists?(children_id: @composite.id) || ProductComposition.exists?(constructor_object_id: @composite.id) || StageProductSetValue.exists?(constructor_object_id: @composite.id)
   end
 
   def find_composite

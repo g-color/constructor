@@ -1,28 +1,38 @@
 = render 'header_reports'
 
-%h4.stage Популярность этажности
+%h4.stage
+  Популярность этажности
 %br
 
-.row
+.row#floor-popularity
   .form-horizontal.row
     = form_tag reports_floor_popularity_path, :method => 'get' do
       .col-sm-4
-        %label.col-sm-4.control-label Период от
-        .col-sm-8= text_field_tag :date_start, Date.today, type: 'date', class: 'form-control'
+        %label.col-sm-4.control-label
+          Период от
+        .col-sm-8
+          = text_field_tag :date_start, Date.today
       .col-sm-3
-        %label.col-sm-2.control-label до
-        .col-sm-10= text_field_tag :date_end, Date.today, type: 'date', class: 'form-control'
+        %label.col-sm-2.control-label
+          до
+        .col-sm-10
+          = text_field_tag :date_end, Date.today
       .col-sm-1
-        %button.btn.btn-default.col-sm-12 Поиск
+        %button.btn.btn-default.col-sm-12
+          Поиск
   %br
   .table-responsive.main-content
-    %table.table.table-hover#floor-popularity
+    %table.table.table-hover
       %thead
         %tr
-          %th.col-sm-9 Этажность
-          %th.col-sm-3 Количество использований
+          %th.col-sm-9
+            Этажность
+          %th.col-sm-3
+            Количество использований
       %tbody
         - @report.each do |floor, percent|
           %tr
-            %td= floor
-            %td= percent.to_s + "%"
+            %td
+              = floor
+            %td
+              = percent.to_s + "%"

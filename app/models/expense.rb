@@ -1,8 +1,6 @@
 class Expense < ApplicationRecord
   audited
 
-  validates :percent, presence: true, numericality: { greater_than: 0 }
-
   def self.update_values(values)
     values.each do |val|
       exp = find(val)

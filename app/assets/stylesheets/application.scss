@@ -13,7 +13,6 @@
  *= require_tree .
  *= require_self
  *= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
- *= require toaster
  */
 @import "bootstrap-sprockets";
 @import "bootstrap";
@@ -725,8 +724,4 @@ td > .form-group {
 
 .no-margin {
   margin: 0 !important;
-}
-
-.cursor-pointer:hover {
-  cursor: pointer;
 }

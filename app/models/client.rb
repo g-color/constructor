@@ -5,9 +5,9 @@ class Client < ApplicationRecord
   validates :first_name, presence: true
   validates :crm, presence: true
 
-  has_many :users, through: :user_clients
   has_many :user_clients, dependent: :delete_all
-  has_many :estimates,    dependent: :delete_all
+  has_many :users, through: :user_clients
+  has_many :estimates
 
   def to_s
     full_name

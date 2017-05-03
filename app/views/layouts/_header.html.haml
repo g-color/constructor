@@ -1,7 +1,7 @@
 %nav.navbar.navbar-default
   .container-fluid
     .navbar-header
-      %button.navbar-toggle.collapsed{ type: 'button', data: { toggle: 'collapse', target: '#navbar-collapse' } }
+      %button.navbar-toggle.collapsed{ type: 'button', data: { toggle: 'collapse', target: '#bs-example-navbar-collapse-1' } }
         %span.sr-only Toggle nabigation
         %span.icon-bar
         %span.icon-bar
@@ -10,7 +10,7 @@
         = image_tag 'logo.png', class: 'logo', alt: 'brand'
 
     - if user_signed_in?
-      .collapse.navbar-collapse#navbar-collapse
+      .collapse.navbar-collapse#bs-example-navbar-collapse-1
         %ul.nav.navbar-nav
           - if current_user.admin?
             %li
@@ -39,10 +39,13 @@
                 %li= link_to 'Отчеты', reports_path
 
           %li= link_to 'Клиенты', clients_path
-          %li= link_to 'Готовые решения', solutions_path
+          %li
+            %a{ href: '#solutions' } Готовые решения
 
-          = link_to 'Создать смету', new_estimate_path(client_id: params[:client_id]), class: 'btn btn-primary navbar-btn'
+          %a.btn.btn-primary.navbar-btn{ href: '#clients/estimate-edit?id=&client=' } Создать смету
 
         %ul.nav.navbar-nav.navbar-right
-          %li= link_to current_user.full_name, edit_user_path(current_user)
-          %li= link_to 'Выйти', destroy_user_session_path, method: :delete
+          %li
+            = link_to current_user.full_name, edit_user_path(current_user)
+          %li
+            = link_to 'Выйти', destroy_user_session_path, method: :delete

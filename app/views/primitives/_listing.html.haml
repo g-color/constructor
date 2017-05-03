@@ -1,20 +1,19 @@
 %tr
-  %td= primitive.name
-  %td= primitive.unit.name
-  %td
-    = simple_form_for primitive, html: { id: "primitive-#{primitive.id}" } do |f|
-      = f.input :price, label: false
-  %td
-    .btn-group
-      %button{ data: {toggle: 'dropdown'}, ng: { class: "ctrl.dateClass('#{primitive.date.strftime("%Y-%m-%d")}')" } }
-        = l(primitive.date, format: "%d %b, %Y")
-        %span.caret
-      %ul.dropdown-menu
-        %li
-          = link_to 'Обновить цену', "#", class: 'update-price-link'
-            
-  %td
-    = link_to edit_primitive_path(primitive), title: 'Редактировать', class: 'btn btn-warning' do
-      %span.glyphicon.glyphicon-pencil
-    = link_to primitive_path(primitive), method: :delete, title: 'Удалить', class: 'btn btn-danger', data: {confirm: 'Are you sure?'} do
-      %span.glyphicon.glyphicon-trash
+  = simple_form_for primitive, html: { id: "primitive-#{primitive.id}" } do |f|
+    %td= primitive.name
+    %td= primitive.unit.name
+    %td= f.input :price, label: false
+    %td
+      .btn-group
+        %button{ data: {toggle: 'dropdown'}, ng: { class: "ctrl.dateClass('#{primitive.date.strftime("%Y-%m-%d")}')" } }
+          = l(primitive.date, format: "%d %b, %Y")
+          %span.caret
+        %ul.dropdown-menu
+          %li
+            = link_to 'Обновить цену', "#", :onclick => "$(this).closest('tr').find('form').submit(); return false;"
+              
+    %td
+      = link_to edit_primitive_path(primitive), title: 'Редактировать', class: 'btn btn-warning' do
+        %span.glyphicon.glyphicon-pencil
+      = link_to primitive_path(primitive), method: :delete, title: 'Удалить', class: 'btn btn-danger', data: {confirm: 'Are you sure?'} do
+        %span.glyphicon.glyphicon-trash

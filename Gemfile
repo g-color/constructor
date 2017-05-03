@@ -37,7 +37,6 @@ gem "cancan"
 gem "gon"
 gem 'haml'
 gem 'haml-rails', '~> 0.9'
-gem 'ng-toaster-rails'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'bootstrap-kaminari-views'
@@ -50,9 +49,6 @@ gem 'sidekiq'
 gem 'rails4-autocomplete'
 
 gem 'paperclip'
-gem 'htmltoword'
-gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
 
 # gem 'cancancan'
 # https://github.com/rubysherpas/paranoia

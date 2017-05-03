@@ -7,14 +7,9 @@ class Composite < ConstructorObject
   validates :category_id, presence: true
 
   def update_price
-    self.price                 = 0
-    self.price_without_work    = 0
-
+    self.price = 0
     compositions.each do |composition|
-      children                 = composition.children
-      children_price           = composition.value * children.price
-      self.price              += children_price
-      self.price_without_work += children_price unless children.work_primitive?
+      self.price += composition.value * composition.children.price
     end
     self.save
     parents.map(&:update_price)

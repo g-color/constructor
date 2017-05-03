@@ -1,57 +1,77 @@
-%h1 Список смет
-%ol.breadcrumb.row
-  %li= link_to 'Клиенты', clients_path
-  %li.active= @client.full_name
-
-.action-buttons.row
-  = form_tag estimates_path(client_id: @client.id), :method => 'get' do
-    = hidden_field_tag :client_id, @client.id
-    .col-sm-8
-      = text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Наименование'
-    .col-sm-1
-      %button.btn.btn-default.col-sm-12 Поиск
-    .col-sm-3
-      = link_to 'Добавить смету', new_estimate_path(client_id: @client.id), class: 'btn btn-primary col-sm-12'
+%h1
+  Список смет
 
 %br
+.row.main-content
+  .table-responsive
+    %table.table.table-hover
+      %thead
+        %th.col-sm-3
+          Наименование
+        %th.col-sm-2
+          Общая стоимость
+        %th.col-sm-2
+          Стоимость м2
+        %th.col-sm-1
+          Площадь
+        %th.col-sm-2
+          Дата изменения
+        %th.col-sm-2
+          Действия
+      %tbody
+        - @estimates.each do |estimate|
+          = render 'listing', estimate: estimate
 
-- if @estimates.present?
-  .row.main-content
-    .table-responsive
-      %table.table.table-hover.estimates-datatable
-        %thead
-          %th.col-sm-3 Наименование
-          %th.col-sm-2 Общая стоимость
-          %th.col-sm-2 Стоимость м2
-          %th.col-sm-1 Площадь
-          %th.col-sm-2 Дата изменения
-          %th.col-sm-2 Действия
-        %tbody
-          - @estimates.each do |estimate|
-            = render 'listing', estimate: estimate
-
-  - @estimates.each do |estimate|
-    .modal.fade{ id: "duplicate-estimate-#{estimate.id}" }
-      .modal-dialog
+    .modal.fade#delete-confirmation{ tabindex: "-1",  role: "dialog", 'aria-labelledby': "myModalLabel" }
+      .modal-dialog{role: "document"}
         .modal-content
-          = form_tag estimate_copy_path(estimate) do |f|
-            .modal-header
-              %button.close{ type: "button", data: { dismiss: "modal" } }
-                %span &times;
-              %h4.modal-title#myModalLabel2 Создание копии
-            .modal-body
-              Введите новое имя для копии сметы
-              %b= estimate.name
+          .modal-header
+            %button.close{type: "button", 'data-dismiss': "modal", 'aria-label': "Close" }
+              %span{ 'aria-hidden': true }
+                &times;
+            %h4.modal-title#myModalLabel
+              Удаление сметы
+          .modal-body
+            Вы действительно хотите удалить смету
+            %b
+              <Имя сметы>
+          .modal-footer
+            %button.btn.btn-default{ type: "button", 'data-dismiss': 'modal' }
+              Отмена
+            %button.btn.betn-danger{ type: "button" }
+              Удалить
+
+    .modal.fade#duplicate{ tabindex: "-1", role: "dialog", 'aria-labelledby': "myModalLabel" }
+      .modal-dialog{ role: "document" }
+        .modal-content
+          .modal-header
+            %button.close{ type: "button", 'data-dismiss': "modal", 'aria-label': "Close" }
+              %span{ 'aria-hidden': true }
+                &times;
+            %h4.modal-title#myModalLabel2
+              Создание копии
+          .modal-body
+            Введите новое имя для копии сметы 
+            %b
+              <Имя сметы>
+            .form-horizontal
               %p
-              .form-horizontal
-                .form-group
-                  %label.col-sm-3.control-label Новое имя
-                  .col-sm-9
-                    = text_field_tag :name, nil, placeholder: 'Введите новое имя', class: 'form-control'
-                .form-group
-                  %label.col-sm-3.control-label Клиент
-                  .col-sm-9
-                    = select_tag :client_id, options_for_select(current_user.clients.all.map{ |u| [u.full_name, u.id] }), class: 'form-control'
-            .modal-footer
-              %button.btn.btn-default{ type: "button", data: { dismiss: "modal" } } Отмена
-              = submit_tag 'Создать', class: 'btn btn-success'
+              .form-group
+                %label.col-sm-3.control-label
+                  Новое имя
+                .col-sm-9
+                  %input.form-control{ placeholder: "Введите новое имя" }
+              .form-group
+                %label.col-sm-3.control-label
+                  Клиент
+                .col-sm-9
+                  %select.form-control
+                    %option
+                      first
+                    %option
+                      second
+          .modal-footer
+            %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" }
+              Отмена
+            %button.btn.btn-success{ type: "button", 'data-dismiss': "modal" }
+              Создать

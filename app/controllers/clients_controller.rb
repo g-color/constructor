@@ -8,8 +8,8 @@ class ClientsController < ApplicationController
       @user_clients = @user_clients.where(clients: {archived: false})
     end
 
-    @owned     = @user_clients.owner(current_user).includes(client: [:estimates])
-    @delegated = @user_clients.delegated(current_user).includes(client: [:estimates])
+    @owned     = @user_clients.owner(current_user)
+    @delegated = @user_clients.delegated(current_user)
 
     if params[:name].present?
       @owned = @owned.select { |m| m.client.full_name.downcase.include? params[:name].downcase }
@@ -18,8 +18,6 @@ class ClientsController < ApplicationController
   end
 
   def new
-    session[:return_to] ||= request.referer
-
     @client = Client.new
     @shared_users = []
     gon.push(
@@ -34,7 +32,7 @@ class ClientsController < ApplicationController
     if @client.save
       @client.assign_owner(current_user)
       @client.share(params[:client_users])
-      redirect_to session.delete(:return_to)
+      redirect_to clients_path
     else
       render 'new'
     end

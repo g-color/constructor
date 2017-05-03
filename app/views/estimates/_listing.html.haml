@@ -1,13 +1,18 @@
 %tr
-  %td= estimate.name
-  %td= estimate.price
-  %td= estimate.price_by_area
-  %td= estimate.area
-  %td= estimate.updated_at
   %td
-    %button.btn.btn-default{ title: "Создать копию сметы", data: { toggle: "modal", target: "#duplicate-estimate-#{estimate.id}"} }
-      %span.glyphicon.glyphicon-duplicate
+    = estimate.name
+  %td
+    = estimate.price
+  %td
+    = estimate.price_by_area
+  %td
+    = estimate.area
+  %td
+    = estimate.updated_at
+  %td
+    %button.btn.btn-default{ 'data-toggle': "modal", 'data-target': "#duplicate", title: "Создать копию сметы" }
+      %span.glyphicon.glyphicon-duplicate{ 'aria-hidden': true }
     = link_to edit_estimate_path(estimate), title: 'Редактировать', class: 'btn btn-warning' do
       %span.glyphicon.glyphicon-pencil
-    = link_to estimate_path(estimate), method: :delete, title: 'Удалить', class: 'btn btn-danger', data: {confirm: 'Are you sure?'} do
-      %span.glyphicon.glyphicon-trash
+    %a.btn.btn-danger{ href: "", 'data-toggle': "modal", 'data-target': "#delete-confirmation", title: "Удалить" }
+      %span.glyphicon.glyphicon-trash{ 'aria-hidden': true }
