@@ -39,7 +39,7 @@
           %th.col-sm-3 Объект
           %th.col-sm-2 Время
       %tbody
-        - @audits.each.where.not(action: AuditAction::DESTROY, user: nil) do |audit|
+        - @audits.where.not(action: AuditAction::DESTROY, user: nil).each do |audit|
           %tr
             %td= audit.user&.full_name
             %td= UserRole.fetch(audit.user&.role)
