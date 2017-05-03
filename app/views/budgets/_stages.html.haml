@@ -57,7 +57,7 @@
             %button.btn.btn-default.btn-xs{ "ng-show" => "selectedProduct.hint", :title => "Показать подсказку", type: 'button', data: { target: "#productHint", toggle: "collapse"} }
               %span.glyphicon.glyphicon.glyphicon-info-sign{"aria-hidden" => "true"}
             %p
-            #productHint.collapse{ "ng-show" => "selectedProduct.hint" }
+            #productHint.collapse
               .well {{ selectedProduct.hint }}
 
             .form-group

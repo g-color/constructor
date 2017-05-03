@@ -22,7 +22,6 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
   showAddModal: (stage) ->
     @scope.addModal.header       = 'Добавление сметного продукта. Этап ' + stage
     @scope.addModal.products     = this.getProducts(stage)
-    @scope.selectedProduct       = null
     @scope.selectedProductId     = 'Выберите сметный продукт'
     @scope.selectedProductCustom = false
     @scope.selectedSetId         = 'Выберите сборку'
