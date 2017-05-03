@@ -39,12 +39,12 @@
           %th.col-sm-3 Объект
           %th.col-sm-2 Время
       %tbody
-        - @audits.each do |audit|
+        - @audits.each.where.not(action: AuditAction::DESTROY, user: nil) do |audit|
           %tr
             %td= audit.user&.full_name
             %td= UserRole.fetch(audit.user&.role)
             %td= AuditAction.fetch(audit.action) || audit.action
-            %td= ObjectClassName.fetch(audit.auditable.class)
+            %td= ObjectClassName.fetch(audit.auditable_type)
             %td= link_to audit.auditable&.to_s, audit.auditable&.link
             %td= audit.created_at.to_s(:db)
 
