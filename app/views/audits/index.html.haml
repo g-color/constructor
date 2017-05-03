@@ -43,7 +43,7 @@
           %tr
             %td= audit.user&.full_name
             %td= UserRole.fetch(audit.user&.role)
-            %td= AuditAction.fetch(audit.action)
+            %td= AuditAction.fetch(audit.action) || audit.action
             %td= ObjectClassName.fetch(audit.auditable.class)
             %td= link_to audit.auditable&.to_s, audit.auditable&.link
             %td= audit.created_at.to_s(:db)

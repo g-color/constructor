@@ -11,7 +11,7 @@ class ObjectClassName
   REPORT      = 'Report'
 
   def self.fetch(class_name)
-    values.fetch(class_name.to_s, nil)
+    values.fetch(class_name.to_s, class_name.to_s)
   end
 
   def self.values
