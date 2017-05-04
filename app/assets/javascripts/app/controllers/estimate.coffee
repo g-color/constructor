@@ -22,12 +22,14 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
   showAddModal: (stage) ->
     @scope.addModal.header       = 'Добавление сметного продукта. Этап ' + stage
     @scope.addModal.products     = this.getProducts(stage)
+    @scope.selectedProduct       = null
     @scope.selectedProductId     = 'Выберите сметный продукт'
     @scope.selectedProductCustom = false
     @scope.selectedSetId         = 'Выберите сборку'
     @scope.selectedSet           = null
     @scope.currentStage          = stage
 
+    $('#productHint').collapse('hide')
     $('#add-product').modal('show')
     true
 
@@ -45,6 +47,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       @scope.selectedEditSetId         = set.id
       @scope.selectedEditSet           = set
 
+    $('#productEditHint').collapse('hide')
     $('#edit-product').modal('show')
     true
 
@@ -176,6 +179,9 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       product = this.getProduct(product_id)
       @scope.selectedProduct = product
       @scope.selectedProductCustom = product.custom
+    else
+      $('#productHint').collapse('hide')
+      @scope.selectedProduct = null
 
   setSelectedSet: () ->
     product = @scope.selectedProduct

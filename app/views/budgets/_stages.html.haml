@@ -57,7 +57,7 @@
             %button.btn.btn-default.btn-xs{ "ng-show" => "selectedProduct.hint", :title => "Показать подсказку", type: 'button', data: { target: "#productHint", toggle: "collapse"} }
               %span.glyphicon.glyphicon.glyphicon-info-sign{"aria-hidden" => "true"}
             %p
-            #productHint.collapse
+            #productHint.collapse{ "ng-show" => "selectedProduct.hint" }
               .well {{ selectedProduct.hint }}
 
             .form-group
@@ -110,6 +110,12 @@
           %h4.modal-title {{ editModal.header }}
         .modal-body
           .form-horizontal
+            %button.btn.btn-default.btn-xs{ "ng-show" => "selectedEditProduct.hint", :title => "Показать подсказку", type: 'button', data: { target: "#productEditHint", toggle: "collapse"} }
+              %span.glyphicon.glyphicon.glyphicon-info-sign{"aria-hidden" => "true"}
+            %p
+            #productEditHint.collapse{ "ng-show" => "selectedEditProduct.hint" }
+              .well {{ selectedEditProduct.hint }}
+
             .form-group
               %label.col-sm-3.control-label Сметный продукт
               .col-sm-9
