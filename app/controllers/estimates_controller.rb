@@ -271,7 +271,7 @@ class EstimatesController < ApplicationController
 
   def get_json_values(discount, area, price, stages)
     {
-      expense: Expense.find(ENV['EXPENSE_ID']),
+      expense: { percent: Expense.sum(:percent) },
       products: @products,
       discount: { name: discount, values: @estimate.discount_by_stages },
       estimate: { area: area,     price:  price },
