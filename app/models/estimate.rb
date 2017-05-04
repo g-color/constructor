@@ -1,10 +1,12 @@
 class Estimate < Budget
-  belongs_to :client
-  validates  :client, presence: true
+  validates :client, presence: true
+  validates :name,   uniqueness: {
+    scope: :client,
+    message: "Название должно быть уникально для клиента",
+    case_sensitive: false
+  }
 
-  def link
-    Rails.application.routes.url_helpers.edit_estimate_path(self)
-  end
+  belongs_to :client
 
   def get_primitives(undivisibilty_objects: false)
     result = {}
@@ -22,4 +24,7 @@ class Estimate < Budget
     puts "\n\n\n\n", engineer_id, "\n\n\n"
   end
 
+  def link
+    Rails.application.routes.url_helpers.edit_estimate_path(self)
+  end
 end

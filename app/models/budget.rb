@@ -104,12 +104,17 @@ class Budget < ApplicationRecord
     self.calc_parameters
   end
 
-  def copy(name:, client:)
-    new_estimate = self.dup
-    new_estimate.update(name: name, client_id: client&.id,)
+  def copy(type:, name: nil, client_id: nil)
+    if type == :estimate
+      new_budget = Estimate.new(self.attributes.except('id', 'type').merge('name' => name, 'client_id' => client_id))
+    else
+      new_budget = Solution.new(self.attributes.except('id', 'type'))
+    end
+    new_budget.save
+
     self.stages.includes(:stage_products).each do |stage|
       new_stage = stage.dup
-      new_stage.update(budget: new_estimate)
+      new_stage.update(budget: new_budget)
       stage.stage_products.includes(:stage_product_sets).each do |product|
         new_product = product.dup
         new_product.update(stage: new_stage)
@@ -133,10 +138,10 @@ class Budget < ApplicationRecord
     esimate_files.each do |files|
       files.each do |tech_file|
         new_file = tech_file.dup
-        new_file.update(budget: new_estimate)
+        new_file.update(budget: new_budget)
       end
     end
-    new_estimate
+    new_budget
   end
 
   def get_stages

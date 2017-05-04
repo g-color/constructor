@@ -78,18 +78,16 @@ class SolutionsController < ApplicationController
   end
 
   def accept
-    solution = Solution.find(params[:solution_id])
-    solution.update(proposed: false)
-
+    Solution.find(params[:solution_id]).update(proposed: false)
     redirect_to solutions_path
   end
 
   def copy
     solution = Solution.includes(:stages, :client_files, :technical_files).find(params[:solution_id])
-    client   = Client.find(params[:client_id])
-    solution.copy(name: params[:name], client: client)
+    estimate = solution.copy(type: :estimate, name: params[:name], client_id: params[:client_id])
 
-    redirect_to estimates_path(client_id: client.id)
+    alert = new_estimate.errors.first[1] unless new_estimate.valid?
+    redirect_to estimates_path(client_id: client.id), alert: alert
   end
 
   def files

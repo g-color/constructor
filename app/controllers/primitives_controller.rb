@@ -1,5 +1,6 @@
 class PrimitivesController < ApplicationController
   before_action :find_primitive, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!
   before_action :check_ability
 
   def index

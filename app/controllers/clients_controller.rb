@@ -1,5 +1,6 @@
 class ClientsController < ApplicationController
   before_action :find_client, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!
 
   def index
     @user_clients = UserClient.joins(:client)
@@ -23,6 +24,7 @@ class ClientsController < ApplicationController
     @client = Client.new
     @shared_users = []
     gon.push(
+      client:            @client,
       users_list:        User.where.not(id: current_user.id),
       shared_users:      @shared_users,
       shared_users_json: @shared_users.map(&:id).to_json
@@ -44,6 +46,7 @@ class ClientsController < ApplicationController
     authorize! :view, @client
     @shared_users = UserClient.where(client: @client).where.not(user: current_user).map(&:user)
     gon.push(
+      client:            @client,
       users_list:        User.where.not(id: current_user.id),
       shared_users:      @shared_users,
       shared_users_json: @shared_users.map(&:id).to_json

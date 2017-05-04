@@ -3,9 +3,13 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
 
   constructor: (@scope, @http, @filter, @pHelper) ->
     @scope.ctrl              = @
+    @scope.client            = @pHelper.get('client')
     @scope.users_list        = @pHelper.get('users_list')
     @scope.shared_users      = @pHelper.get('shared_users')
     @scope.shared_users_json = @pHelper.get('shared_users_json')
+
+    client     = @scope.client
+    client.crm = parseInt(client.crm) if client && client.crm != null
 
   shareClient: () ->
     scope = @scope
@@ -15,7 +19,7 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
     .success (response) ->
       scope.ctrl.addSharedUser(response.user)
     .error (response) ->
-      debugger
+      console.log(response)
 
   addSharedUser: (user) ->
     return if user == undefined
@@ -26,7 +30,7 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
       @scope.shared_users_json = JSON.stringify(shared_users_json)
 
   removeSharedUser: (id) ->
-    user = @scope.shared_users.find((el) -> el.id == id)
+    user  = @scope.shared_users.find((el) -> el.id == id)
     index = @scope.shared_users.indexOf(user)
     @scope.shared_users.splice(index, 1)
 
@@ -40,3 +44,7 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
     protocol = window.location.protocol
     url      = protocol + "//" + host + "/estimates?client_id=" + id
     window.location.href = url
+
+  updateCrm: ->
+    client     = @scope.client
+    client.crm = parseInt(client.crm.toString().substring(0, 7))

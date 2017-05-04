@@ -78,18 +78,19 @@ class EstimatesController < ApplicationController
   end
 
   def copy
-    estimate = Estimate.includes(:stages, :client_files, :technical_files).find(params[:estimate_id])
-    client   = Client.find(params[:client_id])
-    estimate.copy(name: params[:name], client: client)
+    estimate     = Estimate.includes(:stages, :client_files, :technical_files).find(params[:estimate_id])
+    new_estimate = estimate.copy(type: :estimate, name: params[:name], client_id: params[:client_id])
 
-    redirect_to estimates_path(client_id: client.id)
+    alert = new_estimate.errors.first[1] unless new_estimate.valid?
+    redirect_to estimates_path(client_id: params[:client_id]), alert: alert
   end
 
   def propose
     estimate = Estimate.includes(:stages, :client_files, :technical_files).find(params[:estimate_id])
-    solution = estimate.copy(name: estimate.name, client: estimate.client)
+    solution = estimate.copy(type: :solution)
+    solution.update(proposed: true, proposer_id: current_user.id, client_id: nil)
 
-    redirect_to estimates_path(client_id: estimate.client_id)
+    redirect_to solutions_path
   end
 
   def files

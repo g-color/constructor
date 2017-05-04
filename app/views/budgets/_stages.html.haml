@@ -95,7 +95,7 @@
                     %tr{ ng: { repeat: 'template in selectedSet.items' } }
                       %td {{ template.name }}
                       %td
-                        %input.form-control.template-quantity{ placeholder: "Введите количество", ng: { model: 'template.quantity' } }
+                        %input.form-control.template-quantity{ placeholder: "Введите количество", ng: { model: 'template.quantity', change: 'ctrl.updateTemplateValue(template)' } }
                       %td {{ template.value.unit }}
         .modal-footer
           %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" } Отмена
@@ -142,7 +142,7 @@
                     %tr{ ng: { repeat: 'template in selectedEditSet.items' } }
                       %td {{ template.name }}
                       %td
-                        %input.form-control{ placeholder: "Введите количество", ng: { model: 'template.quantity', change: 'ctrl.recalcProduct()' } }
+                        %input.form-control{ placeholder: "Введите количество", ng: { model: 'template.quantity', change: 'ctrl.recalcProduct(template)' } }
                       %td {{ template.value.unit }}
         .modal-footer
           %button.btn.btn-default{ type: "button", data: { dismiss: "modal" } } Закрыть

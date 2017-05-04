@@ -71,7 +71,7 @@ units.each do |unit|
   Unit.create(name: unit[:name])
 end
 
-(1..10).each do |i|
+(1..5).each do |i|
   Primitive.create(
     name:        "Примитив #{i}",
     unit_id:     rand(1..6),

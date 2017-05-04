@@ -8,10 +8,10 @@
     .row.main-content
       .form-horizontal.col-sm-offset-2.col-sm-8
         %br
-        = f.input :first_name,  label: 'Имя',         input_html: { placeholder: 'Введите имя' }
-        = f.input :last_name,   label: 'Фамилия',     input_html: { placeholder: 'Введите фамилию' }
-        = f.input :middle_name, label: 'Отчество',    input_html: { placeholder: 'Введите отчество' }
-        = f.input :crm,         label: 'ID в CRM',    input_html: { placeholder: 'Введите id' }
+        = f.input :first_name, label: 'Имя', placeholder: 'Введите имя'
+        = f.input :last_name, label: 'Фамилия', placeholder: 'Введите фамилию'
+        = f.input :middle_name, label: 'Отчество', placeholder: 'Введите отчество'
+        = f.input :crm, label: 'ID в CRM', placeholder: 'Введите id', input_html: {'type' => 'number', 'ng-model' => 'client.crm', 'ng-change' => 'ctrl.updateCrm()'}
         = f.input :archived,    label: 'Архивирован', wrapper: :inline_checkbox
 
         %input#share-users{ hidden: true, name: 'client_users', ng: { value: 'shared_users_json' } }
