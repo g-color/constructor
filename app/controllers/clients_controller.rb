@@ -38,6 +38,12 @@ class ClientsController < ApplicationController
       @client.share(params[:client_users])
       redirect_to session.delete(:return_to)
     else
+      gon.push(
+        client:            @client,
+        users_list:        User.where.not(id: current_user.id),
+        shared_users:      [],
+        shared_users_json: params[:client_users]
+      )
       render 'new'
     end
   end
@@ -59,6 +65,13 @@ class ClientsController < ApplicationController
       @client.share(params[:client_users])
       redirect_to clients_path
     else
+      @shared_users = UserClient.where(client: @client).where.not(user: current_user).map(&:user)
+      gon.push(
+        client:            @client,
+        users_list:        User.where.not(id: current_user.id),
+        shared_users:      @shared_users,
+        shared_users_json: params[:client_users]
+      )
       render 'edit'
     end
   end
