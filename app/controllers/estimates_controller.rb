@@ -102,79 +102,13 @@ class EstimatesController < ApplicationController
     }
   end
 
-  def export_engineer
-    @estimate.send_email_engineer(params[:engineer])
-    primitives = @estimate.get_primitives
-    @data = []
-    @res = 0
-    primitives.each do |key, value|
-      primitive = Primitive.find(key.to_i)
-      if primitive.category.id == ENV['WORK_CATEGORY'].to_i
-        @data << {
-          name: primitive.name,
-          unit: primitive.unit.name,
-          price: primitive.price,
-          quantity: value,
-          sum: value * primitive.price
-        }
-        @res += value * primitive.price
-      end
-    end
-    pdf = WickedPdf.new.pdf_from_string(render_to_string('export_zp'))
-    save_path = Rails.root.join('pdfs',"Ведомость ЗП на объект.pdf")
-    File.open(save_path, 'wb') do |file|
-      file << pdf
-    end
-
-    stages = @estimate.stages
-    stage_products = []
-    stages.each do |stage|
-      stage_products += stage.stage_products.to_a
-    end
-
-    @result = {}
-    @products = []
-    stage_products.each do |stage_product|
-      primitives = stage_product.get_primitives
-      product = stage_product.product
-      @products << product.name
-      primitives.each do |p, quantity|
-        primitive = Primitive.find(p)
-        if primitive.category.id != ENV['WORK_CATEGORY'].to_i && primitive.category.id != ENV['STOCK_CATEGORY'].to_i
-          if @result[primitive.name].nil?
-            @result[primitive.name] = {}
-            @result[primitive.name][:all] = 0
-            @result[primitive.name][:unit] = primitive.unit.name
-          end
-          @result[primitive.name][product.name] = 0 if @result[primitive.name][product.name].nil?
-          @result[primitive.name][product.name] += quantity
-          @result[primitive.name][:all] += quantity
-        end
-      end
-    end
-
-    @products = @products.uniq
-
-    puts "\n\n\n\n\n", @result, "\n\n\n\n"
-
-    pdf = WickedPdf.new.pdf_from_string(render_to_string('export_primitives'))
-    save_path = Rails.root.join('pdfs',"Перечень материалов на объект.pdf")
-    File.open(save_path, 'wb') do |file|
-      file << pdf
-    end
-
-
-  end
-
   def export_pdf
-    @estimate = data_for_export(Estimate.find(params[:estimate_id]))
+    @estimate = Estimate.find(params[:estimate_id]).for_export_budget
     render pdf: "export_pdf"
   end
 
-  respond_to :docx
-
   def export_doc
-    @estimate = data_for_export(Estimate.find(params[:estimate_id]))
+    @estimate = Estimate.find(params[:estimate_id]).for_export_budget
     respond_to do |format|
       format.docx do
         return render docx: 'export_doc', filename: 'export_doc.docx'
@@ -214,48 +148,6 @@ class EstimatesController < ApplicationController
   end
 
   private
-
-  def data_for_export(estimate)
-    {
-      discount_title: estimate.discount_title,
-      discount_amount: estimate.discount_amount,
-      price_by_stage_aggregated: estimate.price_by_stage_aggregated,
-      price_by_area_per_stage: estimate.price_by_area_per_stage,
-      price_by_stage_aggregated_discounted: estimate.price_by_stage_aggregated_discounted,
-      price_by_area_per_stage_discounted: estimate.price_by_area_per_stage_discounted,
-      name: estimate.name,
-      date: estimate.created_at,
-      area:  estimate.area,
-      price: estimate.price,
-      first_floor_height: estimate.first_floor_height,
-      second_floor_height_min: estimate.second_floor_height_min,
-      second_floor_height_max: estimate.second_floor_height_max,
-      third_floor_height_min: estimate.third_floor_height_min,
-      third_floor_height_max: estimate.third_floor_height_max,
-      stages: estimate.stages.includes(:stage_products).map do |stage|
-        {
-          number:      stage.number,
-          price:       stage.price,
-          total_price: stage.total_price,
-          products:    stage.stage_products.includes(:stage_product_sets, :product, product: [:unit] ).map do |stage_product|
-            {
-              name:               stage_product.product.name,
-              description:        stage_product.product.description,
-              display_components: stage_product.product.display_components,
-              custom:             stage_product.product.custom,
-              with_work:          stage_product.with_work,
-              unit:               stage_product.product.unit.name,
-              price_result:       stage_product.with_work ? stage_product.price_with_work : stage_product.price_without_work,
-              quantity:           stage_product.quantity,
-              set_name:           stage_product.product.custom ? stage_product.stage_product_sets.find_by(selected: true).product_set.name : '',
-              sets:               stage_product.product.custom ? estimate.get_stage_product_set(stage_product) : [],
-              items:              stage_product.items
-            }
-          end
-        }
-      end
-    }
-  end
 
   def find_estimate
     @estimate = Estimate.find(params[:id])

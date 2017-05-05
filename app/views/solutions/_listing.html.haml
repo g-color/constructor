@@ -1,10 +1,10 @@
 %tr
   %td= solution.name
-  %td= solution.price
+  %td= solution.price.round
   %td= solution.price_by_area
   %td= solution.get_floor
   %td= solution.area
-  %td{ data: { order: solution.updated_at.to_i } }= solution.updated_at
+  %td{ data: { order: solution.updated_at.to_i } }= solution.updated_at.strftime('%Y-%m-%d')
   %td
     .btn-group
       %button.btn.btn-default.dropdown-toggle{ type: "button", data: { toggle: "dropdown" } }
@@ -17,7 +17,7 @@
           %li= link_to 'Ссылка на сайт', solution.url, target: :blank
         %li
           %a{ data: { toggle: 'modal', target: "#create-estimate-#{solution.id}"} } Дублировать как смету
-        %li= link_to nil, 'Скачать в .pdf'
+        %li= link_to 'Скачать в .pdf', solution_export_pdf_path(solution.id), target: '_blank'
         - if current_user.admin?
           %li.divider
           %li= link_to 'Редактировать', edit_solution_path(solution)

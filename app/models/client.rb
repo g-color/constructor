@@ -3,7 +3,7 @@ class Client < ApplicationRecord
   audited
 
   validates :first_name, presence: true
-  validates :crm,        presence: true, length: { minimum: 7, maximum: 7 }
+  validates :crm, uniqueness: true, presence: true, length: { minimum: 7, maximum: 7 }
 
   has_many :users, through: :user_clients
   has_many :user_clients, dependent: :delete_all

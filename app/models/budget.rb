@@ -30,6 +30,7 @@ class Budget < ApplicationRecord
   validates :third_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
   validates :third_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
 
+  belongs_to :solution
   belongs_to :user
   belongs_to :proposer, class_name: "User", foreign_key: :proposer_id
 
@@ -45,10 +46,12 @@ class Budget < ApplicationRecord
     self.price_by_stage_aggregated[0] = price_by_stage[0]
     self.price_by_stage_aggregated[1] = price_by_stage_aggregated[0] + price_by_stage[1]
     self.price_by_stage_aggregated[2] = price_by_stage_aggregated[1] + price_by_stage[2]
+    discount_all = 0
     (0..2).each do |i|
       self.price_by_area_per_stage[i] = (self.price_by_stage_aggregated[i] / self.area).round 2 if self.area > 0
       self.discount_amount[i] = (self.price_by_stage[i] * self.discount_by_stages[i] / 100.0).round 2
-      self.price_by_stage_aggregated_discounted[i] = self.price_by_stage_aggregated[i] - self.discount_amount[i]
+      discount_all += self.discount_amount[i]
+      self.price_by_stage_aggregated_discounted[i] = self.price_by_stage_aggregated[i] - discount_all
       self.price_by_area_per_stage_discounted[i] = (self.price_by_stage_aggregated_discounted[i] / area).round 2
     end
     self.floors = self.get_floor
@@ -106,7 +109,7 @@ class Budget < ApplicationRecord
 
   def copy(type:, name: nil, client_id: nil)
     if type == :estimate
-      new_budget = Estimate.new(self.attributes.except('id', 'type').merge('name' => name, 'client_id' => client_id))
+      new_budget = Estimate.new(self.attributes.except('id', 'type').merge(name: name, client_id: client_id, solution_id: self.solution? ? self.id : nil))
     else
       new_budget = Solution.new(self.attributes.except('id', 'type'))
     end
@@ -302,6 +305,48 @@ class Budget < ApplicationRecord
     end
     data[:products] = data[:products].uniq
     data
+  end
+
+  def for_export_budget
+    {
+      discount_title: self.discount_title,
+      discount_amount: self.discount_amount,
+      price_by_stage_aggregated: self.price_by_stage_aggregated,
+      price_by_area_per_stage: self.price_by_area_per_stage,
+      price_by_stage_aggregated_discounted: self.price_by_stage_aggregated_discounted,
+      price_by_area_per_stage_discounted: self.price_by_area_per_stage_discounted,
+      project: self.solution.present? ? self.solution.name : nil,
+      date: self.created_at,
+      area:  self.area,
+      price: self.price,
+      first_floor_height: self.first_floor_height,
+      second_floor_height_min: self.second_floor_height_min,
+      second_floor_height_max: self.second_floor_height_max,
+      third_floor_height_min: self.third_floor_height_min,
+      third_floor_height_max: self.third_floor_height_max,
+      stages: self.stages.includes(:stage_products).map do |stage|
+        {
+          number:              stage.number,
+          price_with_discount: stage.price_with_discount,
+          price:               stage.price,
+          products:            stage.stage_products.includes(:stage_product_sets, :product, product: [:unit] ).map do |stage_product|
+            {
+              name:               stage_product.product.name,
+              description:        stage_product.product.description,
+              display_components: stage_product.product.display_components,
+              custom:             stage_product.product.custom,
+              with_work:          stage_product.with_work,
+              unit:               stage_product.product.unit.name,
+              price_result:       ((stage_product.with_work ? stage_product.price_with_work : stage_product.price_without_work) * (1 + (stage_product.product.profit+Expense.sum(:percent))/100.0)).round(2),
+              quantity:           stage_product.quantity,
+              set_name:           stage_product.product.custom ? stage_product.stage_product_sets.find_by(selected: true).product_set.name : '',
+              sets:               stage_product.product.custom ? self.get_stage_product_set(stage_product) : [],
+              items:              stage_product.items
+            }
+          end
+        }
+      end
+    }
   end
 
   def solution?

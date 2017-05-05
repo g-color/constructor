@@ -15,16 +15,17 @@ Rails.application.routes.draw do
   resources :products
   resources :clients
   resources :estimates do
-    post :copy,    to: 'estimates#copy',    as: :copy
-    post :propose, to: 'estimates#propose', as: :propose
-    post :files,   to: 'estimates#files',   as: :estimates_files, on: :collection
-    get 'export_pdf', to: 'estimates#export_pdf', as: :export_pdf
-    get 'export_doc', to: 'estimates#export_doc', as: :export_doc, format: 'docx'
-    get 'engineer', to: 'estimates#estimates_engineer', as: :engineer
+    post :copy,       to: 'estimates#copy',               as: :copy
+    post :propose,    to: 'estimates#propose',            as: :propose
+    post :files,      to: 'estimates#files',              as: :estimates_files, on: :collection
+    get  :export_pdf, to: 'estimates#export_pdf',         as: :export_pdf
+    get  :export_doc, to: 'estimates#export_doc',         as: :export_doc, format: 'docx'
+    get  :engineer,   to: 'estimates#estimates_engineer', as: :engineer
   end
   resources :solutions do
-    post :copy,   to: 'solutions#copy',   as: :copy
-    get  :accept, to: 'solutions#accept', as: :accept
+    post :copy,       to: 'solutions#copy',       as: :copy
+    get  :accept,     to: 'solutions#accept',     as: :accept
+    get  :export_pdf, to: 'solutions#export_pdf', as: :export_pdf
   end
 
   get  :audits,                       to: 'audits#index',                 as: :audits

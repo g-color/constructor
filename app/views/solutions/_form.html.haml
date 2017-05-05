@@ -90,27 +90,6 @@
   %p
   = render 'budgets/stages', f: f, show: false
 
-  %p
-  .row.main-content
-    %h3.text-center Экспорт
-    %br
-    .button-block.text-center
-      %button.btn.btn-default{ type: 'button' }
-        Экспорт в
-        %b .pdf
-      %button.btn.btn-default{ type: "button" }
-        Экспорт в
-        %b .doc
-    %br
-    .button-block.text-center
-      %button.btn.btn-default{ type: "button" }
-        Предложить как готовое решение
-      %button.btn.btn-default{ type: "button" }
-        Сделать готовым решением
-      %button.btn.btn-default{ type: "button", 'data-toggle': "modal", 'data-target': "#modal-engineer" }
-        Экспорт для инженера
-    %br
-
   #modal-engineer.modal.fade{ tabindex: -1, role: "dialog", 'aria-labelledby': "myLargeModalLabel" }
     .modal-dialog{ role: "document" }
       .modal-content

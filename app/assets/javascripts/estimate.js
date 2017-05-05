@@ -57,4 +57,8 @@ $(document).on('turbolinks:load', function() {
     ]
   })
 
+  $('#btn-export-engineer').click(function() {
+    $('#modal-engineer').modal('toggle');
+  });
+
 });

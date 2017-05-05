@@ -53,6 +53,7 @@ gem 'paperclip'
 gem 'htmltoword'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
+gem 'rtf'
 
 # gem 'cancancan'
 # https://github.com/rubysherpas/paranoia

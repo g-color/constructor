@@ -84,10 +84,10 @@ class SolutionsController < ApplicationController
 
   def copy
     solution = Solution.includes(:stages, :client_files, :technical_files).find(params[:solution_id])
-    estimate = solution.copy(type: :estimate, name: params[:name], client_id: params[:client_id])
+    new_estimate = solution.copy(type: :estimate, name: params[:name], client_id: params[:client_id])
 
     alert = new_estimate.errors.first[1] unless new_estimate.valid?
-    redirect_to estimates_path(client_id: client.id), alert: alert
+    redirect_to estimates_path(client_id: params[:client_id]), alert: alert
   end
 
   def files
@@ -97,6 +97,11 @@ class SolutionsController < ApplicationController
       name: f.data_file_name,
       src:  f.image? ? f.data.url : ActionController::Base.helpers.asset_url('file-icon.png')
     }
+  end
+
+  def export_pdf
+    @solution = Solution.find(params[:solution_id]).for_export_budget
+    render pdf: "export_pdf"
   end
 
   private

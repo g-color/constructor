@@ -212,6 +212,7 @@ GEM
     request_store (1.2.0)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
+    rtf (0.3.3)
     ruby_parser (3.8.4)
       sexp_processor (~> 4.1)
     rubyzip (1.2.1)
@@ -300,6 +301,7 @@ DEPENDENCIES
   rails
   rails-observers!
   rails4-autocomplete
+  rtf
   sass-rails (~> 5.0)
   sidekiq
   simple_form
