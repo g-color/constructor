@@ -2,7 +2,7 @@
   %h1 Просмотр готового решения
   %ol.breadcrumb.row
     %li= link_to 'Готовые решения', solutions_path
-    %li.active @estimate.name
+    %li.active= @solution.name
 
   = simple_form_for @solution,  wrapper: :horizontal_form do |f|
     .action-buttons.row
