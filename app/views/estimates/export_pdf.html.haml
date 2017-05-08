@@ -7,72 +7,50 @@
       .col-xs-4.text-right
         %br
         %br
-        %br
-        %p.no-margin
-          РФ, Республика Крым
-        %p.no-margin
-          г. Симферополь
-        %p.no-margin
-          ул. Петропавловская, дом 3
-        %p.no-margin
-          ТДЦ "Октябрьский", офис 411/412
-      .col-xs-4
-        = wicked_pdf_image_tag 'full-logo.png', class: 'logo', alt: 'brand', width: 230
+        %p.no-margin РФ, Республика Крым
+        %p.no-margin г. Симферополь
+        %p.no-margin ул. Петропавловская, дом 3
+        %p.no-margin ТДЦ "Октябрьский", офис 411/412
+      .col-xs-4= wicked_pdf_image_tag 'full-logo.png', class: 'logo', alt: 'brand', width: 230
       .col-xs-4.text-left
         %br
         %br
-        %br
-        %p.no-margin
-          www.artsipstroi.com
-        %p.no-margin
-          www.artkarkas.ru
-        %p.no-margin
-          = current_user.email
-        %p.no-margin
-          = current_user.phone
+        %p.no-margin www.artsipstroi.com
+        %p.no-margin www.artkarkas.ru
+        %p.no-margin= current_user.email
+        %p.no-margin= current_user.phone
 
     .row
       .col-xs-12
     .row
-      .col-xs-4.col-xs-offset-4
+      .col-xs-6.col-xs-offset-3
         %h4.text-center
-          %strong
-            Расчет стоимости строительства энергосберегающего жилого дома
+          %strong Расчет стоимости строительства энергосберегающего жилого дома
 
     .row
-      .col-xs-4
-        %p.no-margin
-          = "Высота потолка первого этажа: #{@estimate[:first_floor_height]} м"
+      .col-xs-5
+        %p.no-margin= "Высота потолка первого этажа: #{@estimate[:first_floor_height]} м"
         - if @estimate[:second_floor_height_min] > 0 && @estimate[:second_floor_height_max] > 0
-          %p.no-margin
-            = "Высота потолка второго этажа: от #{@estimate[:second_floor_height_min]} м до #{@estimate[:second_floor_height_max]} м"
+          %p.no-margin= "Высота потолка второго этажа: от #{@estimate[:second_floor_height_min]} м до #{@estimate[:second_floor_height_max]} м"
         - if @estimate[:second_floor_height_min] > 0 && @estimate[:second_floor_height_max] > 0
-          %p.no-margin
-            = "Высота потолка третьего этажа: от #{@estimate[:third_floor_height_min]} м до #{@estimate[:third_floor_height_max]} м"
-        %p.no-margin
-          = "Площадь строительства: #{@estimate[:area]} м2"
-      .col-xs-4.col-xs-offset-4
-        %p.no-margin
-          = "Проект: #{@estimate[:project]}"
-        %p.no-margin
-          = "Дата расчета: #{@estimate[:date].strftime('%Y-%m-%d')}"
+          %p.no-margin= "Высота потолка третьего этажа: от #{@estimate[:third_floor_height_min]} м до #{@estimate[:third_floor_height_max]} м"
+        %p.no-margin= "Площадь строительства: #{@estimate[:area]} м2"
+      .col-xs-4.col-xs-offset-3
+        %p.no-margin= "Проект: #{@estimate[:project]}"
+        %p.no-margin= "Дата расчета: #{@estimate[:date].strftime('%Y-%m-%d')}"
 
     - @estimate[:stages].each do |stage|
       - unless stage[:products].empty?
         %section.stage-pdf
           .row
             .col-xs-12.text-center
-              %h4
-                = "#{stage[:number]} этап"
-              %h4>
-                = Stage::NAME[stage[:number]-1]
+              %h4= "#{Stage::NUMNBER[stage[:number] - 1]} этап"
+              %h4= Stage::NAME[stage[:number] - 1]
           .row
             .col-xs-7
-              %span
-                Наименование выполняемых работ
+              %span Наименование выполняемых работ
             .col-xs-5
-              %span
-                Стоимость, рублей
+              %span Стоимость, рублей
           %hr
 
           - stage[:products].each do |product|
@@ -85,12 +63,12 @@
                   - product[:items].each do |item|
                     %p.no-margin
                       = "- #{item[:name]} - #{item[:quantity].to_s} #{item[:unit]}"
-                    %p.no-margin
-                      = product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа")
+                %p.no-margin
+                  = product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа")
               .col-xs-5
                 %p.no-margin
                   %strong
-                    = product[:price_result] * product[:quantity]
+                    = money(product[:price_result] * product[:quantity])
             %hr
 
             .row
@@ -99,7 +77,7 @@
                   = "Итого по #{stage[:number]} этапу:"
               .col-xs-5
                 %strong
-                  = "#{@estimate[:price_by_stage_aggregated][stage[:number]-1]} руб. (~ #{@estimate[:price_by_area_per_stage][stage[:number]-1]} руб. за м2)"
+                  = "#{money(@estimate[:price_by_stage_aggregated][stage[:number]-1])} руб. (~ #{money(@estimate[:price_by_area_per_stage][stage[:number]-1])} руб. за м2)"
 
               - if @estimate[:discount_amount][stage[:number]-1] > 0
                 .col-xs-7.text-right.red-text
@@ -107,14 +85,14 @@
                     = "#{@estimate[:discount_title]} по #{stage[:number]} этапу:"
                 .col-xs-5.red-text
                   %strong
-                    = "-#{@estimate[:discount_amount][stage[:number]-1]} руб."
+                    = "-#{money(@estimate[:discount_amount][stage[:number]-1])} руб."
 
-                .col-xs-7.text-right
-                  %strong
-                    = "Итого по #{stage[:number]} этапу(ам):"
-                .col-xs-5
-                  %strong
-                    = "#{@estimate[:price_by_stage_aggregated_discounted][stage[:number]-1]} руб. (~ #{@estimate[:price_by_area_per_stage_discounted][stage[:number]-1]} руб. за м2)"
+              .col-xs-7.text-right
+                %strong
+                  = "Итого по #{stage[:number]} этапу(ам):"
+              .col-xs-5
+                %strong
+                  = "#{money(@estimate[:price_by_stage_aggregated_discounted][stage[:number]-1])} руб. (~ #{money(@estimate[:price_by_area_per_stage_discounted][stage[:number]-1])} руб. за м2)"
 
 
     .row
@@ -127,10 +105,7 @@
     - if @estimate[:area] > 99
       .row
         .col-xs-12
-          %p
-            Жилье для бригады рабочих из 2-3 человек на период монтажа (2-3 недели) обеспечивается Заказчиком (кроме г. Симферополь и Симферопольского района).
-          %p
-            Доставка по всему Крыму – бесплатно. Гарантия на дом — 10 лет. Срок эксплуатации – 70 лет. Только сертифицированные и качественные строительные материалы.
+          %p Черновая рабочая лестница из сосны камерной сушки или кондиционер — В ПОДАРОК!
 
     - unless @estimate[:stages].third[:products].empty?
       .row

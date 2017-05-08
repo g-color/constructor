@@ -2,6 +2,8 @@ class Stage < ApplicationRecord
   belongs_to :budget
   has_many :stage_products
 
+  NUMBER = ['Первый', 'Второй', 'Третий']
+
   NAME = [
     'Фундамент/коробка/кровля',
     'Под отделку',
