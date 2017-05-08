@@ -829,3 +829,111 @@
 2017-05-04T23:33:30.449Z 12502 TID-gqn3yz0cg ERROR: /home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/redis-3.3.3/lib/redis/client.rb:220:in `process'
 2017-05-04T23:33:30.449Z 12502 TID-gqn3yz0cg ERROR: /home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/redis-3.3.3/lib/redis/client.rb:120:in `call'
 2017-05-04T23:33:30.449Z 12502 TID-gqn3yz0cg ERROR: /home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/redis-3.3.3/lib/redis/client.rb:209:in `block in call_with_timeout'
+2017-05-08T14:19:24.772Z 13767 TID-gpifm0cgg INFO: Running in ruby 2.3.1p112 (2016-04-26 revision 54768) [x86_64-linux]
+2017-05-08T14:19:24.894Z 13767 TID-gpifm0cgg INFO: See LICENSE and the LGPL-3.0 for licensing details.
+2017-05-08T14:19:24.972Z 13767 TID-gpifm0cgg INFO: Upgrade to Sidekiq Pro for more features and support: http://sidekiq.org
+2017-05-08T14:19:24.973Z 13767 TID-gpifm0cgg INFO: Booting Sidekiq 4.2.10 with redis options {:url=>nil}
+2017-05-08T14:19:25.251Z 13767 TID-gpifm0cgg INFO: Starting processing, hit Ctrl-C to stop
+2017-05-08T14:19:25.295Z 13767 TID-gpigdonl4 PriceUpdateJob JID-9807abb0efd68e07f13f27b4 INFO: start
+2017-05-08T14:19:25.295Z 13767 TID-gpigdon2s PriceUpdateJob JID-669c32298b65f97b549a7b89 INFO: start
+2017-05-08T14:19:25.296Z 13767 TID-gpigdomwo PriceUpdateJob JID-d30f1ae66b94c90b90be0833 INFO: start
+2017-05-08T14:19:25.296Z 13767 TID-gpigdom88 PriceUpdateJob JID-49c4ce27ee474426ab4f402e INFO: start
+2017-05-08T14:19:25.296Z 13767 TID-gpigdolw0 PriceUpdateJob JID-9d25ccadaafa60c06626a9bd INFO: start
+2017-05-08T14:19:25.297Z 13767 TID-gpigdomec PriceUpdateJob JID-2b8e2e0d246e53e46895167f INFO: start
+2017-05-08T14:19:30.371Z 13767 TID-gpigdomec PriceUpdateJob JID-2b8e2e0d246e53e46895167f INFO: fail: 5.074 sec
+2017-05-08T14:19:30.374Z 13767 TID-gpigdomec WARN: {"context":"Job raised exception","job":{"class":"ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper","wrapped":"PriceUpdateJob","queue":"update_price","args":[{"job_class":"PriceUpdateJob","job_id":"e3bbf85a-bed3-42d3-bab1-8ba2ce6cf91a","queue_name":"update_price","priority":null,"arguments":[{"_aj_globalid":"gid://constructor/Primitive/3"}],"locale":"en"}],"retry":true,"jid":"2b8e2e0d246e53e46895167f","created_at":1494252993.1601532,"enqueued_at":1494252993.1602194,"error_message":"Error while trying to deserialize arguments: could not obtain a connection from the pool within 5.000 seconds (waited 5.000 seconds); all pooled connections were in use","error_class":"ActiveJob::DeserializationError","failed_at":1494253170.3714933,"retry_count":0},"jobstr":"{\"class\":\"ActiveJob::QueueAdapters::SidekiqAdapter::JobWrapper\",\"wrapped\":\"PriceUpdateJob\",\"queue\":\"update_price\",\"args\":[{\"job_class\":\"PriceUpdateJob\",\"job_id\":\"e3bbf85a-bed3-42d3-bab1-8ba2ce6cf91a\",\"queue_name\":\"update_price\",\"priority\":null,\"arguments\":[{\"_aj_globalid\":\"gid://constructor/Primitive/3\"}],\"locale\":\"en\"}],\"retry\":true,\"jid\":\"2b8e2e0d246e53e46895167f\",\"created_at\":1494252993.1601532,\"enqueued_at\":1494252993.1602194}"}
+2017-05-08T14:19:30.374Z 13767 TID-gpigdomec WARN: ActiveJob::DeserializationError: Error while trying to deserialize arguments: could not obtain a connection from the pool within 5.000 seconds (waited 5.000 seconds); all pooled connections were in use
+2017-05-08T14:19:30.374Z 13767 TID-gpigdomec WARN: /home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:202:in `block in wait_poll'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:193:in `loop'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:193:in `wait_poll'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:154:in `internal_poll'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:278:in `internal_poll'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:148:in `block in poll'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/2.3.0/monitor.rb:214:in `mon_synchronize'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:158:in `synchronize'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:148:in `poll'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:717:in `acquire_connection'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:490:in `checkout'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:364:in `connection'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_adapters/abstract/connection_pool.rb:883:in `retrieve_connection'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_handling.rb:128:in `retrieve_connection'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/connection_handling.rb:91:in `connection'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/model_schema.rb:442:in `load_schema!'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/attributes.rb:233:in `load_schema!'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/attribute_decorators.rb:28:in `load_schema!'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/model_schema.rb:437:in `load_schema'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/model_schema.rb:339:in `columns_hash'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/inheritance.rb:77:in `descends_from_active_record?'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/inheritance.rb:83:in `finder_needs_type_condition?'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/core.rb:292:in `relation'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activerecord-5.0.2/lib/active_record/scoping/default.rb:35:in `unscoped'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/globalid-0.4.0/lib/global_id/locator.rb:165:in `unscoped'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/globalid-0.4.0/lib/global_id/locator.rb:155:in `locate'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/globalid-0.4.0/lib/global_id/locator.rb:17:in `locate'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/arguments.rb:111:in `deserialize_global_id'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/arguments.rb:97:in `deserialize_argument'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/arguments.rb:51:in `block in deserialize'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/arguments.rb:51:in `map'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/arguments.rb:51:in `deserialize'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/core.rb:128:in `deserialize_arguments'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/core.rb:118:in `deserialize_arguments_if_needed'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/execution.rb:32:in `perform_now'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/execution.rb:22:in `block in execute'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:126:in `call'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:506:in `block (2 levels) in compile'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:455:in `call'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:448:in `block (2 levels) in around'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:286:in `block (2 levels) in halting'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/railtie.rb:26:in `block (4 levels) in <class:Railtie>'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/execution_wrapper.rb:85:in `wrap'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/reloader.rb:68:in `block in wrap'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/execution_wrapper.rb:81:in `wrap'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/reloader.rb:67:in `wrap'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/railtie.rb:25:in `block (3 levels) in <class:Railtie>'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:391:in `instance_exec'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:391:in `block in make_lambda'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:285:in `block in halting'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:447:in `block in around'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:455:in `call'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:101:in `__run_callbacks__'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:750:in `_run_execute_callbacks'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/callbacks.rb:90:in `run_callbacks'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/execution.rb:20:in `execute'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activejob-5.0.2/lib/active_job/queue_adapters/sidekiq_adapter.rb:40:in `perform'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:167:in `execute_job'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:139:in `block (5 levels) in process'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq.rb:36:in `block in <module:Sidekiq>'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:135:in `block (4 levels) in process'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/middleware/chain.rb:128:in `block in invoke'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/middleware/server/logging.rb:10:in `call'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/middleware/chain.rb:130:in `block in invoke'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/middleware/server/retry_jobs.rb:74:in `call'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/middleware/chain.rb:130:in `block in invoke'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/middleware/chain.rb:133:in `invoke'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:134:in `block (3 levels) in process'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/logging.rb:32:in `with_context'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:132:in `block (2 levels) in process'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:183:in `stats'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:131:in `block in process'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/rails.rb:106:in `block in call'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/execution_wrapper.rb:85:in `wrap'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/reloader.rb:68:in `block in wrap'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/execution_wrapper.rb:85:in `wrap'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-5.0.2/lib/active_support/reloader.rb:67:in `wrap'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/rails.rb:105:in `call'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:126:in `process'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:82:in `process_one'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/processor.rb:70:in `run'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/util.rb:17:in `watchdog'
+/home/g1nc/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/sidekiq-4.2.10/lib/sidekiq/util.rb:26:in `block in safe_thread'
+2017-05-08T14:19:30.421Z 13767 TID-gpigdon2s PriceUpdateJob JID-669c32298b65f97b549a7b89 INFO: done: 5.125 sec
+2017-05-08T14:19:30.427Z 13767 TID-gpigdom88 PriceUpdateJob JID-49c4ce27ee474426ab4f402e INFO: done: 5.131 sec
+2017-05-08T14:19:30.428Z 13767 TID-gpigdomwo PriceUpdateJob JID-d30f1ae66b94c90b90be0833 INFO: done: 5.133 sec
+2017-05-08T14:19:30.501Z 13767 TID-gpigdolw0 PriceUpdateJob JID-9d25ccadaafa60c06626a9bd INFO: done: 5.205 sec
+2017-05-08T14:19:30.508Z 13767 TID-gpigdonl4 PriceUpdateJob JID-9807abb0efd68e07f13f27b4 INFO: done: 5.213 sec
+2017-05-08T14:20:00.130Z 13767 TID-gpigdonf0 PriceUpdateJob JID-2b8e2e0d246e53e46895167f INFO: start
+2017-05-08T14:20:00.150Z 13767 TID-gpigdonf0 PriceUpdateJob JID-2b8e2e0d246e53e46895167f INFO: done: 0.021 sec
+2017-05-08T14:26:30.913Z 13767 TID-gpigdolpw PriceUpdateJob JID-cc6ce7b5bf739cbd0668a11e INFO: start
+2017-05-08T14:26:30.936Z 13767 TID-gpigdolpw PriceUpdateJob JID-cc6ce7b5bf739cbd0668a11e INFO: done: 0.023 sec
+2017-05-08T14:26:38.035Z 13767 TID-gpifs9j3w PriceUpdateJob JID-3fdbf951f9e6156aac4a2950 INFO: start
+2017-05-08T14:26:38.082Z 13767 TID-gpifs9j3w PriceUpdateJob JID-3fdbf951f9e6156aac4a2950 INFO: done: 0.048 sec

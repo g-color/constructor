@@ -19,4 +19,7 @@ $(document).on 'turbolinks:load', () ->
   $('.primitive-price').on 'blur', (e) ->
     price = $(e.target).val()
     id    = $(e.target).data('id')
-    $('#primitive-' + id).submit()
+    old_price = $(e.target).data('price')
+
+    unless parseFloat(price) == parseFloat(old_price)
+      $('#primitive-' + id).submit()
