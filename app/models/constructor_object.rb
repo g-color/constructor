@@ -24,6 +24,7 @@ class ConstructorObject < ApplicationRecord
 
   scope :filter_name, -> (name)        { where("name ILIKE ?", "%#{name}%") if name.present? }
   scope :category,    -> (category_id) { where(category_id: category_id) if category_id.present? }
+  scope :active,      ->               { where('deleted_at IS NULL') }
 
 
   accepts_nested_attributes_for :compositions, reject_if: :all_blank, allow_destroy: true
