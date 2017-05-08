@@ -14,7 +14,7 @@ class AuditsController < ApplicationController
       @audits = Audit.includes(:user, :auditable).all
     end
 
-    # @audits = @audits.page params[:page]
+    @audits = @audits.order(created_at: :desc)
 
     respond_to do |format|
       format.html

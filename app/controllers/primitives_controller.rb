@@ -46,6 +46,11 @@ class PrimitivesController < ApplicationController
     redirect_to primitives_path
   end
 
+  def update_price
+    primitive = Primitive.find(params[:primitive_id])
+    primitive.update(price: params[:price], date: Date.today)
+  end
+
   private
 
   def check_ability

@@ -2,7 +2,9 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
 
-  resources :primitives
+  resources :primitives do
+    post :update_price, to: 'primitives#update_price', as: :update_price
+  end
   resources :units
   resources :categories
   resources :composites

@@ -3,7 +3,7 @@
   %td= primitive.unit.name
   %td
     = simple_form_for primitive, html: { id: "primitive-#{primitive.id}" } do |f|
-      = f.input :price, label: false
+      %input.form-control.primitive-price{ value: primitive.price, name: 'primitive[price]', data: { id: primitive.id } }
   %td
     .btn-group
       %button{ data: {toggle: 'dropdown'}, ng: { class: "ctrl.dateClass('#{primitive.date.strftime("%Y-%m-%d")}')" } }
@@ -11,8 +11,8 @@
         %span.caret
       %ul.dropdown-menu
         %li
-          = link_to 'Обновить цену', "#", class: 'update-price-link'
-            
+          = link_to 'Обновить дату', "#", class: 'update-price-link'
+
   %td
     = link_to edit_primitive_path(primitive), title: 'Редактировать', class: 'btn btn-warning' do
       %span.glyphicon.glyphicon-pencil

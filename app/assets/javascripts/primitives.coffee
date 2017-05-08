@@ -15,3 +15,8 @@ $(document).on 'turbolinks:load', () ->
       { "orderable": false }
     ]
   })
+
+  $('.primitive-price').on 'blur', (e) ->
+    price = $(e.target).val()
+    id    = $(e.target).data('id')
+    $('#primitive-' + id).submit()

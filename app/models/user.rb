@@ -9,7 +9,7 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name,  presence: true
   validates :role,       presence: true
-  validates :crm,        presence: true, uniqueness: true
+  validates :crm,        presence: true, uniqueness: true, length: { minimum: 7, maximum: 7}
   validates :phone,      presence: true
 
   has_many :user_clients
