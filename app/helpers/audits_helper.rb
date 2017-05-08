@@ -1,26 +1,25 @@
 module AuditsHelper
-  def get_record(id, type)
-    if type == 'Budget' || type == 'ConstructorObject'
-      if type == 'Budget'
-        Estimate.with_deleted.find(id) if Estimate.with_deleted.exists?(id: id)
-        Solution.with_deleted.find(id) if Solution.with_deleted.exists?(id: id)
-      else
-        Primitive.with_deleted.find(id) if Primitive.with_deleted.exists?(id: id)
-        Composite.with_deleted.find(id) if Composite.with_deleted.exists?(id: id)
-      end
+  def self.get_action(audit)
+    get_auditable(audit)
+    return 'Изменение' if ObjectClassName.subclasses.has_key?(@auditable.class.to_s)
+    AuditAction.fetch(audit.action)
+  end
+
+  def self.get_class(audit)
+    get_auditable(audit)
+
+    if ObjectClassName.subclasses.include?(@auditable.class.to_s)
+      ObjectClassName.subclasses.fetch(@auditable.class.to_s, @auditable.class.to_s)
     else
-      clazz = type.constantize
-      clazz.with_deleted.find(id)
+      ObjectClassName.fetch(@auditable.class.to_s)
     end
   end
 
-  def get_record_name(id, type)
-    record = get_record(id, type)
-    record.to_s
-  end
-
-  def get_record_link(id, type)
-    record = get_record(id, type)
-    record&.link
+  def self.get_auditable(audit)
+    @auditable = audit.auditable
+    if @auditable.nil?
+      @auditable = audit.auditable_type.constantize.with_deleted.find(audit.auditable_id)
+    end
+    @auditable
   end
 end

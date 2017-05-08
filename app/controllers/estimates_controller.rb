@@ -154,8 +154,10 @@ class EstimatesController < ApplicationController
   end
 
   def estimate_params
-    params.require(:estimate).permit(:name, :client_id, :area,
-      :first_floor_height, :discount_title, :discount_by_stages, :price,
+    params.require(:estimate).permit(:name, :client_id, :area, :price,
+      :discount_title, :discount_by_stages, :first_floor_height,
+      :second_floor_height_min, :second_floor_height_max, :third_floor_height_min,
+      :third_floor_height_max,
       client_files_attributes:    [:id, :asset_file_id, :_destroy],
       technical_files_attributes: [:id, :asset_file_id, :_destroy],
     )

@@ -1,14 +1,9 @@
 class Stage < ApplicationRecord
-  belongs_to :budget
-  has_many :stage_products
-
   NUMBER = ['Первый', 'Второй', 'Третий']
+  NAME   = [ 'Фундамент/коробка/кровля', 'Под отделку', 'Под чистовую внутреннюю отделку' ]
 
-  NAME = [
-    'Фундамент/коробка/кровля',
-    'Под отделку',
-    'Под чистовую внутреннюю отделку'
-  ]
+  belongs_to :budget
+  has_many   :stage_products
 
   def update_report_primitivies
     self.stage_products.each do |stage_product|

@@ -1,5 +1,6 @@
 class ProductComposition < ApplicationRecord
   acts_as_paranoid
+  audited
 
   belongs_to :product
   belongs_to :constructor_object
@@ -21,4 +22,11 @@ class ProductComposition < ApplicationRecord
     primitives
   end
 
+  def to_s
+    product.name
+  end
+
+  def link
+    Rails.application.routes.url_helpers.edit_product_path(product)
+  end
 end

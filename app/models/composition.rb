@@ -1,5 +1,6 @@
 class Composition < ApplicationRecord
   acts_as_paranoid
+  audited
 
   belongs_to :parent,
             class_name: "ConstructorObject",
@@ -27,4 +28,11 @@ class Composition < ApplicationRecord
     result
   end
 
+  def to_s
+    parent.name
+  end
+
+  def link
+    Rails.application.routes.url_helpers.edit_composite_path(parent)
+  end
 end

@@ -43,9 +43,9 @@
           %tr
             %td= audit.user&.full_name
             %td= UserRole.fetch(audit.user&.role)
-            %td= AuditAction.fetch(audit.action)
-            %td= ObjectClassName.fetch(audit.auditable.class)
-            %td= link_to audit.auditable&.to_s, audit.auditable&.link
+            %td= AuditsHelper.get_action(audit)
+            %td= AuditsHelper.get_class(audit)
+            %td= link_to AuditsHelper.get_auditable(audit).to_s, AuditsHelper.get_auditable(audit).link
             %td= audit.created_at.to_s(:db)
 
   %br
