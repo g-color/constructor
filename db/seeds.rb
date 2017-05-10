@@ -12,8 +12,9 @@ users = [
   { name: 'Инженер',    role: UserRole::ENGINEER,    email: 'eng@test.test' }
 ]
 
+id = 1111110
 users.each do |user|
-  i = 1111111
+  i += 1
   User.create(
     first_name: user[:name],
     email:      user[:email],
@@ -21,9 +22,8 @@ users.each do |user|
     last_name:  'Фамилия',
     password:   'test123',
     phone:      1234567890,
-    crm:        i,
+    crm:        id,
   )
-  i += 1
 end
 
 expenses = [
