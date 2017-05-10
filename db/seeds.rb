@@ -13,6 +13,7 @@ users = [
 ]
 
 users.each do |user|
+  i = 1111111
   User.create(
     first_name: user[:name],
     email:      user[:email],
@@ -20,8 +21,9 @@ users.each do |user|
     last_name:  'Фамилия',
     password:   'test123',
     phone:      1234567890,
-    crm:        1,
+    crm:        i,
   )
+  i += 1
 end
 
 expenses = [
