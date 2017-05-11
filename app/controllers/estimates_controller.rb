@@ -129,16 +129,15 @@ class EstimatesController < ApplicationController
     @estimate.save
 
     @estimate.send_email_engineer(params[:engineer])
-    @data = @estimate.for_export_zp
-    pdf = WickedPdf.new.pdf_from_string(render_to_string('export_zp'))
-    File.open(Rails.root.join('pdfs',"Ведомость ЗП на объект.pdf"), 'wb') do |file|
-      file << pdf
+
+    csv = @estimate.for_export_zp
+    File.open(Rails.root.join('csv',"Ведомость ЗП на объект.csv"), 'wb') do |file|
+      file << csv
     end
 
-    @data = @estimate.for_export_primitives
-    pdf = WickedPdf.new.pdf_from_string(render_to_string('export_primitives'))
-    File.open(Rails.root.join('pdfs',"Перечень материалов на объект.pdf"), 'wb') do |file|
-      file << pdf
+    csv = @estimate.for_export_primitives
+    File.open(Rails.root.join('csv',"Перечень материалов на объект.csv"), 'wb') do |file|
+      file << csv
     end
 
     render json: {

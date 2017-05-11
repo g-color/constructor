@@ -27,7 +27,7 @@
         .form-group
           %label.col-sm-3.control-label Высота первого этажа*
           .col-sm-7
-            = f.input :first_floor_height, label: false, placeholder: 'Введите высоту в мм'
+            = f.input :first_floor_height, label: false, placeholder: 'Введите высоту в метрах'
           .col-sm-2
             %button.btn.btn-default{ type: "button", 'data-toggle': "collapse", 'data-target': "#floors", 'aria-expanded':false, 'aria-controls': "collapseExample", title: "Показать больше этажей"}
               Выше?
@@ -38,21 +38,21 @@
               .col-sm-1
                 %h5.text-right от
               .col-sm-3
-                = f.input :second_floor_height_min, label: false, placeholder: 'Введите высоту в мм', class: 'form-control'
+                = f.input :second_floor_height_min, label: false, placeholder: 'Введите высоту в метрах', class: 'form-control'
               .col-sm-offset-1.col-sm-1
                 %h5.text-right до
               .col-sm-3
-                = f.input :second_floor_height_max, label: false, placeholder: 'Введите высоту в мм', class: 'form-control'
+                = f.input :second_floor_height_max, label: false, placeholder: 'Введите высоту в метрах', class: 'form-control'
             .form-group
               %label.col-sm-3.control-label Высота третьего этажа
               .col-sm-1
                 %h5.text-right от
               .col-sm-3
-                = f.input :third_floor_height_min, label: false, placeholder: 'Введите высоту в мм', class: 'form-control'
+                = f.input :third_floor_height_min, label: false, placeholder: 'Введите высоту в метрах', class: 'form-control'
               .col-sm-offset-1.col-sm-1
                 %h5.text-right до
               .col-sm-3
-                = f.input :third_floor_height_max, label: false, placeholder: 'Введите высоту в мм', class: 'form-control'
+                = f.input :third_floor_height_max, label: false, placeholder: 'Введите высоту в метрах', class: 'form-control'
             %hr
         .form-group.client-files-div
           %label.col-sm-3.control-label Планы и фасады

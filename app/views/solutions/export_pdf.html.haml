@@ -61,7 +61,7 @@
         %section.stage-pdf
           .row
             .col-xs-12.text-center
-              %h4= "#{Stage::NUMNBER[stage[:number] - 1]} этап"
+              %h4= "#{Stage::NUMBER[stage[:number] - 1]} этап"
               %h4= Stage::NAME[stage[:number] - 1]
           .row
             .col-xs-7
@@ -88,28 +88,28 @@
                     = product[:price_result] * product[:quantity]
             %hr
 
-            .row
+          .row
+            .col-xs-7.text-right
+              %strong
+                = "Итого по #{stage[:number]} этапу:"
+            .col-xs-5
+              %strong
+                = "#{@solution[:price_by_stage_aggregated][stage[:number]-1]} руб. (~ #{@solution[:price_by_area_per_stage][stage[:number]-1]} руб. за м2)"
+
+            - if @solution[:discount_amount][stage[:number]-1] > 0
+              .col-xs-7.text-right.red-text
+                %strong
+                  = "#{@solution[:discount_title]} по #{stage[:number]} этапу:"
+              .col-xs-5.red-text
+                %strong
+                  = "-#{@solution[:discount_amount][stage[:number]-1]} руб."
+
               .col-xs-7.text-right
                 %strong
-                  = "Итого по #{stage[:number]} этапу:"
+                  = "Итого по #{stage[:number]} этапу(ам):"
               .col-xs-5
                 %strong
-                  = "#{@solution[:price_by_stage_aggregated][stage[:number]-1]} руб. (~ #{@solution[:price_by_area_per_stage][stage[:number]-1]} руб. за м2)"
-
-              - if @solution[:discount_amount][stage[:number]-1] > 0
-                .col-xs-7.text-right.red-text
-                  %strong
-                    = "#{@solution[:discount_title]} по #{stage[:number]} этапу:"
-                .col-xs-5.red-text
-                  %strong
-                    = "-#{@solution[:discount_amount][stage[:number]-1]} руб."
-
-                .col-xs-7.text-right
-                  %strong
-                    = "Итого по #{stage[:number]} этапу(ам):"
-                .col-xs-5
-                  %strong
-                    = "#{@solution[:price_by_stage_aggregated_discounted][stage[:number]-1]} руб. (~ #{@solution[:price_by_area_per_stage_discounted][stage[:number]-1]} руб. за м2)"
+                  = "#{@solution[:price_by_stage_aggregated_discounted][stage[:number]-1]} руб. (~ #{@solution[:price_by_area_per_stage_discounted][stage[:number]-1]} руб. за м2)"
 
 
     .row

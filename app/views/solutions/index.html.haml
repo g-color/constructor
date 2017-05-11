@@ -56,7 +56,7 @@
 
 %br
 
-- if @solutions.proposed.present?
+- if @solutions.proposed.present? && current_user.admin?
   .row.main-content
     .table-responsive
       %h4.stage Предложенные готовые решения

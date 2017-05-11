@@ -86,7 +86,7 @@
               %label.col-sm-3.control-label
               .col-sm-9#client-files
                 = f.simple_fields_for :client_files do |client_file|
-                  = render 'budget/budget_files', f: client_file
+                  = render 'client_file_fields', f: client_file
 
           %hr
 
@@ -104,7 +104,7 @@
               %label.col-sm-3.control-label
               .col-sm-9#technical-files
                 = f.simple_fields_for :technical_files do |technical_file|
-                  = render 'budget/budget_files', f: technical_file
+                  = render 'technical_file_fields', f: technical_file
 
           - unless @solution.discount_title.blank?
             = render 'budgets/discount', f: f, model: 'solution', show: true

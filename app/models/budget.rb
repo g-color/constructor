@@ -256,55 +256,73 @@ class Budget < ApplicationRecord
   end
 
   def for_export_zp
-    data = {}
-    primitives = self.get_primitives
-    data[:primitives] = []
-    data[:res] = 0
-    primitives.each do |key, value|
-      primitive = Primitive.find(key.to_i)
-      if primitive.category.id == ENV['WORK_CATEGORY'].to_i
-        data[:primitives] << {
-          name: primitive.name,
-          unit: primitive.unit.name,
-          price: primitive.price,
-          quantity: value,
-          sum: value * primitive.price
-        }
-        data[:res] += value * primitive.price
+    CSV.generate(headers: true) do |csv|
+      csv << ["Наименование", "ед. изм.", "Расценка, руб.", "Количество", "Стоимость, руб"]
+      primitives = self.get_primitives
+      num = 1
+      primitives.each do |key, value|
+        primitive = Primitive.find(key.to_i)
+        if primitive.category.id == ENV['WORK_CATEGORY'].to_i
+          num += 1
+          csv << [
+            primitive.name,
+            primitive.unit.name,
+            primitive.price,
+            value,
+            "=C#{num}*D#{num}"
+          ]
+        end
       end
+      csv << ["", "", "", "Итого:", "=SUM(E2:E#{num})"]
     end
-    data
   end
 
   def for_export_primitives
-    data = {}
     stage_products = []
     self.stages.each do |stage|
       stage_products += stage.stage_products.to_a
     end
 
-    data[:result] = {}
-    data[:products] = []
+    result = {}
+    products = []
     stage_products.each do |stage_product|
       primitives = stage_product.get_primitives
       product = stage_product.product
-      data[:products] << product.name
+      products << product.name
       primitives.each do |p, quantity|
         primitive = Primitive.find(p)
-        if primitive.category.id != ENV['WORK_CATEGORY'].to_i && primitive.category.id != ENV['STOCK_CATEGORY'].to_i
-          if data[:result][primitive.name].nil?
-            data[:result][primitive.name] = {}
-            data[:result][primitive.name][:all] = 0
-            data[:result][primitive.name][:unit] = primitive.unit.name
+        if primitive.category.id != ENV['WORK_CATEGORY'].to_i
+          result[primitive.category.name] = {} if result[primitive.category.name].blank?
+          if result[primitive.category.name][primitive.name].nil?
+            result[primitive.category.name][primitive.name]        = {}
+            result[primitive.category.name][primitive.name][:all]  = 0
+            result[primitive.category.name][primitive.name][:unit] = primitive.unit.name
           end
-          data[:result][primitive.name][product.name] = 0 if data[:result][primitive.name][product.name].nil?
-          data[:result][primitive.name][product.name] += quantity
-          data[:result][primitive.name][:all] += quantity
+          result[primitive.category.name][primitive.name][product.name]  = 0 if result[primitive.category.name][primitive.name][product.name].nil?
+          result[primitive.category.name][primitive.name][product.name] += quantity
+          result[primitive.category.name][primitive.name][:all]         += quantity
         end
       end
     end
-    data[:products] = data[:products].uniq
-    data
+    products = products.uniq
+
+    CSV.generate(headers: true) do |csv|
+      header = ["Наименование", "ед. изм."] + products + ["Общее количество"]
+      csv << header
+      num = 1
+      result.each do |category, primitives|
+        csv << ["#{category}:"]
+        primitives.each do |primitive, value|
+          num += 1
+          row = [primitive, value[:unit]]
+          products.each do |product|
+            row << (value[product].present? ? value[product] : "")
+          end
+          row << value[:all]
+          csv << row
+        end
+      end
+    end
   end
 
   def for_export_budget
