@@ -45,11 +45,11 @@ class EstimatesController < ApplicationController
   end
 
   def edit
-    @engineers = User.engineers
-    discount = @estimate.discount_title
-    area     = @estimate.area
-    price    = @estimate.price
-    stages   = @estimate.get_stages
+    @engineers   = User.engineers
+    discount     = @estimate.discount_title
+    area         = @estimate.area
+    price        = @estimate.price
+    stages       = @estimate.get_stages
     gon.push(get_json_values(discount, area, price, stages))
   end
 
@@ -162,13 +162,17 @@ class EstimatesController < ApplicationController
     )
   end
 
-  def get_json_values(discount, area, price, stages)
+  def get_json_values(discount, area, price, stages, second_floor = false)
     {
-      expense: { percent: Expense.sum(:percent) },
-      products: @products,
+      expense:  { percent: Expense.sum(:percent) },
       discount: { name: discount, values: @estimate.discount_by_stages },
-      estimate: { area: area,     price:  price },
-      stages: stages,
+      estimate: {
+        area:         area,
+        price:        price,
+        second_floor: @estimate.second_floor_height_min > 0
+      },
+      products: @products,
+      stages:   stages,
     }
   end
 

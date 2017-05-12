@@ -19,6 +19,8 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       this.recalcStage(i)
     this.saveJsonValue()
 
+    $('.collapse').collapse('show') if @scope.estimate.second_floor
+
   showAddModal: (stage) ->
     @scope.addModal.header       = 'Добавление сметного продукта. Этап ' + stage
     @scope.addModal.products     = this.getProducts(stage)
@@ -294,6 +296,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     @scope.estimate = {
       area:  parseFloat(@scope.estimate.area),
       price: parseFloat(@scope.estimate.price),
+      second_floor: @scope.estimate.second_floor,
     }
 
   parseProducts: () ->
