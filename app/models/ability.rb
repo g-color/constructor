@@ -5,7 +5,7 @@ class Ability
     user ||= User.new
 
     if user.admin?
-      can :manage, [Audit, Category, Primitive, Composite, Product, Unit, User, Expense]
+      can :manage, [Audit, Category, Primitive, Composite, Product, Unit, User, Expense, Solution]
       can :view_report, :report
     end
 
@@ -15,6 +15,8 @@ class Ability
     can :edit, Client do |client|
       client.new_record? || UserClient.find_by(user: user, client: client).owner
     end
+
+
 
     # Define abilities for the passed in user here. For example:
     #

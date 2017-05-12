@@ -23,6 +23,7 @@
 //= require angular-resource
 //= require toaster
 //= require cocoon
+//= require lightbox-bootstrap
 //= require turbolinks
 //= require_tree .
 

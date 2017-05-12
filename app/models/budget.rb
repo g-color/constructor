@@ -295,12 +295,10 @@ class Budget < ApplicationRecord
           result[primitive.category.name] = {} if result[primitive.category.name].blank?
           if result[primitive.category.name][primitive.name].nil?
             result[primitive.category.name][primitive.name]        = {}
-            result[primitive.category.name][primitive.name][:all]  = 0
             result[primitive.category.name][primitive.name][:unit] = primitive.unit.name
           end
           result[primitive.category.name][primitive.name][product.name]  = 0 if result[primitive.category.name][primitive.name][product.name].nil?
           result[primitive.category.name][primitive.name][product.name] += quantity
-          result[primitive.category.name][primitive.name][:all]         += quantity
         end
       end
     end
@@ -312,13 +310,14 @@ class Budget < ApplicationRecord
       num = 1
       result.each do |category, primitives|
         csv << ["#{category}:"]
+        num += 1
         primitives.each do |primitive, value|
           num += 1
           row = [primitive, value[:unit]]
           products.each do |product|
             row << (value[product].present? ? value[product] : "")
           end
-          row << value[:all]
+          row << "=SUM(C#{num}:#{get_column_csv(products.size+1)}#{num})"
           csv << row
         end
       end
@@ -365,6 +364,15 @@ class Budget < ApplicationRecord
         }
       end
     }
+  end
+
+  def get_column_csv(num)
+    col = ''
+    while num > 0
+      col = (num % 26 + 'A'.ord).chr + col
+      num /= 26
+    end
+    col
   end
 
   def solution?

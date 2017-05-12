@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  before_action :find_user, only: [:edit, :update, :destroy]
-  before_action :check_ability
+  before_action :find_user, only: [:show, :edit, :update, :destroy]
+  before_action :check_ability, except: [:show]
 
   def find_by_name
     name = params[:name].split
@@ -15,6 +15,9 @@ class UsersController < ApplicationController
         m.full_name.downcase.include? params[:name].downcase
       end
     end
+  end
+
+  def show
   end
 
   def new
@@ -51,7 +54,7 @@ class UsersController < ApplicationController
   private
 
   def check_ability
-    authorize! :manage, User
+    redirect_to root_path unless can? :manage, User
   end
 
   def find_user

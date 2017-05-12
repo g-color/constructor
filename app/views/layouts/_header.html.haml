@@ -44,5 +44,8 @@
           = link_to 'Создать смету', new_estimate_path(client_id: params[:client_id]), class: 'btn btn-primary navbar-btn'
 
         %ul.nav.navbar-nav.navbar-right
-          %li= link_to current_user.full_name, edit_user_path(current_user)
+          - if current_user.admin?
+            %li= link_to current_user.full_name, edit_user_path(current_user)
+          - else
+            %li= link_to current_user.full_name, user_path(current_user)
           %li= link_to 'Выйти', destroy_user_session_path, method: :delete

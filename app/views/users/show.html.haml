@@ -1,0 +1,33 @@
+%h1 Просмотр пользователя
+%ol.breadcrumb.row
+  %li Пользователи
+  %li.active= @user.full_name
+
+.row.main-content
+  .form-horizontal.col-sm-offset-2.col-sm-8
+    %br/
+    .form-group.string.required.user_first_name
+      %b.col-sm-3.text-right Имя
+      .col-sm-9
+        %span= @user.first_name
+    .form-group.string.required.user_first_name
+      %b.col-sm-3.text-right Фамилия
+      .col-sm-9
+        %span= @user.last_name
+    .form-group.string.required.user_first_name
+      %b.col-sm-3.text-right Роль
+      .col-sm-9
+        %span= @user.role
+    .form-group.string.required.user_first_name
+      %b.col-sm-3.text-right Телефон
+      .col-sm-9
+        %span= @user.phone
+    .form-group.string.required.user_first_name
+      %b.col-sm-3.text-right ID в CRM
+      .col-sm-9
+        %span= link_to @user.id, "https://artkarkas.megaplan.ru/staff/#{@user.id}/card/", target: :blank
+    .form-group.string.required.user_first_name
+      %b.col-sm-3.text-right Электронная почта
+      .col-sm-9
+        %span= link_to @user.email, "mailto:#{@user.email}", target: :blank
+

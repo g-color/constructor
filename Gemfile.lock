@@ -144,6 +144,7 @@ GEM
       activerecord
       kaminari-core (= 1.0.1)
     kaminari-core (1.0.1)
+    lightbox-bootstrap-rails (5.1.0.1)
     listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -292,6 +293,7 @@ DEPENDENCIES
   jquery-turbolinks
   jquery-ui-rails
   kaminari
+  lightbox-bootstrap-rails (= 5.1.0.1)
   listen (~> 3.0.5)
   ng-toaster-rails
   paperclip

@@ -33,7 +33,7 @@ class EstimatesController < ApplicationController
     if @estimate.save
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters
-      redirect_to estimates_path(client_id: @estimate.client_id)
+      redirect_to edit_estimate_path(@estimate)
     else
       discount = @estimate.discount_title
       area     = @estimate.area
@@ -60,7 +60,7 @@ class EstimatesController < ApplicationController
     if @estimate.update(estimate_params)
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters
-      redirect_to estimates_path(client_id: @estimate.client_id)
+      redirect_to edit_estimate_path(@estimate)
     else
       discount = @estimate.discount_title
       area     = @estimate.area

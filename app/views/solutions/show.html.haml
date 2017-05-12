@@ -73,17 +73,6 @@
           - if @solution.client_files.present?
             .form-group.client-files-div
               %label.col-sm-3.control-label Планы и фасады
-              .col-sm-3
-                = file_field_tag :data, as: :file, multiple: true, class: 'client-file'
-              /  %button.col-sm-3.btn.btn-default.form-control{ type: 'button' }
-              /    %input.choose{ type: 'file' }
-              /    Выберите файл
-
-              %div{ style: 'dislpay: none' }
-                = link_to_add_association '', f, :client_files, id: 'create-file', 'data-association-insertion-method': 'append', 'data-association-insertion-node': '#client-files'
-
-            .form-group
-              %label.col-sm-3.control-label
               .col-sm-9#client-files
                 = f.simple_fields_for :client_files do |client_file|
                   = render 'client_file_fields', f: client_file
@@ -94,17 +83,10 @@
 
             .form-group.technical-files-div
               %label.col-sm-3.control-label Тех. файлы
-              .col-sm-3
-                = file_field_tag :data, as: :file, multiple: true, class: 'technical-file'
-
-              %div{ style: 'dislpay: none' }
-                = link_to_add_association '', f, :technical_files, id: 'create-technical-file', 'data-association-insertion-method': 'append', 'data-association-insertion-node': '#technical-files'
-
-            .form-group
-              %label.col-sm-3.control-label
               .col-sm-9#technical-files
                 = f.simple_fields_for :technical_files do |technical_file|
                   = render 'technical_file_fields', f: technical_file
+
 
           - unless @solution.discount_title.blank?
             = render 'budgets/discount', f: f, model: 'solution', show: true

@@ -1,6 +1,7 @@
 class SolutionsController < ApplicationController
-  before_action :get_products,  only: [:new,  :create, :edit, :update]
-  before_action :find_solution, only: [:show, :edit, :update, :destroy]
+  before_action :get_products,  only:   [:new,  :create, :edit, :update]
+  before_action :find_solution, only:   [:show, :edit, :update, :destroy]
+  before_action :check_ability, except: [:show, :index]
   before_action :authenticate_user!
 
   def index
@@ -105,6 +106,10 @@ class SolutionsController < ApplicationController
   end
 
   private
+
+  def check_ability
+    redirect_to solutions_path unless can?(:manage, Solution)
+  end
 
   def find_solution
     @solution = Solution.find(params[:id])

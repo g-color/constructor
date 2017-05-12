@@ -29,10 +29,10 @@ gem "audited", "~> 4.3"
 gem "rails-observers", github: 'rails/rails-observers'
 gem 'devise'
 gem 'kaminari'
-gem 'bootstrap-kaminari-views'
 gem 'simple_form'
 gem 'unicode_utils'
 gem "cancan"
+gem 'lightbox-bootstrap-rails', '5.1.0.1'
 
 gem "gon"
 gem 'haml'
