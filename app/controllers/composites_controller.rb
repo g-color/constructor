@@ -36,7 +36,7 @@ class CompositesController < ApplicationController
 
   def destroy
     if cantbe_destroy?
-      flash[:alert] = "Can't be destroyed"
+      flash[:alert] = "Не может быть удалено, так как существует зависимость"
     else
       @composite.destroy
     end

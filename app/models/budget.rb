@@ -175,8 +175,8 @@ class Budget < ApplicationRecord
               custom:             stage_product.product.custom,
               hint:               stage_product.product.hint,
               profit:             stage_product.product.profit,
-              price_with_work:    stage_product.price_with_work,
-              price_without_work: stage_product.price_without_work,
+              price_with_work:    stage_product.product.price,
+              price_without_work: stage_product.product.price_without_work,
               with_work:          stage_product.with_work,
               quantity:           stage_product.quantity,
               sets:               stage_product.product.custom ? get_stage_product_set(stage_product) : []
@@ -257,9 +257,11 @@ class Budget < ApplicationRecord
 
   def for_export_zp
     CSV.generate(headers: true) do |csv|
+      csv << ["Объект:"]
+      csv << []
       csv << ["Наименование", "ед. изм.", "Расценка, руб.", "Количество", "Стоимость, руб"]
       primitives = self.get_primitives
-      num = 1
+      num = 3
       primitives.each do |key, value|
         primitive = Primitive.find(key.to_i)
         if primitive.category.id == ENV['WORK_CATEGORY'].to_i
@@ -305,9 +307,11 @@ class Budget < ApplicationRecord
     products = products.uniq
 
     CSV.generate(headers: true) do |csv|
+      csv << ["Объект:"]
+      csv << []
       header = ["Наименование", "ед. изм."] + products + ["Общее количество"]
       csv << header
-      num = 1
+      num = 3
       result.each do |category, primitives|
         csv << ["#{category}:"]
         num += 1
@@ -321,6 +325,11 @@ class Budget < ApplicationRecord
           csv << row
         end
       end
+      csv << []
+      csv << ["Общестроительные элементы:"]
+      csv << ["Перчатки"]
+      csv << ["Пакеты для мусора"]
+      csv << ["Леса строительные"]
     end
   end
 

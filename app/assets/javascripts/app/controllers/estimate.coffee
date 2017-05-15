@@ -19,7 +19,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       this.recalcStage(i)
     this.saveJsonValue()
 
-    $('.collapse').collapse('show') if @scope.estimate.second_floor
+    $('#floors').collapse('show') if @scope.estimate.second_floor
 
   showAddModal: (stage) ->
     @scope.addModal.header       = 'Добавление сметного продукта. Этап ' + stage

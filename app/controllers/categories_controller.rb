@@ -32,11 +32,19 @@ class CategoriesController < ApplicationController
   end
 
   def destroy
-    @category.destroy
+    if cantbe_destroyed?
+      flash[:alert] = "Не может быть удалено, так как существует зависимость"
+    else
+      @category.destroy
+    end
     redirect_to categories_path
   end
 
   private
+
+  def cantbe_destroyed?
+    ConstructorObject.exists?(category_id: @category.id) || Product.exists?(category_id: @category.id)
+  end
 
   def check_ability
     authorize! :manage, Category

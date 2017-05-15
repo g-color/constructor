@@ -31,11 +31,19 @@ class UnitsController < ApplicationController
   end
 
   def destroy
-    @unit.destroy
+    if cantbe_destroyed?
+      flash[:alert] = "Не может быть удалено, так как существует зависимость"
+    else
+      @unit.destroy
+    end
     redirect_to units_path
   end
 
   private
+
+  def cantbe_destroyed?
+    ConstructorObject.exists?(unit_id: @unit.id) || Product.exists?(unit_id: @unit.id)
+  end
 
   def check_ability
     authorize! :manage, Unit
