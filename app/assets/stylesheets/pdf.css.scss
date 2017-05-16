@@ -1,11 +1,25 @@
-@import "bootstrap";
+@import 'bootstrap';
+
+$default-color: #bc5f1e;
 
 .no-margin {
   margin: 0 !important
- }
+}
+
 .red-text {
   color: red
 }
+
 .stage-pdf {
-  margin: 45px 0
- }
+  margin: 15px 0 25px
+}
+
+.brown-text {
+  color: $default-color
+}
+.line-text {
+  background: white;
+  display: inline-block;
+  margin-top: -18px;
+  padding: 5px;
+}

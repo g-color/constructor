@@ -7,7 +7,7 @@ class UserRole
     {
       ADMIN       => 'Администратор',
       ARCHITECTOR => 'Архитектор',
-      ENGINEER    => 'Инженер',
+      ENGINEER    => 'Инженер'
     }.fetch(role, nil)
   end
 
@@ -15,7 +15,7 @@ class UserRole
     {
       'Администратор' => ADMIN,
       'Архитектор'    => ARCHITECTOR,
-      'Инженер'       => ENGINEER,
+      'Инженер'       => ENGINEER
     }
   end
 end

@@ -1,7 +1,7 @@
 module AuditsHelper
   def self.get_action(audit)
     get_auditable(audit)
-    return 'Изменение' if ObjectClassName.subclasses.has_key?(@auditable.class.to_s)
+    return 'Изменение' if ObjectClassName.subclasses.key?(@auditable.class.to_s)
     AuditAction.fetch(audit.action)
   end
 

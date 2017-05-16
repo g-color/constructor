@@ -4,7 +4,7 @@ class Audit < ApplicationRecord
 
   def self.to_csv
     CSV.generate(headers: true) do |csv|
-      csv << ["Пользователь", "Роль", "Действие", "Тип объекта", "Объект", "Время"]
+      csv << ['Пользователь', 'Роль', 'Действие', 'Тип объекта', 'Объект', 'Время']
       all.includes(:user, :auditable).each do |audit|
         csv << [
           audit.user.full_name,
@@ -12,7 +12,7 @@ class Audit < ApplicationRecord
           AuditAction.fetch(audit.action),
           ObjectClassName.fetch(audit.auditable_type),
           audit.auditable.to_s,
-          audit.created_at.to_s(:db),
+          audit.created_at.to_s(:db)
         ]
       end
     end

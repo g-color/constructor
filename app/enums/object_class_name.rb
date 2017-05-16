@@ -42,7 +42,7 @@ class ObjectClassName
       PRODUCT_COMPOSITION  => values.fetch(PRODUCT),
       PRODUCT_TEMPLATE     => values.fetch(PRODUCT),
       PRODUCT_SET          => values.fetch(PRODUCT),
-      PRODUCT_TEMPLATE_SET => values.fetch(PRODUCT),
+      PRODUCT_TEMPLATE_SET => values.fetch(PRODUCT)
     }
   end
 end

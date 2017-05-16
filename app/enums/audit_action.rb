@@ -7,7 +7,7 @@ class AuditAction
     {
       CREATE  => 'Создание',
       UPDATE  => 'Изменение',
-      DESTROY => 'Удаление',
+      DESTROY => 'Удаление'
     }.fetch(action, nil)
   end
 end

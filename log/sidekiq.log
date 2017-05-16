@@ -1053,3 +1053,4 @@
 2017-05-15T20:58:44.639Z 11919 TID-gmp3mwtug INFO: Upgrade to Sidekiq Pro for more features and support: http://sidekiq.org
 2017-05-15T20:58:44.640Z 11919 TID-gmp3mwtug INFO: Booting Sidekiq 4.2.10 with redis options {:url=>nil}
 2017-05-15T20:58:44.656Z 11919 TID-gmp3mwtug INFO: Starting processing, hit Ctrl-C to stop
+2017-05-15T23:15:40.994Z 11919 TID-gmp3okup0 ERROR: Error fetching job: Error connecting to Redis on 127.0.0.1:6379 (Errno::ECONNREFUSED)

@@ -31,7 +31,7 @@ class AuditsController < ApplicationController
   def search?
     search = false
     if params[:search].present?
-      params[:search].each_pair do |name, val|
+      params[:search].each do |val|
         search = true unless val.blank?
       end
     end

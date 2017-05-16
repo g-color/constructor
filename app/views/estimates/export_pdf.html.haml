@@ -4,111 +4,100 @@
     = stylesheet_link_tag wicked_pdf_asset_base64("pdf")
   %body
     .row
-      .col-xs-4.text-right
-        %br
-        %br
+      .col-xs-4.text-right{ style: 'padding-top: 52px; font-size: 10px' }
         %p.no-margin РФ, Республика Крым
         %p.no-margin г. Симферополь
         %p.no-margin ул. Петропавловская, дом 3
         %p.no-margin ТДЦ "Октябрьский", офис 411/412
       .col-xs-4= wicked_pdf_image_tag 'full-logo.png', class: 'logo', alt: 'brand', width: 230
-      .col-xs-4.text-left
-        %br
-        %br
+      .col-xs-4.text-left{ style: 'padding-top: 52px; font-size: 10px' }
         %p.no-margin www.artsipstroi.com
         %p.no-margin www.artkarkas.ru
-        %p.no-margin= current_user.email
-        %p.no-margin= current_user.phone
+        %p.no-margin sipengineercrimea@yandex.ru
+        %p.no-margin + 7 978 223 55 67
+
+    %br
 
     .row
-      .col-xs-12
+      %div{ style: 'background: #bc5f1e; height: 1px; width: 100%'}
+      .col-xs-12.text-center
+        %span.line-text дома из СИП-панелей
+
     .row
-      .col-xs-6.col-xs-offset-3
-        %h4.text-center
+      .col-xs-8.col-xs-offset-2
+        %h3.text-center
           %strong Расчет стоимости строительства энергосберегающего жилого дома
+          %br
 
     .row
       .col-xs-5
-        %p.no-margin= "Высота потолка первого этажа: #{@estimate[:first_floor_height]} м"
+        %p.no-margin Высота потолка первого этажа: #{@estimate[:first_floor_height]} м
         - if @estimate[:second_floor_height_min] > 0 && @estimate[:second_floor_height_max] > 0
-          %p.no-margin= "Высота потолка второго этажа: от #{@estimate[:second_floor_height_min]} м до #{@estimate[:second_floor_height_max]} м"
+          %p.no-margin Высота потолка второго этажа: от #{@estimate[:second_floor_height_min]} м до #{@estimate[:second_floor_height_max]} м
         - if @estimate[:second_floor_height_min] > 0 && @estimate[:second_floor_height_max] > 0
-          %p.no-margin= "Высота потолка третьего этажа: от #{@estimate[:third_floor_height_min]} м до #{@estimate[:third_floor_height_max]} м"
-        %p.no-margin= "Площадь строительства: #{@estimate[:area]} м2"
+          %p.no-margin Высота потолка третьего этажа: от #{@estimate[:third_floor_height_min]} м до #{@estimate[:third_floor_height_max]} м
+        %p.no-margin Площадь строительства: #{@estimate[:area]} м2
       .col-xs-4.col-xs-offset-3
-        %p.no-margin= "Проект: #{@estimate[:project]}"
-        %p.no-margin= "Дата расчета: #{@estimate[:date].strftime('%Y-%m-%d')}"
+        %p.no-margin Проект: #{@estimate[:project]}
+        %p.no-margin Дата расчета: #{@estimate[:date].strftime('%Y-%m-%d')}
 
     - @estimate[:stages].each do |stage|
       - unless stage[:products].empty?
         %section.stage-pdf
           .row
             .col-xs-12.text-center
-              %h4= "#{Stage::NUMBER[stage[:number] - 1]} этап"
-              %h4= Stage::NAME[stage[:number] - 1]
+              %h4.brown-text{ style: 'margin-bottom: 2px'} #{Stage::NUMBER[stage[:number] - 1]} этап
+              %h4{ style: 'margin-top: 2px' }= Stage::NAME[stage[:number] - 1]
           .row
-            .col-xs-7
+            .col-xs-8
               %span Наименование выполняемых работ
-            .col-xs-5
+            .col-xs-4
               %span Стоимость, рублей
-          %hr
+          %hr{ style: 'margin: 5px 0' }
 
           - stage[:products].each do |product|
             .row
-              .col-xs-7
+              .col-xs-8
                 %p.no-margin
-                  %strong
-                    = product[:name] + (product[:custom] ? " | #{product[:set_name]}" : (product[:display_components] ? ", #{product[:quantity].to_s} #{product[:unit]}" : ""))
+                  %strong= product[:name] + (product[:custom] ? " | #{product[:set_name]}" : (product[:display_components] ? ", #{product[:quantity].to_s} #{product[:unit]}" : ""))
                 - if product[:custom] && product[:display_components]
                   - product[:items].each do |item|
-                    %p.no-margin
-                      = "- #{item[:name]} - #{item[:quantity].to_s} #{item[:unit]}"
+                    %p.no-margin= "- #{item[:name]} - #{item[:quantity].to_s} #{item[:unit]}"
+                %p.no-margin= product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа")
+              .col-xs-4
                 %p.no-margin
-                  = product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа")
-              .col-xs-5
-                %p.no-margin
-                  %strong
-                    = money(product[:price_result] * product[:quantity])
-            %hr
+                  %strong= money(product[:price_result] * product[:quantity])
+            %hr{ style: 'margin: 5px 0' }
 
           .row
-            .col-xs-7.text-right
-              %strong
-                = "Итого по #{stage[:number]} этапу:"
-            .col-xs-5
-              %strong
-                = "#{money(@estimate[:price_by_stage_aggregated][stage[:number]-1])} руб. (~ #{money(@estimate[:price_by_area_per_stage][stage[:number]-1])} руб. за м2)"
+            .col-xs-8.text-right
+              %strong= "Итого по #{stage[:number]} этапу:"
+            .col-xs-4
+              %strong= "#{money(@estimate[:price_by_stage_aggregated][stage[:number]-1])} руб. (~ #{money(@estimate[:price_by_area_per_stage][stage[:number]-1])} руб. за м2)"
 
             - if @estimate[:discount_amount][stage[:number]-1] > 0
-              .col-xs-7.text-right.red-text
-                %strong
-                  = "#{@estimate[:discount_title]} по #{stage[:number]} этапу:"
-              .col-xs-5.red-text
-                %strong
-                  = "-#{money(@estimate[:discount_amount][stage[:number]-1])} руб."
+              .col-xs-8.text-right.red-text
+                %strong #{@estimate[:discount_title]} по #{stage[:number]} этапу:
+              .col-xs-4.red-text
+                %strong= "-#{money(@estimate[:discount_amount][stage[:number]-1])} руб."
 
-            .col-xs-7.text-right
-              %strong
-                = "Итого по #{stage[:number]} этапу(ам):"
-            .col-xs-5
-              %strong
-                = "#{money(@estimate[:price_by_stage_aggregated_discounted][stage[:number]-1])} руб. (~ #{money(@estimate[:price_by_area_per_stage_discounted][stage[:number]-1])} руб. за м2)"
+            .col-xs-8.text-right
+              %strong Итого по #{stage[:number]} этапу(ам):
+            .col-xs-4
+              %strong= "#{money(@estimate[:price_by_stage_aggregated_discounted][stage[:number]-1])} руб. (~ #{money(@estimate[:price_by_area_per_stage_discounted][stage[:number]-1])} руб. за м2)"
 
 
-    .row
+    .row{ style: 'font-size: 10px'}
       .col-xs-12
-        %p
-          Жилье для бригады рабочих из 2-3 человек на период монтажа (2-3 недели) обеспечивается Заказчиком (кроме г. Симферополь и Симферопольского района).
-        %p
-          Доставка по всему Крыму – бесплатно. Гарантия на дом — 10 лет. Срок эксплуатации – 70 лет. Только сертифицированные и качественные строительные материалы.
+        %p Жилье для бригады рабочих из 2-3 человек на период монтажа (2-3 недели) обеспечивается Заказчиком (кроме г. Симферополь и Симферопольского района).
+        %p Доставка по всему Крыму – бесплатно. Гарантия на дом — 10 лет. Срок эксплуатации – 70 лет. Только сертифицированные и качественные строительные материалы.
 
     - if @estimate[:area] > 99
-      .row
+      .row{ style: 'font-size: 10px'}
         .col-xs-12
           %p Черновая рабочая лестница из сосны камерной сушки или кондиционер — В ПОДАРОК!
 
     - unless @estimate[:stages].third[:products].empty?
-      .row
+      .row{ style: 'font-size: 10px'}
         .col-xs-12
-          %p
-            Внутридомовые инженерные сети (вода, канализация, а также электроразводка по дому) детально просчитываются после выполнения первого этапа и уточнения всех деталей с Заказчиком В общей стоимости здания данные позиции суммарно занимают ориентировочно 3-6%.
+          %p Внутридомовые инженерные сети (вода, канализация, а также электроразводка по дому) детально просчитываются после выполнения первого этапа и уточнения всех деталей с Заказчиком В общей стоимости здания данные позиции суммарно занимают ориентировочно 3-6%.
