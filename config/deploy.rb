@@ -2,7 +2,7 @@
 lock "3.8.1"
 
 set :application, "constructor"
-set :repo_url, "git@example.com:me/my_repo.git"
+set :repo_url, "git@github.com:g1nc/constructor.git"
 
 set :deploy_to, '/home/deploy/constructor'
 
