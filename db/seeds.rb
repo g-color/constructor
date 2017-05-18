@@ -14,7 +14,7 @@ users = [
 
 id = 1111110
 users.each do |user|
-  i += 1
+  id += 1
   User.create(
     first_name: user[:name],
     email:      user[:email],

@@ -15,5 +15,3 @@ public/system/asset_files/*
 *.swo
 .hg/*
 .hgignore
-config/database.yml
-config/secrets.yml

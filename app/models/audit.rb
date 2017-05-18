@@ -7,11 +7,11 @@ class Audit < ApplicationRecord
       csv << ['Пользователь', 'Роль', 'Действие', 'Тип объекта', 'Объект', 'Время']
       all.includes(:user, :auditable).each do |audit|
         csv << [
-          audit.user.full_name,
-          UserRole.fetch(audit.user.role),
-          AuditAction.fetch(audit.action),
-          ObjectClassName.fetch(audit.auditable_type),
-          audit.auditable.to_s,
+          audit.user&.full_name,
+          UserRole.fetch(audit.user&.role),
+          AuditsHelper.get_action(audit),
+          AuditsHelper.get_class(audit),
+          AuditsHelper.get_auditable(audit).to_s,
           audit.created_at.to_s(:db)
         ]
       end
