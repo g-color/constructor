@@ -13,13 +13,13 @@ class EstimatesController < ApplicationController
 
   def new
     @engineers = User.engineers
-    @estimate = Estimate.new
-    @estimate = Client.find(params[:client_id]).estimates.build if params[:client_id].present?
+    @estimate  = Estimate.new
+    @estimate  = Client.find(params[:client_id]).estimates.build if params[:client_id].present?
 
-    discount  = nil
-    area      = 0
-    price     = 0
-    stages    = @estimate.get_stages
+    discount   = nil
+    area       = 0
+    price      = 0
+    stages     = @estimate.get_stages
     gon.push(get_json_values(discount, area, price, stages))
   end
 
@@ -108,11 +108,10 @@ class EstimatesController < ApplicationController
   end
 
   def export_doc
-    @estimate = Estimate.find(params[:estimate_id]).for_export_budget
+    estimate = Estimate.find(params[:estimate_id])
     respond_to do |format|
-      format.docx do
-        return render docx: 'export_doc', filename: 'export_doc.docx'
-      end
+      format.html
+      format.rtf { send_data estimate.rtf(current_user), filename: "data.rtf" }
     end
   end
 

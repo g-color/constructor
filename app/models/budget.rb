@@ -1,4 +1,8 @@
+require 'rtf'
+
 class Budget < ApplicationRecord
+  include RTF
+  include ApplicationHelper
   acts_as_paranoid
   audited
 
@@ -386,5 +390,188 @@ class Budget < ApplicationRecord
 
   def solution?
     type == 'Solution'
+  end
+
+  def rtf(current_user)
+    data = for_export_budget
+
+    styles                           = {}
+    
+    styles['NORMAL']                 = ParagraphStyle.new
+    styles['NORMAL'].space_after     = 100
+
+    styles['TITLE']                 = ParagraphStyle.new
+    styles['TITLE'].justification   = ParagraphStyle::CENTER_JUSTIFY
+
+    styles['PS_SUMMARY']               = ParagraphStyle.new
+    styles['PS_SUMMARY'].justification = ParagraphStyle::CENTER_JUSTIFY
+
+    styles['CS_SUMMARY']               = CharacterStyle.new
+    styles['CS_SUMMARY'].bold          = true
+
+    styles['CS_DISCOUNT']               = CharacterStyle.new
+    styles['CS_DISCOUNT'].bold          = true
+    styles['CS_DISCOUNT'].foreground    = Colour.new(255, 0, 0)
+
+    styles['PS_STAGE_NUMBER']               = ParagraphStyle.new
+    styles['PS_STAGE_NUMBER'].justification = ParagraphStyle::CENTER_JUSTIFY
+    styles['CS_STAGE_NUMBER']               = CharacterStyle.new
+    styles['CS_STAGE_NUMBER'].foreground    = Colour.new(255, 165, 0)
+    styles['CS_STAGE_NUMBER'].font_size     = 36
+
+    styles['PS_STAGE_NAME']               = ParagraphStyle.new
+    styles['PS_STAGE_NAME'].justification = ParagraphStyle::CENTER_JUSTIFY
+    styles['PS_STAGE_NAME']               = CharacterStyle.new
+    styles['PS_STAGE_NAME'].font_size     = 36
+
+    styles['PS_TEXT']               = ParagraphStyle.new
+    styles['PS_TEXT'].justification = ParagraphStyle::FULL_JUSTIFY
+    styles['PS_TEXT'].space_after   = 200
+
+    styles['H3']                    = CharacterStyle.new
+    styles['H3'].bold               = true
+    styles['H3'].font_size          = 36
+
+    styles['PS_OFFSET']               = ParagraphStyle.new
+    styles['PS_OFFSET'].space_after = 300
+
+    document = Document.new(Font.new(Font::ROMAN, 'Times New Roman'))
+
+
+    #image = document.image("/var/www/constructor/app/assets/images/full-logo.png")
+    #image.x_scaling = 50
+    #image.y_scaling = 50
+
+    # шапка документа
+    table = document.table(1, 3, 3000, 3000, 3000)
+    table.border_width = 0
+
+    left_column = ['РФ, Республика Крым', 'г. Симферополь', 'ул. Петропавловская, дом 3', 'ТДЦ "Октябрьский", офис 411/412']
+    right_column = ['www.artsipstroi.com', 'www.artkarkas.ru', current_user.email, current_user.phone]
+
+    left_column.each do |row|
+      table[0][0] << row
+      table[0][0].line_break if row != left_column.last
+    end
+
+    image = table[0][1].image("#{Rails.root}/app/assets/images/full-logo.png")
+    image.x_scaling = 50
+    image.y_scaling = 50
+
+    right_column.each do |row|
+      table[0][2] << row
+      table[0][2].line_break if row != left_column.last
+    end
+
+    document.paragraph(styles['PS_OFFSET'])
+
+    # название
+    document.paragraph(styles['TITLE']) do |p|
+       p.apply(styles['H3']) do |t|
+        t << 'Расчет стоимости строительства'
+        t.line_break
+        t << 'энергосберегающего жилого дома'
+      end
+    end
+    document.paragraph(styles['PS_OFFSET'])
+
+    # информация по смете
+    table = document.table(1, 2, 5000, 4000)
+    table.border_width = 0
+
+    table[0][0] << "Высота потолка первого этажа: #{data[:first_floor_height]} м"
+    table[0][0].line_break
+    if data[:second_floor_height_min] > 0 && data[:second_floor_height_max] > 0
+      table[0][0] << "Высота потолка второго этажа: от #{data[:second_floor_height_min]} м до #{data[:second_floor_height_max]} м"
+      table[0][0].line_break
+    end
+    if self.second_floor_height_min > 0 && self.second_floor_height_max > 0
+      table[0][0] << "Высота потолка третьего этажа: от #{data[:third_floor_height_min]} м до #{data[:third_floor_height_max]} м"
+      table[0][0].line_break
+    end
+    table[0][0] << "Площадь строительства: #{data[:area]} м2"
+    table[0][1] << "Дата расчета: #{data[:date].strftime('%d %B %Y')} г."
+
+
+    stages_text = [
+      { title: 'Первый этап', name: 'Фундамент/коробка/кровля', pluralize: 'этапу'},
+      { title: 'Второй этап', name: 'Под отделку', pluralize: 'этапам'},
+      { title: 'Третий этап', name: 'Под чистовую внутреннюю отделку', pluralize: 'этапам'}
+    ]
+    document.paragraph(styles['PS_OFFSET'])
+
+    # этапы
+    data[:stages].each do |stage|
+      unless stage[:products].empty?
+
+        document.paragraph(styles['PS_STAGE_NUMBER']) do |p|
+          p.apply(styles['CS_STAGE_NUMBER']) do |t|
+            t << stages_text[stage[:number]-1][:title]
+          end
+        end
+
+        document.paragraph(styles['TITLE']) do |p|
+          p.apply(styles['PS_STAGE_NAME']) do |t|
+            t << stages_text[stage[:number]-1][:name]
+          end
+        end
+
+        table    = document.table(stage[:products].size+1, 2, 4500, 4500)
+        table.border_width = 5
+        table[0][0] << 'Наименование'
+        table[0][1] << 'Стоимость'
+        
+        i = 1
+        stage[:products].each do |product|
+          table[i][0] << product[:name] + (product[:custom] ? " | #{product[:set_name]}" : (product[:display_components] ? ", #{product[:quantity].to_s} #{product[:unit]}" : ""))
+          if product[:custom] && product[:display_components]
+            product[:items].each do |item|
+              table[i][0].line_break
+              table[i][0] << "- #{item[:name]} - #{item[:quantity].to_s} #{item[:unit]}"
+            end
+          end
+          table[i][0].line_break
+          table[i][0] << product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа")
+          table[i][1] << money(product[:price_result] * product[:quantity])
+          i += 1
+        end
+        document.paragraph(styles['PS_SUMMARY']) do |p|
+          p.apply(styles['CS_SUMMARY']) do |r|
+            r << "Итого по #{stage[:number]} этапу: #{money(data[:price_by_stage_aggregated][stage[:number]-1])} руб. (~ #{money(data[:price_by_area_per_stage][stage[:number]-1])} руб. за м2)"
+          end
+        end
+        if data[:discount_amount][stage[:number]-1] > 0
+          document.paragraph(styles['PS_SUMMARY']) do |p|
+            p.apply(styles['CS_DISCOUNT']) do |r|
+              r << "#{data[:discount_title]} по #{stage[:number]} этапу: -#{money(data[:discount_amount][stage[:number]-1])} руб."
+            end
+          end
+        end
+        document.paragraph(styles['PS_SUMMARY']) do |p|
+          p.apply(styles['CS_SUMMARY']) do |r| 
+            r << "Итого по #{stage[:number]} #{stages_text[stage[:number]-1][:pluralize]}: #{money(data[:price_by_stage_aggregated_discounted][stage[:number]-1])} руб. (~ #{money(data[:price_by_area_per_stage_discounted][stage[:number]-1])} руб. за м2)"
+          end
+        end
+      end
+      document.paragraph(styles['PS_OFFSET'])
+    end
+
+    document.paragraph(styles['PS_TEXT']) do |p|
+      p << "Жилье для бригады рабочих из 2-3 человек на период монтажа (2-3 недели) обеспечивается Заказчиком (кроме г. Симферополь и Симферопольского района)."
+      p << "Доставка по всему Крыму – бесплатно. Гарантия на дом — 10 лет. Срок эксплуатации – 70 лет. Только сертифицированные и качественные строительные материалы."
+    end
+    if data[:area] > 99
+      document.paragraph(styles['PS_TEXT']) do |p|
+        p << "Черновая рабочая лестница из сосны камерной сушки или кондиционер — В ПОДАРОК!"
+      end
+    end
+
+    unless data[:stages].third[:products].empty?
+      document.paragraph(styles['PS_TEXT']) do |p|
+        p << "Внутридомовые инженерные сети (вода, канализация, а также электроразводка по дому) детально просчитываются после выполнения первого этапа и уточнения всех 
+          деталей с Заказчиком В общей стоимости здания данные позиции суммарно занимают ориентировочно 3-6%."
+      end
+    end
+    document.to_rtf
   end
 end

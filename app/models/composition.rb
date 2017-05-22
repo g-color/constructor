@@ -13,6 +13,7 @@ class Composition < ApplicationRecord
   validates :value, presence: true, numericality: { greater_than: 0 }
   validates :children, presence: true
   validates :children, parent_child: true
+  validates :children_id, uniqueness: { scope: [:parent_id] }
 
   def update_report_primitivies(estimate, quantity)
     self.children.update_report_primitivies(estimate, quantity * self.value)

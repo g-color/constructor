@@ -100,7 +100,7 @@
         = link_to estimate_export_pdf_path(f.object.id), target: '_blank', class: 'btn btn-default' do
           Экспорт в
           %b .pdf
-        = link_to estimate_export_doc_path(f.object.id), target: '_blank', class: 'btn btn-default' do
+        = link_to estimate_export_doc_path(f.object.id, format: :rtf), target: '_blank', class: 'btn btn-default' do
           Экспорт в
           %b .doc
       %br

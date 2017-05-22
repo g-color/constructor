@@ -27,9 +27,10 @@ class ReportsController < ApplicationController
   end
 
   def material_consumption
-    date_start = params[:date_start].present? ? params[:date_start].to_datetime : Estimate.order(:created_at).first.created_at
+    date_first = Estimate.order(:created_at).exists? ? Estimate.order(:created_at).first.created_at : Time.now
+    date_start = params[:date_start].present? ? params[:date_start].to_datetime : date_first
     date_end = params[:date_end].present? ? params[:date_end].to_datetime : Time.now
-    @month = ((date_end - date_start).to_i / (3600.0 * 24 * 30)).ceil
+    @month = ((date_end - date_start).to_i / (3600.0 * 24 * 30) + 0.1).ceil
     @primitivies = Primitive.category(params[:category]).filter_name(params[:name])
   end
 

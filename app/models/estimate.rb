@@ -21,6 +21,7 @@ class Estimate < Budget
   end
 
   def send_email_engineer(engineer_id)
+    EstimateMailer.export_engineer(engineer_id).deliver_later
     puts "\n\n\n\n", engineer_id, "\n\n\n"
   end
 

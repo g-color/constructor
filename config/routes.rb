@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     post :propose,    to: 'estimates#propose',            as: :propose
     post :files,      to: 'estimates#files',              as: :estimates_files, on: :collection
     get  :export_pdf, to: 'estimates#export_pdf',         as: :export_pdf
-    get  :export_doc, to: 'estimates#export_doc',         as: :export_doc, format: 'docx'
+    get  :export_doc, to: 'estimates#export_doc',         as: :export_doc
     get  :engineer,   to: 'estimates#estimates_engineer', as: :engineer
   end
   resources :solutions do
