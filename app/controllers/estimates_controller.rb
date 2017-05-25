@@ -13,13 +13,13 @@ class EstimatesController < ApplicationController
 
   def new
     @engineers = User.engineers
-    @estimate  = Estimate.new
-    @estimate  = Client.find(params[:client_id]).estimates.build if params[:client_id].present?
+    @estimate = Estimate.new
+    @estimate = Client.find(params[:client_id]).estimates.build if params[:client_id].present?
 
-    discount   = nil
-    area       = 0
-    price      = 0
-    stages     = @estimate.get_stages
+    discount  = nil
+    area      = 0
+    price     = 0
+    stages    = @estimate.get_stages
     gon.push(get_json_values(discount, area, price, stages))
   end
 

@@ -140,7 +140,7 @@ class Product < ApplicationRecord
     unless custom
       product_compositions.includes(:constructor_object).each do |composition|
         child  = composition.constructor_object
-        price += child.price unless child.price.blank? || child.work_primitive?
+        price += child.price * composition.value unless child.price.blank? || child.work_primitive?
       end
     end
     price
