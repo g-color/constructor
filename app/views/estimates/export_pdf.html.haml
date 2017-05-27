@@ -38,8 +38,7 @@
           %p.no-margin Высота потолка третьего этажа: от #{@estimate[:third_floor_height_min]} м до #{@estimate[:third_floor_height_max]} м
         %p.no-margin Площадь строительства: #{@estimate[:area]} м2
       .col-xs-4.col-xs-offset-3
-        %p.no-margin Проект: #{@estimate[:project]}
-        %p.no-margin Дата расчета: #{@estimate[:date].strftime('%Y-%m-%d')}
+        %p.no-margin Дата расчета: #{l(@estimate[:date], format: "%d %b %Y г.")}
 
     - @estimate[:stages].each do |stage|
       - unless stage[:products].empty?
@@ -71,20 +70,21 @@
 
           .row
             .col-xs-8.text-right
-              %strong= "Итого по #{stage[:number]} этапу:"
+              %strong= "Итого #{stage[:current_text]}:"
             .col-xs-4
               %strong= "#{money(@estimate[:price_by_stage_aggregated][stage[:number]-1])} руб. (~ #{money(@estimate[:price_by_area_per_stage][stage[:number]-1])} руб. за м2)"
 
             - if @estimate[:discount_amount][stage[:number]-1] > 0
               .col-xs-8.text-right.red-text
-                %strong #{@estimate[:discount_title]} по #{stage[:number]} этапу:
+                %strong #{@estimate[:discount_title]} #{stage[:current_text]}:
               .col-xs-4.red-text
                 %strong= "-#{money(@estimate[:discount_amount][stage[:number]-1])} руб."
 
-            .col-xs-8.text-right
-              %strong Итого по #{stage[:number]} этапу(ам):
-            .col-xs-4
-              %strong= "#{money(@estimate[:price_by_stage_aggregated_discounted][stage[:number]-1])} руб. (~ #{money(@estimate[:price_by_area_per_stage_discounted][stage[:number]-1])} руб. за м2)"
+            - if @estimate[:stages_many]
+              .col-xs-8.text-right
+                %strong Итого #{stage[:all_text]}:
+              .col-xs-4
+                %strong= "#{money(@estimate[:price_by_stage_aggregated_discounted][stage[:number]-1])} руб. (~ #{money(@estimate[:price_by_area_per_stage_discounted][stage[:number]-1])} руб. за м2)"
 
 
     .row{ style: 'font-size: 10px'}

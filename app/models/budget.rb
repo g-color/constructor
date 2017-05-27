@@ -345,7 +345,7 @@ class Budget < ApplicationRecord
       price_by_area_per_stage: self.price_by_area_per_stage,
       price_by_stage_aggregated_discounted: self.price_by_stage_aggregated_discounted,
       price_by_area_per_stage_discounted: self.price_by_area_per_stage_discounted,
-      project: self.solution.present? ? self.solution.name : nil,
+      project: self.name,
       date: self.created_at,
       area:  self.area,
       price: self.price,
@@ -354,9 +354,12 @@ class Budget < ApplicationRecord
       second_floor_height_max: self.second_floor_height_max,
       third_floor_height_min: self.third_floor_height_min,
       third_floor_height_max: self.third_floor_height_max,
+      stages_many: self.stages.active.count > 1,
       stages: self.stages.includes(:stage_products).map do |stage|
         {
           number:              stage.number,
+          current_text:        Stage::CURRENT[stage.number-1],
+          all_text:            Stage::ALL[stage.number-1],
           price_with_discount: stage.price_with_discount,
           price:               stage.price,
           products:            stage.stage_products.includes(:stage_product_sets, :product, product: [:unit] ).map do |stage_product|
@@ -368,7 +371,7 @@ class Budget < ApplicationRecord
               with_work:          stage_product.with_work,
               unit:               stage_product.product.unit.name,
               price_result:       ((stage_product.with_work ? stage_product.price_with_work : stage_product.price_without_work) * (1 + (stage_product.product.profit+Expense.sum(:percent))/100.0)).round(2),
-              quantity:           stage_product.quantity,
+              quantity:           stage_product.quantity.to_i,
               set_name:           stage_product.product.custom ? stage_product.stage_product_sets.find_by(selected: true).product_set.name : '',
               sets:               stage_product.product.custom ? self.get_stage_product_set(stage_product) : [],
               items:              stage_product.items
@@ -396,7 +399,24 @@ class Budget < ApplicationRecord
     data = for_export_budget
 
     styles                           = {}
+
+    styles['DOCUMENT'] = DocumentStyle.new
+    styles['DOCUMENT'].bottom_margin = 1000
+    styles['DOCUMENT'].left_margin   = 1000
+    styles['DOCUMENT'].right_margin  = 1000
+    styles['DOCUMENT'].top_margin    = 1000
     
+    styles['PS_HEADER_LEFT']               = ParagraphStyle.new
+    styles['PS_HEADER_LEFT'].justification = ParagraphStyle::RIGHT_JUSTIFY
+    styles['CS_HEADER_LEFT']               = CharacterStyle.new
+    styles['CS_HEADER_LEFT'].font_size     = 10
+
+
+    styles['CS_TABLE_HEAD']               = CharacterStyle.new
+    styles['CS_TABLE_HEAD'].font_size     = 100
+    styles['CS_TABLE_HEAD'].bold          = true
+
+
     styles['NORMAL']                 = ParagraphStyle.new
     styles['NORMAL'].space_after     = 100
 
@@ -421,8 +441,8 @@ class Budget < ApplicationRecord
 
     styles['PS_STAGE_NAME']               = ParagraphStyle.new
     styles['PS_STAGE_NAME'].justification = ParagraphStyle::CENTER_JUSTIFY
-    styles['PS_STAGE_NAME']               = CharacterStyle.new
-    styles['PS_STAGE_NAME'].font_size     = 36
+    styles['CS_STAGE_NAME']               = CharacterStyle.new
+    styles['CS_STAGE_NAME'].font_size     = 36
 
     styles['PS_TEXT']               = ParagraphStyle.new
     styles['PS_TEXT'].justification = ParagraphStyle::FULL_JUSTIFY
@@ -435,15 +455,10 @@ class Budget < ApplicationRecord
     styles['PS_OFFSET']               = ParagraphStyle.new
     styles['PS_OFFSET'].space_after = 300
 
-    document = Document.new(Font.new(Font::ROMAN, 'Times New Roman'))
-
-
-    #image = document.image("/var/www/constructor/app/assets/images/full-logo.png")
-    #image.x_scaling = 50
-    #image.y_scaling = 50
+    document = Document.new(Font.new(Font::ROMAN, 'Times New Roman'), styles['DOCUMENT'])
 
     # шапка документа
-    table = document.table(1, 3, 3000, 3000, 3000)
+    table = document.table(1, 3, 3500, 3500, 3500)
     table.border_width = 0
 
     left_column = ['РФ, Республика Крым', 'г. Симферополь', 'ул. Петропавловская, дом 3', 'ТДЦ "Октябрьский", офис 411/412']
@@ -463,8 +478,6 @@ class Budget < ApplicationRecord
       table[0][2].line_break if row != left_column.last
     end
 
-    document.paragraph(styles['PS_OFFSET'])
-
     # название
     document.paragraph(styles['TITLE']) do |p|
        p.apply(styles['H3']) do |t|
@@ -476,7 +489,7 @@ class Budget < ApplicationRecord
     document.paragraph(styles['PS_OFFSET'])
 
     # информация по смете
-    table = document.table(1, 2, 5000, 4000)
+    table = document.table(1, 3, 3500, 3500, 3500)
     table.border_width = 0
 
     table[0][0] << "Высота потолка первого этажа: #{data[:first_floor_height]} м"
@@ -490,7 +503,7 @@ class Budget < ApplicationRecord
       table[0][0].line_break
     end
     table[0][0] << "Площадь строительства: #{data[:area]} м2"
-    table[0][1] << "Дата расчета: #{data[:date].strftime('%d %B %Y')} г."
+    table[0][2] << "Дата расчета: #{data[:date].strftime('%d %B %Y')} г."
 
 
     stages_text = [
@@ -511,16 +524,18 @@ class Budget < ApplicationRecord
         end
 
         document.paragraph(styles['TITLE']) do |p|
-          p.apply(styles['PS_STAGE_NAME']) do |t|
+          p.apply(styles['CS_STAGE_NAME']) do |t|
             t << stages_text[stage[:number]-1][:name]
           end
         end
 
-        table    = document.table(stage[:products].size+1, 2, 4500, 4500)
+        table    = document.table(stage[:products].size+1, 2, 6500, 4000)
         table.border_width = 5
+        table[0][0].apply(styles['CS_TABLE_HEAD'])
         table[0][0] << 'Наименование'
+        table[0][1].apply(styles['CS_TABLE_HEAD'])
         table[0][1] << 'Стоимость'
-        
+
         i = 1
         stage[:products].each do |product|
           table[i][0] << product[:name] + (product[:custom] ? " | #{product[:set_name]}" : (product[:display_components] ? ", #{product[:quantity].to_s} #{product[:unit]}" : ""))

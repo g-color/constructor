@@ -1,9 +1,13 @@
 class Stage < ApplicationRecord
   NUMBER = ['Первый', 'Второй', 'Третий']
   NAME   = [ 'Фундамент/коробка/кровля', 'Под отделку', 'Под чистовую внутреннюю отделку' ]
+  CURRENT = ['по первому этапу', 'по второму этапу', 'по третьему этапу']
+  ALL = ['по первому этапу', 'по двум этапам', 'по трем этапам']
 
   belongs_to :budget
   has_many   :stage_products
+
+  scope :active, -> { where('price > 0')}
 
   def update_report_primitivies
     self.stage_products.each do |stage_product|
