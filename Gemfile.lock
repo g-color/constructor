@@ -294,7 +294,7 @@ DEPENDENCIES
   jquery-ui-rails
   kaminari
   lightbox-bootstrap-rails (= 5.1.0.1)
-  listen (~> 3.0.5)
+  listen
   ng-toaster-rails
   paperclip
   paranoia (~> 2.2)
