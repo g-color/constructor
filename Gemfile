@@ -21,7 +21,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 3.0'
 # gem 'bcrypt', '~> 3.1.7'
 # gem 'capistrano-rails', group: :development
-
+gem 'listen'
 gem 'pg'
 gem "paranoia", "~> 2.2"
 gem "audited", "~> 4.3"
@@ -64,7 +64,6 @@ end
 
 group :development do
   gem 'web-console', '>= 3.3.0'
-  gem 'listen'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
