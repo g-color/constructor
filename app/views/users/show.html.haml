@@ -25,9 +25,8 @@
     .form-group.string.required.user_first_name
       %b.col-sm-3.text-right ID в CRM
       .col-sm-9
-        %span= link_to @user.id, "https://artkarkas.megaplan.ru/staff/#{@user.id}/card/", target: :blank
+        %span= link_to @user.crm, "https://artkarkas.megaplan.ru/staff/#{@user.id}/card/", target: :blank
     .form-group.string.required.user_first_name
       %b.col-sm-3.text-right Электронная почта
       .col-sm-9
         %span= link_to @user.email, "mailto:#{@user.email}", target: :blank
-
