@@ -34,3 +34,11 @@
                 %td
                   %a.btn.btn-danger.pull-right{ title: 'Удалить', ng: {click: "ctrl.removeSharedUser(user.id)" } }
                     %span.glyphicon.glyphicon-trash
+
+        - if @client.estimates.any?
+          .form-group
+            %label.col-sm-3.control-label Сметы
+            .col-sm-9
+              .list-group
+                - @client.estimates.each do |estimate|
+                  = link_to estimate.name, estimate_path(estimate), class: 'list-group-item'
