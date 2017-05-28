@@ -49,7 +49,7 @@
                 .form-group
                   %label.col-sm-3.control-label Клиент
                   .col-sm-9
-                    = select_tag :client_id, options_for_select(current_user.clients.all.map{ |u| [u.full_name, u.id] }), class: 'form-control'
+                    = select_tag :client_id, options_for_select(current_user.clients.active.all.map{ |u| [u.full_name, u.id] }), class: 'form-control'
             .modal-footer
               %button.btn.btn-default{ type: "button", data: { dismiss: "modal" } } Отмена
               %button.btn.btn-success.create-estimate-solution{ data: { solution_id: solution.id } } Создать

@@ -9,6 +9,8 @@ class Client < ApplicationRecord
   has_many :user_clients, dependent: :delete_all
   has_many :estimates,    dependent: :delete_all
 
+  scope :active, -> { where(archived: false) }
+
   def to_s
     full_name
   end
