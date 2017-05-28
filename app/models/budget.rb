@@ -45,6 +45,12 @@ class Budget < ApplicationRecord
   accepts_nested_attributes_for :client_files, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :technical_files, reject_if: :all_blank, allow_destroy: true
 
+  before_save :fill_empty_fields
+
+  def fill_empty_fields
+    self.discount_by_stages = [0, 0, 0] if discount_by_stages == ['', '', '']
+  end
+
   def calc_parameters
     self.price_by_area = (self.price / self.area).round 2 if self.area > 0
     self.price_by_stage_aggregated[0] = price_by_stage[0]
@@ -405,7 +411,7 @@ class Budget < ApplicationRecord
     styles['DOCUMENT'].left_margin   = 1000
     styles['DOCUMENT'].right_margin  = 1000
     styles['DOCUMENT'].top_margin    = 1000
-    
+
     styles['PS_HEADER_LEFT']               = ParagraphStyle.new
     styles['PS_HEADER_LEFT'].justification = ParagraphStyle::RIGHT_JUSTIFY
     styles['CS_HEADER_LEFT']               = CharacterStyle.new
@@ -563,7 +569,7 @@ class Budget < ApplicationRecord
           end
         end
         document.paragraph(styles['PS_SUMMARY']) do |p|
-          p.apply(styles['CS_SUMMARY']) do |r| 
+          p.apply(styles['CS_SUMMARY']) do |r|
             r << "Итого по #{stage[:number]} #{stages_text[stage[:number]-1][:pluralize]}: #{money(data[:price_by_stage_aggregated_discounted][stage[:number]-1])} руб. (~ #{money(data[:price_by_area_per_stage_discounted][stage[:number]-1])} руб. за м2)"
           end
         end
@@ -583,7 +589,7 @@ class Budget < ApplicationRecord
 
     unless data[:stages].third[:products].empty?
       document.paragraph(styles['PS_TEXT']) do |p|
-        p << "Внутридомовые инженерные сети (вода, канализация, а также электроразводка по дому) детально просчитываются после выполнения первого этапа и уточнения всех 
+        p << "Внутридомовые инженерные сети (вода, канализация, а также электроразводка по дому) детально просчитываются после выполнения первого этапа и уточнения всех
           деталей с Заказчиком В общей стоимости здания данные позиции суммарно занимают ориентировочно 3-6%."
       end
     end
