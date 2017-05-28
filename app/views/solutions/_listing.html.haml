@@ -14,7 +14,7 @@
         - unless current_user.admin?
           %li= link_to 'Просмотреть', solution_path(solution)
         - if solution.url.present?
-          %li= link_to 'Ссылка на сайт', solution.url, target: :blank
+          %li= link_to 'Ссылка на сайт', "http://artsipsmeta.ru/" + solution.url, target: :blank
         %li
           %a{ data: { toggle: 'modal', target: "#create-estimate-#{solution.id}"} } Дублировать как смету
         %li= link_to 'Скачать в .pdf', solution_export_pdf_path(solution.id), target: '_blank'
