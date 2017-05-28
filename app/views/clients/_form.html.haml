@@ -41,4 +41,4 @@
             .col-sm-9
               .list-group
                 - @client.estimates.each do |estimate|
-                  = link_to estimate.name, estimate_path(estimate), class: 'list-group-item'
+                  = link_to estimate.name, edit_estimate_path(estimate), class: 'list-group-item'
