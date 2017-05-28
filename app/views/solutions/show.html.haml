@@ -29,7 +29,8 @@
             %label.col-sm-3.control-label Ссылка на сайт
             .col-sm-9
               %h5
-                = link_to @solution.url, "http://artsipsmeta.ru/" + @solution.url, target: :blank
+                - if @solution.url.present?
+                  = link_to @solution.url, "http://artsipsmeta.ru/" + @solution.url, target: :blank
 
           .form-group
             %label.col-sm-3.control-label Общая стоимость
