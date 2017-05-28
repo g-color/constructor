@@ -5,7 +5,7 @@ class Ability
     user ||= User.new
 
     if user.admin?
-      can :manage, [Audit, Category, Primitive, Composite, Product, Unit, User, Expense, Solution]
+      can :manage, [Client, Audit, Category, Primitive, Composite, Product, Unit, User, Expense, Solution]
       can :view_report, :report
     end
 

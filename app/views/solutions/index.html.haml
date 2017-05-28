@@ -45,11 +45,10 @@
                 .form-group
                   %label.col-sm-3.control-label Новое имя
                   .col-sm-9
-                    = text_field_tag :name, nil, placeholder: 'Введите новое имя', class: 'form-control'
+                    = text_field_tag :name, nil, placeholder: 'Введите новое имя', class: 'form-control', required: 'required', data: { id: solution.id }
                 .form-group
                   %label.col-sm-3.control-label Клиент
-                  .col-sm-9
-                    = select_tag :client_id, options_for_select(current_user.clients.active.all.map{ |u| [u.full_name, u.id] }), class: 'form-control'
+                  .col-sm-9= select_tag :client_id, options_for_select(current_user.clients.active.all.map{ |u| [u.full_name, u.id] }), class: 'form-control'
             .modal-footer
               %button.btn.btn-default{ type: "button", data: { dismiss: "modal" } } Отмена
               %button.btn.btn-success.create-estimate-solution{ data: { solution_id: solution.id } } Создать
