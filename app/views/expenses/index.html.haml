@@ -18,7 +18,7 @@
               %td
                 .form-group
                   .col-sm-10
-                    %input.form-control.col-sm{name: "values[#{exp.id}]", value: exp.percent.to_s.sub(/\.0+$/,'')}
+                    %input.form-control.col-sm{ name: "values[#{exp.id}]", value: exp.percent.to_s.sub(/\.0+$/,''), required: 'required' }
           %tr
             %td
               %b Итого

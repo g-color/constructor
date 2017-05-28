@@ -1,6 +1,7 @@
 class Expense < ApplicationRecord
   audited
 
+  validates :name,    presence: true
   validates :percent, presence: true, numericality: { grater_than_or_equal_to: 0 }
 
   def self.update_values(values)
