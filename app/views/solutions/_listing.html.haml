@@ -21,4 +21,4 @@
         - if current_user.admin?
           %li.divider
           %li= link_to 'Редактировать', edit_solution_path(solution)
-          %li= link_to 'Удалить', solution_path(solution), method: :delete, data: {confirm: 'Are you sure?'}
+          %li= link_to 'Удалить', solution_path(solution), method: :delete, data: {confirm: 'Вы уверены?'}
