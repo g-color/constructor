@@ -12,6 +12,7 @@ class ProductSet < ApplicationRecord
 
   def link
     get_product
+    return nil if @product.nil?
     Rails.application.routes.url_helpers.edit_product_path(@product)
   end
 
