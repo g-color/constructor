@@ -29,6 +29,10 @@ class ConstructorObject < ApplicationRecord
 
   accepts_nested_attributes_for :compositions, reject_if: :all_blank, allow_destroy: true
 
+  validates :name, presence: true
+  validates :name, unique_name: true
+  validates :compositions, items: true
+
   def to_s
     name
   end

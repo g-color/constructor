@@ -13,7 +13,7 @@ require 'mina_sidekiq/tasks'
 set :application_name, 'constructor'
 set :domain, '78.47.70.133'
 set :deploy_to, '/var/www/constructor'
-set :repository, 'git@github.com:g1nc/constructor.git'
+set :repository, 'git@github.com:g-color/constructor.git'
 set :branch, 'master'
 
 # Optional settings:

@@ -18,6 +18,7 @@ class CompositesController < ApplicationController
       PriceUpdateJob.perform_later(@composite)
       redirect_to composites_path
     else
+      flash.now[:alert] = @composite.errors.messages[:base].first if @composite.errors.messages[:base].present?
       render 'new'
     end
   end
@@ -30,6 +31,7 @@ class CompositesController < ApplicationController
       PriceUpdateJob.perform_later(@composite)
       redirect_to composites_path
     else
+      flash.now[:alert] = @composite.errors.messages[:base].first if @composite.errors.messages[:base].present?
       render 'edit'
     end
   end

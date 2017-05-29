@@ -9,10 +9,19 @@ class Product < ApplicationRecord
   scope :category,    -> (category_id) { where(category_id: category_id) if category_id.present? }
 
   validates :name,        presence: true
+  validates :name,        unique_name: true
   validates :unit_id,     presence: true
   validates :category_id, presence: true
   validates :profit,      presence: true
   validates :stage,       presence: true
+  validates :product_compositions, product_items: true
+
+
+  has_and_belongs_to_many :items,
+              class_name: "Product",
+              join_table: :product_compositions,
+              foreign_key: :product_id,
+              association_foreign_key: :constructor_object_id
 
   has_many :product_compositions
   has_many :product_template_sets
