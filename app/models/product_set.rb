@@ -7,7 +7,7 @@ class ProductSet < ApplicationRecord
 
   def to_s
     get_product
-    @product.name
+    @product.nil? ? '' : @product.name
   end
 
   def link
@@ -16,6 +16,7 @@ class ProductSet < ApplicationRecord
   end
 
   def get_product
+    return unless product_template_sets.where(product_template: self).present?
     @product ||= product_template_sets.where(product_template: self).first.product
   end
 end
