@@ -62,7 +62,7 @@ class ClientsController < ApplicationController
   def update
     authorize! :edit, @client
     if @client.update(client_params)
-      @client.share(params[:client_users])
+      @client.share(JSON.parse(params[:client_users]) << current_user.id)
       redirect_to clients_path
     else
       @shared_users = UserClient.where(client: @client).where.not(user: current_user).map(&:user)
