@@ -17,7 +17,7 @@ module AuditsHelper
 
   def self.get_auditable(audit)
     @auditable = audit.auditable
-    if @auditable.nil?
+    if @auditable.nil? && audit.auditable_type.constantize.respond_to?(:with_deleted)
       @auditable = audit.auditable_type.constantize.with_deleted.find(audit.auditable_id)
     end
     @auditable
