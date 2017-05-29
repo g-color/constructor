@@ -127,8 +127,6 @@ class EstimatesController < ApplicationController
     end
     @estimate.save
 
-    @estimate.send_email_engineer(params[:engineer])
-
     csv = @estimate.for_export_zp
     File.open(Rails.root.join('csv',"Ведомость ЗП на объект.csv"), 'wb') do |file|
       file << csv
@@ -138,6 +136,8 @@ class EstimatesController < ApplicationController
     File.open(Rails.root.join('csv',"Перечень материалов на объект.csv"), 'wb') do |file|
       file << csv
     end
+
+    @estimate.send_email_engineer(params[:engineer])
 
     render json: {
       engineer: engineer,

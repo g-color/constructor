@@ -295,6 +295,7 @@ DEPENDENCIES
   kaminari
   lightbox-bootstrap-rails (= 5.1.0.1)
   listen
+  mail
   ng-toaster-rails
   paperclip
   paranoia (~> 2.2)
