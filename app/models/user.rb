@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :clients, through: :user_clients
   has_many :estimates
 
+  acts_as_paranoid
   audited
 
   def to_s

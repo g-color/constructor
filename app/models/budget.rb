@@ -3,8 +3,6 @@ require 'rtf'
 class Budget < ApplicationRecord
   include RTF
   include ApplicationHelper
-  acts_as_paranoid
-  audited
 
   FLOOR_NAME = {
     '1'   => 'Одноэтажный',
