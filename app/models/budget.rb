@@ -263,35 +263,14 @@ class Budget < ApplicationRecord
     end
   end
 
-  def for_export_zp(engineer)
+  def for_export_salary(engineer)
     primitives = self.get_primitives
     view = ActionView::Base.new(ActionController::Base.view_paths, {})
     view.render(partial: "budgets/engineer_export_salary.xls.erb", locals: {
       primitives: primitives,
       engineer:   engineer,
-      number:     3
+      number:     2
     }, layout: false)
-
-    # CSV.generate(headers: true) do |csv|
-      # csv << ["Объект:"]
-      # csv << []
-      # csv << ["Наименование", "ед. изм.", "Расценка, руб.", "Количество", "Стоимость, руб"]
-      # num = 3
-      # primitives.each do |key, value|
-      #   primitive = Primitive.find(key.to_i)
-      #   if primitive.category.id == ENV['WORK_CATEGORY'].to_i
-      #     num += 1
-      #     csv << [
-      #       primitive.name,
-      #       primitive.unit.name,
-      #       primitive.price,
-      #       value,
-      #       "=C#{num}*D#{num}"
-      #     ]
-      #   end
-      # end
-      # csv << ["", "", "", "Итого:", "=SUM(E2:E#{num})"]
-    # end
   end
 
   def for_export_primitives

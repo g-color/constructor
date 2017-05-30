@@ -127,12 +127,8 @@ class EstimatesController < ApplicationController
     end
     @estimate.save
 
-    # view = ActionView::Base.new(ActionController::Base.view_paths, {})
-    # view.render(partial: "payments/cashless/#{template_name}.html", locals: { check: self }, layout: false)
-
-    csv = @estimate.for_export_zp
     File.open(Rails.root.join('xls',"Ведомость ЗП на объект.xls"), 'wb') do |file|
-      file << csv
+      file << @estimate.for_export_salary(engineer)
     end
 
     csv = @estimate.for_export_primitives
