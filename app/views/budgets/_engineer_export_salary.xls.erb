@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Ведомость ЗП на объект">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">Объект:</Data></Cell>
+      </Row>
+      <Row></Row>
+      <Row>
+        <Cell><Data ss:Type="String">Наименование</Date></Cell>
+        <Cell><Data ss:Type="String">ед. изм.</Date></Cell>
+        <Cell><Data ss:Type="String">Расценка, руб.</Date></Cell>
+        <Cell><Data ss:Type="String">Количество</Date></Cell>
+        <Cell><Data ss:Type="String">Стоимость, руб</Date></Cell>
+      </Row>
+      <% primitives.each do |key, value| %>
+        <% primitive = Primitive.find(key.to_i) %>
+        <% if primitive.category.id == ENV['WORK_CATEGORY'].to_i %>
+          <% number += 1 %>
+          <Row>
+            <Cell><Data ss:Type="String"><%= primitive.name %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= primitive.unit.name %></Data></Cell>
+            <Cell><Data ss:Type="Number"><%= primitive.price %></Data></Cell>
+            <Cell><Data ss:Type="Number"><%= value %></Data></Cell>
+            <Cell><Data ss:Type="Number"><%= "=C#{number}*D#{number}" %></Data></Cell>
+          </Row>
+        <% end %>
+      <% end %>
+      <!-- ["", "", "", "Итого:", "=SUM(E2:E#{num})"] -->
+      <Row>
+        <Cell><Data ss:Type="String">Итого:</Data></Cell>
+        <Cell><Data ss:Type="String"><%= "=SUM(E2:E#{number})" %></Data></Cell>
+      </Row>
+    </Table>
+  </Worksheet>
+</Workbook>
