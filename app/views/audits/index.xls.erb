@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Список изменений">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">ID</Data></Cell>
+        <Cell><Data ss:Type="String">Пользователь</Data></Cell>
+        <Cell><Data ss:Type="String">Роль</Data></Cell>
+        <Cell><Data ss:Type="String">Тип действия</Data></Cell>
+        <Cell><Data ss:Type="String">Тип объекта</Data></Cell>
+        <Cell><Data ss:Type="String">Объект</Data></Cell>
+        <Cell><Data ss:Type="String">Время</Data></Cell>
+      </Row>
+    <% @audits.each do |audit| %>
+      <Row>
+        <Cell><Data ss:Type="Number"><%= audit.id %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= audit.user&.full_name %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= UserRole.fetch(audit.user&.role) %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= AuditsHelper.get_action(audit) %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= AuditsHelper.get_class(audit) %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= AuditsHelper.get_auditable(audit).to_s %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= audit.created_at.to_s(:db) %></Data></Cell>
+      </Row>
+    <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>

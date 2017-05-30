@@ -52,5 +52,6 @@
 
   .pull-right
     %a.btn.btn-default{ ng: { click: 'ctrl.exportCsv()' } } Экспорт в .csv
+    %a.btn.btn-default{ ng: { click: 'ctrl.exportXls()' } } Экспорт в .xls
 
   / = paginate @audits, theme: 'twitter-bootstrap-3'

@@ -9,3 +9,6 @@ angular.module('Constructor').controller 'AuditController', class AuditControlle
 
   exportCsv: () ->
     window.location.pathname = '/audits.csv'
+
+  exportXls: () ->
+    window.location.pathname = '/audits.xls'

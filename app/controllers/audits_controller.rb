@@ -19,6 +19,7 @@ class AuditsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv { send_data @audits.to_csv, filename: "audits-#{Date.today}.csv" }
+      format.xls
     end
   end
 
