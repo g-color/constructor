@@ -127,10 +127,10 @@ class EstimatesController < ApplicationController
     end
     @estimate.save
 
-    File.open(Rails.root.join('xls',"Ведомость ЗП на объект.xls"), 'wb') do |file|
+    File.open(Rails.root.join('export/xls/Ведомость ЗП на объект.xls'), 'wb') do |file|
       file << @estimate.for_export_salary(engineer)
     end
-    File.open(Rails.root.join('xls',"Перечень материалов на объект.xls"), 'wb') do |file|
+    File.open(Rails.root.join('export/xls/Перечень материалов на объект.xls'), 'wb') do |file|
       file << @estimate.for_export_primitives
     end
 
