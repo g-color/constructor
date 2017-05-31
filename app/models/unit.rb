@@ -2,7 +2,7 @@ class Unit < ApplicationRecord
   acts_as_paranoid
   audited
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { in: 2..256 }
 
   def to_s
     name

@@ -23,7 +23,7 @@ class Budget < ApplicationRecord
   scope :area_start,  -> (area_start) { where('area >= ?', area_start) if area_start.present? }
   scope :area_end,    -> (area_end)   { where('area < ?', area_end) if area_end.present? }
 
-  validates :name,               presence: true
+  validates :name,               presence: true, length: { in: 2..256 }
   validates :area,               presence: true, numericality: { greater_than: 0 }
   validates :first_floor_height, presence: true, numericality: { greater_than: 0 }
 

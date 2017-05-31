@@ -8,8 +8,9 @@ class Product < ApplicationRecord
   scope :filter_name, -> (name)        { where("name ILIKE ?", "%#{name}%") if name.present? }
   scope :category,    -> (category_id) { where(category_id: category_id) if category_id.present? }
 
-  validates :name,        presence: true
-  validates :name,        unique_name: true
+  validates :name,        unique_name: true, presence: true, length: { in: 2..256 }
+  validates :description, length: { in: 2..1024 }
+  validates :hint,        length: { in: 2..5102412 }
   validates :unit_id,     presence: true
   validates :category_id, presence: true
   validates :profit,      presence: true
