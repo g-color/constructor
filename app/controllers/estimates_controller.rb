@@ -27,7 +27,7 @@ class EstimatesController < ApplicationController
     @engineers = User.engineers
     @estimate = Estimate.new(estimate_params.merge(user_id: current_user.id))
     params[:estimate][:discount_by_stages].each do |key, value|
-      @estimate.discount_by_stages[key.to_i] = value
+      @estimate.discount_by_stages[key.to_i] = value || 0
     end
 
     if @estimate.save
@@ -55,7 +55,7 @@ class EstimatesController < ApplicationController
 
   def update
     params[:estimate][:discount_by_stages].each do |key, value|
-      @estimate.discount_by_stages[key.to_i] = value
+      @estimate.discount_by_stages[key.to_i] = value || 0
     end
     if @estimate.update(estimate_params)
       @estimate.update_json_values(params[:json_stages])
