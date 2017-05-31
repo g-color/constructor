@@ -23,4 +23,5 @@
 //= require toaster
 //= require cocoon
 //= require lightbox-bootstrap
+
 //= require_tree .

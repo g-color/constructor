@@ -1,4 +1,4 @@
-$(document).on 'turbolinks:load', () ->
+$(document).on 'ready', () ->
   $('.update-price-link').on 'click', ->
     $(this).closest('tr').find('form').submit()
     false

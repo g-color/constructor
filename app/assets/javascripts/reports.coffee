@@ -1,4 +1,4 @@
-$(document).on 'turbolinks:load', () ->
+$(document).on 'ready', () ->
   $('#product-popularity').DataTable({
     searching: false,
     paging: false,
@@ -54,5 +54,3 @@ $(document).on 'turbolinks:load', () ->
       null,
     ]
   })
-
-

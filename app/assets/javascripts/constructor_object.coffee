@@ -1,4 +1,4 @@
-$(document).on 'turbolinks:load', ->
+$(document).on 'ready', ->
   $('#constructor_objects')
   .on 'cocoon:before-insert', (e, composition, insert) ->
     insert.val = false if $('#constructor_object_constructor_object_id').val() == ''

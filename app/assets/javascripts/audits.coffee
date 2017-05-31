@@ -1,4 +1,4 @@
-$(document).on 'turbolinks:load', () ->
+$(document).on 'ready', () ->
   $('.audits-datatable').DataTable({
     searching: false,
     bInfo: false,

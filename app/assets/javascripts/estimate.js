@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('ready', function() {
   $('.client-files-div').find(':file').change(function() {
     $('#create-file').trigger('click');
     var nested = $('#client-files').find('.nested-fields').last();
