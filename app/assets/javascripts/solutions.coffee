@@ -1,4 +1,4 @@
-$(document).on 'ready', () ->
+$(document).on 'turbolinks:load', () ->
   $('#solutions-datatable').DataTable({
     searching: false,
     paging: false,

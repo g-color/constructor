@@ -1,4 +1,4 @@
 angular.module 'Constructor', ['toaster', 'ngResource', 'ngAnimate']
 
-$(document).on 'ready', ->
+$(document).on 'turbolinks:load', ->
   angular.bootstrap document.body, ['Constructor']

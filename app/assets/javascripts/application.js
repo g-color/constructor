@@ -11,6 +11,7 @@
 // about supported directives.
 //
 //= require jquery2
+//= require jquery.turbolinks
 //= require jquery-ui
 //= require jquery_ujs
 //= require bootstrap-sprockets
@@ -23,4 +24,7 @@
 //= require toaster
 //= require cocoon
 //= require lightbox-bootstrap
+//= require turbolinks
 //= require_tree .
+
+
