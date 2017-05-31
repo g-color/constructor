@@ -2,7 +2,7 @@
   %h1 Создание сметы
   %ol.breadcrumb.row
     - if params[:client_id].present?
-      %li= link_to Client.find(params[:client_id]).full_name, client_path(id: params[:client_id])
+      %li= link_to Client.find(params[:client_id]).full_name, edit_client_path(id: params[:client_id])
     %li= link_to 'Сметы', estimates_path(client_id: params[:client_id])
     %li.active Создание сметы
 
