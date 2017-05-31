@@ -16,7 +16,6 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'jquery-datatables-rails', '~> 3.4.0'
 
-gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 3.0'
 # gem 'bcrypt', '~> 3.1.7'
