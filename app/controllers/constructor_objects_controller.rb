@@ -9,4 +9,9 @@ class ConstructorObjectsController < ApplicationController
     )
   end
 
+  def get_autocomplete_items(parameters)
+    ids = params[:ids].blank? ? [] : params[:ids].split(',').map(&:to_i)
+    super(parameters).where('id NOT IN (?)', ids)
+  end
+
 end
