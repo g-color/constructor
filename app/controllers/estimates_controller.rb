@@ -130,10 +130,8 @@ class EstimatesController < ApplicationController
     File.open(Rails.root.join('xls',"Ведомость ЗП на объект.xls"), 'wb') do |file|
       file << @estimate.for_export_salary(engineer)
     end
-
-    csv = @estimate.for_export_primitives
-    File.open(Rails.root.join('csv',"Перечень материалов на объект.csv"), 'wb') do |file|
-      file << csv
+    File.open(Rails.root.join('xls',"Перечень материалов на объект.xls"), 'wb') do |file|
+      file << @estimate.for_export_primitives
     end
 
     @estimate.send_email_engineer(params[:engineer])

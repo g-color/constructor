@@ -4,7 +4,7 @@ class EstimateMailer < ApplicationMailer
     @estimate = Estimate.find(estimate_id)
     @user = User.find(user_id)
     attachments['Ведомость ЗП на объект.xls'] = File.read(Rails.root.join('xls',"Ведомость ЗП на объект.xls"))
-    attachments['Перечень материалов на объект.csv'] = File.read(Rails.root.join('csv',"Перечень материалов на объект.csv"))
+    attachments['Перечень материалов на объект.xls'] = File.read(Rails.root.join('xls',"Перечень материалов на объект.xls"))
     mail(to: @user.email, subject: "Смета #{@estimate.name} по клиенту #{@estimate.client.full_name}")
   end
 end

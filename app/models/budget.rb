@@ -263,70 +263,6 @@ class Budget < ApplicationRecord
     end
   end
 
-  def for_export_salary(engineer)
-    primitives = self.get_primitives
-    view = ActionView::Base.new(ActionController::Base.view_paths, {})
-    view.render(partial: "budgets/engineer_export_salary.xls.erb", locals: {
-      primitives: primitives,
-      engineer:   engineer,
-      number:     2
-    }, layout: false)
-  end
-
-  def for_export_primitives
-    stage_products = []
-    self.stages.each do |stage|
-      stage_products += stage.stage_products.to_a
-    end
-
-    result = {}
-    products = []
-    stage_products.each do |stage_product|
-      primitives = stage_product.get_primitives
-      product = stage_product.product
-      products << product.name
-      primitives.each do |p, quantity|
-        primitive = Primitive.find(p)
-        if primitive.category.id != ENV['WORK_CATEGORY'].to_i
-          result[primitive.category.name] = {} if result[primitive.category.name].blank?
-          if result[primitive.category.name][primitive.name].nil?
-            result[primitive.category.name][primitive.name]        = {}
-            result[primitive.category.name][primitive.name][:unit] = primitive.unit.name
-          end
-          result[primitive.category.name][primitive.name][product.name]  = 0 if result[primitive.category.name][primitive.name][product.name].nil?
-          result[primitive.category.name][primitive.name][product.name] += quantity
-        end
-      end
-    end
-    products = products.uniq
-
-    CSV.generate(headers: true) do |csv|
-      csv << ["Объект:"]
-      csv << []
-      header = ["Наименование", "ед. изм."] + products + ["Общее количество"]
-      csv << header
-      num = 3
-      result.each do |category, primitives|
-        csv << ["#{category}:"]
-        num += 1
-        primitives.each do |primitive, value|
-          num += 1
-          row = [primitive, value[:unit]]
-          products.each do |product|
-            row << (value[product].present? ? value[product] : "")
-          end
-          row << "=SUM(C#{num}:#{get_column_csv(products.size+1)}#{num})"
-          csv << row
-        end
-      end
-      csv << []
-      csv << ["Общестроительные элементы:"]
-      csv << ["Перчатки"]
-      csv << ["Пакеты для мусора"]
-      csv << ["Леса строительные"]
-    end
-  end
-
   def for_export_budget
     {
       discount_title: self.discount_title,
@@ -370,15 +306,6 @@ class Budget < ApplicationRecord
         }
       end
     }
-  end
-
-  def get_column_csv(num)
-    col = ''
-    while num > 0
-      col = (num % 26 + 'A'.ord).chr + col
-      num /= 26
-    end
-    col
   end
 
   def solution?
