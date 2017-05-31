@@ -331,20 +331,38 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       stages[i].price               = parseFloat(stage.price)
       stages[i].price_with_discount = parseFloat(stage.price_with_discount)
       $.each(stage.products, (i,product) ->
-        stage.products[i].price_with_work     = parseFloat(product.price_with_work)
-        stage.products[i].price_without_work  = parseFloat(product.price_without_work)
-        stage.products[i].profit              = parseFloat(product.profit)
-
-        if product.with_work
-          price = parseFloat(product.price_with_work)
-        else
-          price = parseFloat(product.price_without_work)
-        stage.products[i].price = price + (price / 100 * (expense.percent + product.profit))
-
         $.each(product.sets, (i,set) ->
           $.each(set.items, (i,item) ->
             set.items[i].value.price = parseFloat(item.value.price)
           )
         )
+
+        if stage.products[i].custom
+          price_with_work = 0
+          price_without_work = 0
+          $.each(product.sets, (i,set) ->
+            if set.selected
+              $.each(set.items, (i,item) ->
+                price_with_work = item.value.price * parseFloat(item.quantity)
+                price_without_work = item.value.price * parseFloat(item.quantity) unless item.work_primitive
+              )
+          )
+          stage.products[i].price_with_work     = price_with_work
+          stage.products[i].price_without_work  = price_without_work
+          stage.products[i].profit = parseFloat(product.profit)
+          if product.with_work
+            price = price_with_work
+          else
+            price = price_without_work
+          stage.products[i].price = price + (price / 100 * (expense.percent + product.profit))
+        else
+          stage.products[i].price_with_work     = parseFloat(product.price_with_work)
+          stage.products[i].price_without_work  = parseFloat(product.price_without_work)
+          stage.products[i].profit              = parseFloat(product.profit)
+          if product.with_work
+            price = parseFloat(product.price_with_work)
+          else
+            price = parseFloat(product.price_without_work)
+          stage.products[i].price = price + (price / 100 * (expense.percent + product.profit))
       )
     )
