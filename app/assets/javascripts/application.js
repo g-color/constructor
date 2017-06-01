@@ -27,4 +27,10 @@
 //= require turbolinks
 //= require_tree .
 
-
+$(function(){
+  $('a').on('click', function(e) {
+    if ($(this).attr('href') == window.location.pathname) {
+      window.location.reload();
+    }
+  })
+})
