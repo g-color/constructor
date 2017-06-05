@@ -5,6 +5,7 @@ class Composite < ConstructorObject
   validates :name,        presence: true, length: { in: 2..256 }
   validates :unit_id,     presence: true
   validates :category_id, presence: true
+  validates :compositions, items: true
 
   def update_price
     self.price                 = 0

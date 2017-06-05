@@ -31,7 +31,6 @@ class ConstructorObject < ApplicationRecord
 
   validates :name, presence: true
   validates :name, unique_name: true
-  validates :compositions, items: true
 
   def to_s
     name
