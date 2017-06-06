@@ -60,9 +60,7 @@ task :deploy do
 
     on :launch do
       invoke :'sidekiq:restart'
-      in_path(fetch(:current_path)) do
-        queue 'touch tmp/restart.txt'
-      end
+      command %{touch tmp/restart.txt}
     end
   end
 
