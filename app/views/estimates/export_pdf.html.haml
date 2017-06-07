@@ -39,7 +39,7 @@
             %p.no-margin Высота потолка второго этажа: #{@estimate[:second_floor_height_min]} м
           - else
             %p.no-margin Высота потолка второго этажа: от #{@estimate[:second_floor_height_min]} м до #{@estimate[:second_floor_height_max]} м
-        - if @estimate[:second_floor_height_min] > 0 && @e.pdf-subheaderstimate[:second_floor_height_max] > 0
+        - if @estimate[:second_floor_height_min] > 0 && @estimate[:second_floor_height_max] > 0
           - if @estimate[:second_floor_height_min] == @estimate[:second_floor_height_max]
             %p.no-margin Высота потолка третьего этажа: #{@estimate[:third_floor_height_min]} м
           - else
