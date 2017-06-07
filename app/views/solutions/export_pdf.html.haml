@@ -38,8 +38,8 @@
             %p.no-margin Высота потолка второго этажа: #{@solution[:second_floor_height_min]} м
           - else
             %p.no-margin Высота потолка второго этажа: от #{@solution[:second_floor_height_min]} м до #{@solution[:second_floor_height_max]} м
-        - if @solution[:second_floor_height_min] > 0 && @solution[:second_floor_height_max] > 0
-          - if @solution[:second_floor_height_min] == @solution[:second_floor_height_max]
+        - if @solution[:third_floor_height_min] > 0 && @solution[:third_floor_height_max] > 0
+          - if @solution[:third_floor_height_min] == @solution[:third_floor_height_max]
             %p.no-margin Высота потолка третьего этажа: #{@solution[:third_floor_height_min]} м
           - else
             %p.no-margin Высота потолка третьего этажа: от #{@solution[:third_floor_height_min]} м до #{@solution[:third_floor_height_max]} м
