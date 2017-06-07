@@ -1,6 +1,30 @@
 @import 'bootstrap';
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
 
 $default-color: #bc5f1e;
+
+.pdf-regular {
+  letter-spacing: 0;
+  line-height: 120%;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+}
+
+.pdf-header {
+  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.pdf-subheader {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.pdf-bold {
+  font-weight: 700;
+}
 
 .no-margin {
   margin: 0 !important
@@ -15,12 +39,12 @@ $default-color: #bc5f1e;
 }
 
 .brown-text {
-  color: $default-color
+  color: #bc5f1e
 }
 
 .line-text {
   background: white;
   display: inline-block;
-  margin-top: -18px;
+  margin-top: -14px;
   padding: 5px;
 }
