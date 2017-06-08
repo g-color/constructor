@@ -25,6 +25,7 @@ class Client < ApplicationRecord
   end
 
   def share(users)
+    users = JSON.parse(users)
     UserClient.where(client: self, owner: false).where.not(user_id: users).destroy_all
     users.each do |user|
       UserClient.create(client: self, user_id: user, owner: false) unless shared_to_user?(user)
