@@ -35,7 +35,7 @@ class ClientsController < ApplicationController
     @client = Client.new(client_params)
     if @client.save
       @client.assign_owner(current_user)
-      @client.share(params[:client_users])
+      @client.share(JSON.parse(params[:client_users]) << current_user.id)
       redirect_to session.delete(:return_to)
     else
       gon.push(
