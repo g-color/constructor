@@ -22,6 +22,13 @@
         <Cell><Data ss:Type="String">Объект:</Data></Cell>
       </Row>
       <Row></Row>
+      <Row>
+        <Cell><Data ss:Type="String">Наименование</Data></Cell>
+        <Cell><Data ss:Type="String">ед. изм.</Data></Cell>
+        <Cell><Data ss:Type="String">Расценка, руб.</Data></Cell>
+        <Cell><Data ss:Type="String">Количество</Data></Cell>
+        <Cell><Data ss:Type="String">Стоимость, руб.</Data></Cell>
+      </Row>
       <% primitives.each do |key, value| %>
         <% primitive = Primitive.find(key.to_i) %>
         <% if primitive.category.id == ENV['WORK_CATEGORY'].to_i %>
