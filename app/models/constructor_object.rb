@@ -80,9 +80,9 @@ class ConstructorObject < ApplicationRecord
     end
   end
 
-  def get_primitives(undivisibilty_objects: false)
+  def get_primitives(undivisibilty_objects: true)
     result = {}
-    if is_primitive? || (undivisibilty_objects && !self.divisibility)
+    if is_primitive? || !self.divisibility
       result = {
         self.id => 1
       }

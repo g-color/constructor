@@ -30,7 +30,7 @@
         <Cell><Data ss:Type="String">Стоимость, руб.</Data></Cell>
       </Row>
       <% primitives.each do |key, value| %>
-        <% primitive = Primitive.find(key.to_i) %>
+        <% primitive = ConstructorObject.find(key.to_i) %>
         <% if primitive.category.id == ENV['WORK_CATEGORY'].to_i %>
           <% number += 1 %>
           <% formula = "=[.C#{number}]*[.D#{number}]"%>

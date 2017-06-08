@@ -47,7 +47,7 @@ class Estimate < Budget
       product = stage_product.product
       products << product.name
       primitives.each do |p, quantity|
-        primitive = Primitive.find(p)
+        primitive = ConstructorObject.find(p)
         if primitive.category.id != ENV['WORK_CATEGORY'].to_i && primitive.category.id != ENV['STOCK_CATEGORY'].to_i
           result[primitive.category.name] = {} if result[primitive.category.name].blank?
           if result[primitive.category.name][primitive.name].nil?

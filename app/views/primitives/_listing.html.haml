@@ -3,7 +3,7 @@
   %td= primitive.unit.name
   %td
     = simple_form_for primitive, html: { id: "primitive-#{primitive.id}" } do |f|
-      %input.form-control.primitive-price{ value: primitive.price, name: 'primitive[price]', data: { id: primitive.id, price: primitive.price } }
+      %input.form-control.primitive-price{ value: with_presicion(primitive.price), name: 'primitive[price]', data: { id: primitive.id, price: primitive.price } }
   %td
     .btn-group
       %button{ data: {toggle: 'dropdown'}, ng: { class: "ctrl.dateClass('#{primitive.date.strftime("%Y-%m-%d")}')" } }
