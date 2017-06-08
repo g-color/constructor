@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   end
 
   def index
-    @users = User.all.order_by(:last_name, :first_name)
+    @users = User.order(:last_name, :first_name).all
     if params[:name].present?
       @users = @users.select do |m|
         m.full_name.downcase.include? params[:name].downcase
