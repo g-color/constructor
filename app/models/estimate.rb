@@ -29,7 +29,7 @@ class Estimate < Budget
     locals     = {
       primitives: primitives,
       engineer:   engineer,
-      number:     2
+      number:     3
     }
     view.render(partial: 'budgets/engineer_export_salary.xls.erb', locals: locals, layout: false)
   end
