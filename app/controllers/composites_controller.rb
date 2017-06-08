@@ -27,10 +27,6 @@ class CompositesController < ApplicationController
   end
 
   def update
-    @composite.assign_attributes(composite_params)
-
-    puts "\n\n\n\n-----------------\n", @composite.compositions.inspect, "\n------------\n\n\n\n"
-
     if @composite.update(composite_params)
       PriceUpdateJob.perform_later(@composite)
       redirect_to composites_path

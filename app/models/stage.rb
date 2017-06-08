@@ -11,7 +11,7 @@ class Stage < ApplicationRecord
 
   def update_report_primitivies
     self.stage_products.each do |stage_product|
-      stage_product.update_report_primitivies(self.estimate)
+      stage_product.update_report_primitivies(self.budget)
     end
   end
 

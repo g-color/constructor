@@ -11,6 +11,8 @@ class Estimate < Budget
 
   belongs_to :client
 
+  after_save :update_report_primitivies
+
   def get_primitives(undivisibilty_objects: false)
     result = {}
     self.stages.each do |stage|

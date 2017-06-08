@@ -258,6 +258,7 @@ class Budget < ApplicationRecord
   end
 
   def update_report_primitivies
+    ReportPrimitive.where( estimate_id: self.id).destroy_all
     self.stages.each do |stage|
       stage.update_report_primitivies
     end
