@@ -62,6 +62,9 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     error        = false
     message      = 'Необходимо выбрать сметный продукт'
 
+    product_in_stage = this.getProductFromStage(product.id)
+    return @toaster.error('Сметный продукт "' + product.name + '" уже добавлен') if product_in_stage
+
     stage = this.getStage(stage_number)
     if product.custom
 
