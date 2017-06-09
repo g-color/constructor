@@ -31,7 +31,7 @@
     %br
 
     .row
-      .col-xs-5
+      .col-xs-6
         %p.no-margin Высота потолка первого этажа: #{@solution[:first_floor_height]} м
         - if @solution[:second_floor_height_min] > 0 && @solution[:second_floor_height_max] > 0
           - if @solution[:second_floor_height_min] == @solution[:second_floor_height_max]
@@ -44,7 +44,7 @@
           - else
             %p.no-margin Высота потолка третьего этажа: от #{@solution[:third_floor_height_min]} м до #{@solution[:third_floor_height_max]} м
         %p.no-margin Площадь строительства: #{@solution[:area]} м2
-      .col-xs-4.col-xs-offset-3
+      .col-xs-4.col-xs-offset-2
         %p.no-margin Проект: #{@solution[:project]}
         %p.no-margin Дата расчета: #{l(@solution[:date], format: "%d %b %Y г.")}
 
