@@ -49,8 +49,8 @@ class CompositesController < ApplicationController
 
   def at_least_one_composition?
     exists = false
-    params[:composite][:compositions_attributes].each do |composition|
-      exists = composition["_destroy"] == 0
+    params[:composite][:compositions_attributes].each do |key, composition|
+      exists = composition["_destroy"] == "false"
       break if exists
     end
 
