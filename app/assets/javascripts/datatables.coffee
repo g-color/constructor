@@ -18,8 +18,8 @@ $(document).on 'turbolinks:load', () ->
     bInfo: false,
     columns: [
       null,
-      null,
       { "orderable": false },
+      null,
       { "orderable": false },
       { "orderable": false },
     ]
