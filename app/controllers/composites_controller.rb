@@ -27,7 +27,7 @@ class CompositesController < ApplicationController
   end
 
   def update
-    if @composite.update(composite_params)
+    if at_least_one_composition? && @composite.update(composite_params)
       PriceUpdateJob.perform_later(@composite)
       redirect_to composites_path
     else
@@ -46,6 +46,17 @@ class CompositesController < ApplicationController
   end
 
   private
+
+  def at_least_one_composition?
+    exists = false
+    params[:composite][:compositions_attributes].each do |composition|
+      exists = composition["_destroy"] == 0
+      break if exists
+    end
+
+    @composite.errors.add(:base, "Должно быть не менее одного примитива или объекта") unless exists
+    exists
+  end
 
   def check_ability
     authorize! :manage, Composite
