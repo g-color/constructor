@@ -43,20 +43,6 @@ $(document).on('turbolinks:load', function() {
     });
   });
 
-  $('.estimates-datatable').DataTable({
-    searching: false,
-    paging: false,
-    bInfo: false,
-    columns: [
-      null,
-      null,
-      null,
-      null,
-      null,
-      { "orderable": false }
-    ]
-  })
-
   $('#btn-export-engineer').click(function() {
     $('#modal-engineer').modal('toggle');
   });
