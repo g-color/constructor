@@ -73,9 +73,9 @@ class ConstructorObject < ApplicationRecord
   def update_report_primitivies(estimate, quantity)
     if is_primitive?
       ReportPrimitive.create(
-        constructor_object: self, 
-        amount: quantity, 
-        signing_date: estimate.signing_date, 
+        constructor_object: self,
+        amount: quantity,
+        signing_date: estimate.signing_date,
         estimate: estimate
       )
     else
@@ -101,5 +101,10 @@ class ConstructorObject < ApplicationRecord
       end
     end
     result
+  end
+
+  def autocomplete_name
+    type_name = self.type == 'Primitive' ? 'Примитив' : 'Объект'
+    "#{name} (#{type_name})"
   end
 end
