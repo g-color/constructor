@@ -31,6 +31,7 @@ class ProductsController < ApplicationController
 
       redirect_to products_path
     else
+      flash.now[:alert] = @product.errors.messages[:base].first if @product.errors.messages[:base].present?
       gon.push(
         product:      @product,
         compositions: JSON.parse(params[:product_compositions]),
@@ -60,6 +61,7 @@ class ProductsController < ApplicationController
 
       redirect_to products_path
     else
+      flash.now[:alert] = @product.errors.messages[:base].first if @product.errors.messages[:base].present?
       gon.push(
         product:      @product,
         compositions: JSON.parse(params[:product_compositions]),
