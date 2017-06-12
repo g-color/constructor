@@ -1,5 +1,5 @@
 class ConstructorObjectsController < ApplicationController
-  autocomplete :constructor_object, :name, scopes: [:active]
+  autocomplete :constructor_object, :name, scopes: [:active], :full => true
 
   def info
     constructor_object = ConstructorObject.find(params[:id])
