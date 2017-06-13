@@ -15,7 +15,7 @@ class Product < ApplicationRecord
   validates :category_id, presence: true
   validates :profit,      presence: true
   validates :stage,       presence: true
-  validates :product_compositions, product_items: true
+  # validates :product_compositions, product_items: true
 
 
   has_and_belongs_to_many :items,
