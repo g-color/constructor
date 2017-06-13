@@ -1,7 +1,7 @@
 angular.module('Constructor').controller 'ProductController', class ProductController
-  @$inject: ['$scope', '$http', '$filter', 'pHelper']
+  @$inject: ['$scope', '$http', '$filter', 'pHelper', 'toaster']
 
-  constructor: (@scope, @http, @filter, @pHelper) ->
+  constructor: (@scope, @http, @filter, @pHelper, @toaster) ->
     @scope.ctrl         = @
     @scope.product      = @pHelper.get('product')
     @scope.custom       = @scope.product.custom
@@ -16,6 +16,53 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
   getIndex: (id, scope) ->
     item = scope.find((x) -> x.id == id)
     scope.indexOf(item)
+
+  validate: ->
+    custom = @scope.custom
+    event.preventDefault()
+
+    validate = if custom then this.validateCustom() else this.validateRegular()
+
+    if validate.error
+      @toaster.error(validate.message)
+    else
+      $('form').submit()
+    true
+
+  validateRegular: ->
+    compositions = @scope.compositions
+    validate     = { error: false, message: null }
+
+    if compositions.length == 0
+      validate.error   = true
+      validate.message = "Должно быть не менее одного примитива или объекта"
+    validate
+
+  validateCustom: ->
+    templates = @scope.templates
+    sets      = @scope.sets
+
+    validate = { error: false, message: null }
+
+    if templates.length == 0 || sets.length == 0
+      validate.error   = true
+      validate.message = "Должно быть не менее одной сборки"
+    else
+      $.each(sets, (i, set) ->
+        return false if validate.error
+
+        if set.name == ''
+          validate.error   = true
+          validate.message = "У одной или нескольких сборок не указано название"
+        $.each(set.items, (i, item) ->
+          return false if validate.error
+
+          if item.value.id == '' || item.value.name == ''
+            validate.error   = true
+            validate.message = "У одной или нескольких сборок не указаны состовляющие"
+        )
+      )
+    validate
 
   # Compositions Logic
 
@@ -154,4 +201,3 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
       )
     )
     this.setProductSets()
-
