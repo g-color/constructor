@@ -6,6 +6,7 @@ class ProductComposition < ApplicationRecord
   belongs_to :constructor_object
 
   validates :value, presence: true, numericality: { greater_than: 0 }
+  validates :value, float_with_precision_four: true
   validates :constructor_object, presence: true
   validates :product, presence: true
 

@@ -6,6 +6,7 @@ class Primitive < ConstructorObject
   validates :unit_id,     presence: true
   validates :category_id, presence: true
   validates :price,       presence: true, numericality: { greater_than: 0 }
+  validates :price,       float_with_precision_three: true
 
   def update_price
     parents.map(&:update_price)

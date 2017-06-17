@@ -54,6 +54,7 @@ class EstimatesController < ApplicationController
   end
 
   def update
+    @engineers = User.engineers
     params[:estimate][:discount_by_stages].each do |key, value|
       @estimate.discount_by_stages[key.to_i] = value.blank? ? 0 : value
     end

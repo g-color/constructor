@@ -4,6 +4,7 @@ class StageProductSetValue < ApplicationRecord
   belongs_to :constructor_object
 
   validates :quantity, presence: true, numericality: { greater_than: 0 }
+  validates :value, float_with_precision_four: true
 
   def get_primitives(undivisibilty_objects: false)
     primitives = self.constructor_object.get_primitives(undivisibilty_objects: undivisibilty_objects)
