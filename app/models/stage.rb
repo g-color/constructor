@@ -15,10 +15,10 @@ class Stage < ApplicationRecord
     end
   end
 
-  def get_primitives(undivisibilty_objects: false)
+  def get_primitives(with_work: true)
     result = {}
     self.stage_products.each do |stage_product|
-      primitives = stage_product.get_primitives(undivisibilty_objects: undivisibilty_objects)
+      primitives = stage_product.get_primitives(with_work: with_work)
       primitives.each do |key, value|
         result[key] = 0 if result[key].nil?
         result[key] += value

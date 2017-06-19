@@ -170,10 +170,10 @@ class Product < ApplicationRecord
     end
   end
 
-  def get_primitives(undivisibilty_objects: false)
+  def get_primitives(with_work: true)
     result = {}
     self.product_compositions.each do |product_composition|
-      primitives = product_composition.get_primitives(undivisibilty_objects: undivisibilty_objects)
+      primitives = product_composition.get_primitives(with_work: with_work)
       primitives.each do |key, value|
         result[key] = 0 if result[key].nil?
         result[key] += value

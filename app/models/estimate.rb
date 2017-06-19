@@ -13,10 +13,10 @@ class Estimate < Budget
 
   after_save :update_report_primitivies
 
-  def get_primitives(undivisibilty_objects: false)
+  def get_primitives(with_work: true)
     result = {}
     self.stages.each do |stage|
-      primitives = stage.get_primitives(undivisibilty_objects: undivisibilty_objects)
+      primitives = stage.get_primitives(with_work: with_work)
       primitives.each do |key, value|
         result[key] = 0 if result[key].nil?
         result[key] += value

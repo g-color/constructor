@@ -30,19 +30,19 @@ class StageProduct < ApplicationRecord
     end
   end
 
-  def get_primitives(undivisibilty_objects: false)
+  def get_primitives(with_work: true)
     result = {}
     if self.product.custom
       product_set = self.stage_product_sets.find_by(selected: true)
       product_set.stage_product_set_values.each do |set_value|
-        primitives = set_value.get_primitives(undivisibilty_objects: undivisibilty_objects)
+        primitives = set_value.get_primitives(with_work: self.with_work)
         primitives.each do |key, value|
           result[key] = 0 if result[key].nil?
           result[key] += value * self.quantity
         end
       end
     else
-      primitives = self.product.get_primitives(undivisibilty_objects: undivisibilty_objects)
+      primitives = self.product.get_primitives(with_work: self.with_work)
       primitives.each do |key, value|
         primitives[key] *= self.quantity
       end

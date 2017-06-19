@@ -14,9 +14,9 @@ class ProductComposition < ApplicationRecord
     self.constructor_object.update_report_primitivies(estimate, quantity * self.value)
   end
 
-  def get_primitives(undivisibilty_objects: false)
+  def get_primitives(with_work: true)
     result = {}
-    primitives = self.constructor_object.get_primitives(undivisibilty_objects: undivisibilty_objects)
+    primitives = self.constructor_object.get_primitives(with_work: with_work)
     primitives.each do |key, val|
       primitives[key] *= self.value
     end

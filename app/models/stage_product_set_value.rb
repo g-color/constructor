@@ -6,8 +6,8 @@ class StageProductSetValue < ApplicationRecord
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :value, float_with_precision_four: true
 
-  def get_primitives(undivisibilty_objects: false)
-    primitives = self.constructor_object.get_primitives(undivisibilty_objects: undivisibilty_objects)
+  def get_primitives(with_work: true)
+    primitives = self.constructor_object.get_primitives(with_work: with_work)
     primitives.each do |key, value|
       primitives[key] *= self.quantity
     end
