@@ -14,6 +14,7 @@ $(document).on('turbolinks:load', function() {
       data: form_data,
       type: 'post',
       success: function(response) {
+        $(nested).find('.file-thumb').attr('href', response.src);
         $(nested).find('.file-id').val(response.id);
         $(nested).find('.file-name').text(response.name);
         $(nested).find('.file-src').attr("src", response.src);
@@ -36,6 +37,7 @@ $(document).on('turbolinks:load', function() {
       data: form_data,
       type: 'post',
       success: function(response) {
+        $(nested).find('.file-thumb').attr('href', response.src);
         $(nested).find('.file-id').val(response.id);
         $(nested).find('.file-name').text(response.name);
         $(nested).find('.file-src').attr("src", response.src);
