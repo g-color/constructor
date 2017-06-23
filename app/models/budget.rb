@@ -28,10 +28,10 @@ class Budget < ApplicationRecord
   validates :area,               float_with_precision_two: true
   validates :first_floor_height, presence: true, numericality: { only_integer: true, greater_than: 0 }
 
-  validates :second_floor_height_min, allow_blank: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :second_floor_height_max, allow_blank: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :third_floor_height_min, allow_blank: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validates :third_floor_height_max, allow_blank: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :second_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :second_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :third_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :third_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
 
   belongs_to :solution
   belongs_to :user
