@@ -26,12 +26,12 @@ class Budget < ApplicationRecord
   validates :name,               presence: true, length: { in: 2..256 }
   validates :area,               presence: true, numericality: { greater_than: 0 }
   validates :area,               float_with_precision_two: true
-  validates :first_floor_height, presence: true, numericality: { greater_than: 0 }
+  validates :first_floor_height, presence: true, numericality: { greater_than: 0 }, float_with_precision_three: true
 
-  validates :second_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :second_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :third_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :third_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :second_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }, float_with_precision_three: true
+  validates :second_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }, float_with_precision_three: true
+  validates :third_floor_height_min, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }, float_with_precision_three: true
+  validates :third_floor_height_max, allow_blank: true, numericality: { greater_than_or_equal_to: 0 }, float_with_precision_three: true
 
   belongs_to :solution
   belongs_to :user
