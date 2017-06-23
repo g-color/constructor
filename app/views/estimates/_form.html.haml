@@ -27,7 +27,7 @@
         .form-group
           %label.col-sm-3.control-label Высота первого этажа*
           .col-sm-7
-            = f.input :first_floor_height, label: false, placeholder: 'Введите высоту в метрах'
+            %input.form-control{ value: with_presicion(@estimate.first_floor_height), name: 'estimate[first_floor_height]',  placeholder: 'Введите высоту в метрах'}
           .col-sm-2
             %button.btn.btn-default{ type: "button", 'data-toggle': "collapse", 'data-target': "#floors", 'aria-expanded':false, 'aria-controls': "collapseExample", title: "Показать больше этажей"}
               Выше?
@@ -38,21 +38,21 @@
               .col-sm-1
                 %h5.text-right от
               .col-sm-3
-                = f.input :second_floor_height_min, label: false, placeholder: 'Введите высоту в метрах', class: 'form-control'
+                %input.form-control{ value: with_presicion(@estimate.second_floor_height_min), name: 'estimate[second_floor_height_min]',  placeholder: 'Введите высоту в метрах'}
               .col-sm-offset-1.col-sm-1
                 %h5.text-right до
               .col-sm-3
-                = f.input :second_floor_height_max, label: false, placeholder: 'Введите высоту в метрах', class: 'form-control'
+                %input.form-control{ value: with_presicion(@estimate.second_floor_height_max), name: 'estimate[second_floor_height_max]',  placeholder: 'Введите высоту в метрах'}
             .form-group
               %label.col-sm-3.control-label Высота третьего этажа
               .col-sm-1
                 %h5.text-right от
               .col-sm-3
-                = f.input :third_floor_height_min, label: false, placeholder: 'Введите высоту в метрах', class: 'form-control'
+                %input.form-control{ value: with_presicion(@estimate.third_floor_height_min), name: 'estimate[third_floor_height_min]',  placeholder: 'Введите высоту в метрах'}
               .col-sm-offset-1.col-sm-1
                 %h5.text-right до
               .col-sm-3
-                = f.input :third_floor_height_max, label: false, placeholder: 'Введите высоту в метрах', class: 'form-control'
+                %input.form-control{ value: with_presicion(@estimate.third_floor_height_max), name: 'estimate[third_floor_height_max]',  placeholder: 'Введите высоту в метрах'}
         %hr
         .form-group.client-files-div
           %label.col-sm-3.control-label Планы и фасады
