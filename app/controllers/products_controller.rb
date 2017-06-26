@@ -2,6 +2,7 @@ class ProductsController < ApplicationController
   autocomplete :constructor_object, :name, :full => true
 
   before_action :find_product, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!
   before_action :check_ability
 
   def index

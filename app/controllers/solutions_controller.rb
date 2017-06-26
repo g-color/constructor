@@ -1,8 +1,8 @@
 class SolutionsController < ApplicationController
   before_action :get_products,  only:   [:new,  :create, :edit, :update]
   before_action :find_solution, only:   [:show, :edit, :update, :destroy]
-  before_action :check_ability, except: [:show, :index]
   before_action :authenticate_user!
+  before_action :check_ability, except: [:show, :index]
 
   def index
     @solutions = Solution.all

@@ -1,5 +1,6 @@
 class CategoriesController < ApplicationController
   before_action :find_category, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!
   before_action :check_ability
 
 

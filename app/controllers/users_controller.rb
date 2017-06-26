@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :find_user, only: [:show, :edit, :update, :destroy]
-  before_action :check_ability, except: [:show]
+  before_action :authenticate_user!
+  before_action :check_ability, except: [:show, :find_by_name]
 
   def find_by_name
     name = params[:name].split
@@ -47,6 +48,7 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    @user.update(email: "#{@user.email}_#{Time.now.to_i}")
     @user.destroy
     redirect_to users_path
   end
