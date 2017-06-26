@@ -1,7 +1,7 @@
 = simple_form_for @estimate,  wrapper: :horizontal_form do |f|
   .action-buttons.row
     = link_to 'Отмена', estimates_path(client_id: params[:client_id] || @estimate.client_id), class: 'btn btn-default'
-    = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right'
+    = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right', 'ng-click' => 'ctrl.validate()'
   %p
   .row.main-content
     %br

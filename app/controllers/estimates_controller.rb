@@ -33,6 +33,7 @@ class EstimatesController < ApplicationController
     if @estimate.save
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters
+      flash[:notice] = 'Смета успешно сохранена'
       redirect_to edit_estimate_path(@estimate)
     else
       discount = @estimate.discount_title
@@ -61,6 +62,7 @@ class EstimatesController < ApplicationController
     if @estimate.update(estimate_params)
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters
+      flash[:notice] = 'Смета успешно сохранена'
       redirect_to edit_estimate_path(@estimate)
     else
       discount = @estimate.discount_title

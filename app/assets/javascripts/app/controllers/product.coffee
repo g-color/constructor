@@ -46,7 +46,7 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
 
     if templates.length == 0 || sets.length == 0
       validate.error   = true
-      validate.message = "Должно быть не менее одной сборки"
+      validate.message = "Должно быть не менее одной сборки и составляющей"
     else
       $.each(sets, (i, set) ->
         return false if validate.error
@@ -59,7 +59,7 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
 
           if item.value.id == '' || item.value.name == ''
             validate.error   = true
-            validate.message = "У одной или нескольких сборок не указаны состовляющие"
+            validate.message = "У одной или нескольких сборок не указаны составляющие"
         )
       )
     validate

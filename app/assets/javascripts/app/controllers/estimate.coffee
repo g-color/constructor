@@ -21,6 +21,24 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
 
     $('#floors').collapse('show') if @scope.estimate.second_floor
 
+  validate: ->
+    custom = @scope.custom
+    stages = @scope.stages
+    event.preventDefault()
+
+    validate = { error: true, message: 'Необходимо укзать хотя бы один сметный продукт' }
+
+    angular.forEach stages, (stage,k) ->
+      if stage.products.length > 0 && validate.error
+        validate = { error: false, message: null }
+
+    if validate.error
+      @toaster.error(validate.message)
+    else
+      $('form').submit()
+    true
+
+
   showAddModal: (stage) ->
     @scope.addModal.header       = 'Добавление сметного продукта. Этап ' + stage
     @scope.addModal.products     = this.getProducts(stage)

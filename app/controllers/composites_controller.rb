@@ -7,6 +7,7 @@ class CompositesController < ApplicationController
     @composites = Composite.includes(:category, :unit).all
     @composites = @composites.where("lower(name) like ?", "%#{params[:name].downcase}%") if params[:name].present?
     @composites = @composites.where(category_id: params[:category])                      if params[:category].present?
+    @composites = @composites.order(:name)
   end
 
   def new
