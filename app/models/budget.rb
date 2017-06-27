@@ -63,6 +63,10 @@ class Budget < ApplicationRecord
       self.price_by_stage_aggregated_discounted[i] = self.price_by_stage_aggregated[i] - discount_all
       self.price_by_area_per_stage_discounted[i] = (self.price_by_stage_aggregated_discounted[i] / area).round 2
     end
+    self.second_floor_height_min ||= 0
+    self.second_floor_height_max ||= 0
+    self.third_floor_height_min  ||= 0
+    self.third_floor_height_max  ||= 0
     self.floors = self.get_floor
     self.save
   end
