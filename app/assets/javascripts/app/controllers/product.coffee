@@ -36,6 +36,12 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     if compositions.length == 0
       validate.error   = true
       validate.message = "Должно быть не менее одного примитива или объекта"
+
+    if validate.error == false
+      $.each(compositions, (i, composition) ->
+
+      )
+
     validate
 
   validateCustom: ->
@@ -91,6 +97,9 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     this.setProductCompositions()
 
   setProductCompositions: () ->
+    $.each(@scope.compositions, (i, composition) ->
+      composition.quantity = parseFloat(composition.quantity)
+    )
     compositions = JSON.stringify(@scope.compositions)
     $('#product_compositions').val(compositions)
     true

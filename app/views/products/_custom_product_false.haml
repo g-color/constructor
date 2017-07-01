@@ -12,7 +12,7 @@
         %td
           %span.pull-right количество:
         %td.col-sm-2
-          %input.form-control{ ng: { model: 'composition.quantity', change: 'ctrl.setProductCompositions()' }}
+          %input.form-control{ type: 'number', ng: { model: 'composition.quantity', change: 'ctrl.setProductCompositions()' }}
         %td.unit-name {{ composition.unit }}
         %td
           %a.btn.btn-danger.pull-right{ title: 'Удалить', ng: {click: 'ctrl.removeComposition(composition.id)'} }
