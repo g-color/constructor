@@ -39,7 +39,9 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
 
     if validate.error == false
       $.each(compositions, (i, composition) ->
-
+        if composition.quantity == 0
+          validate.error   = true
+          validate.message = "У одного или нескольких примитивов или объектов неверно указано количество"
       )
 
     validate
