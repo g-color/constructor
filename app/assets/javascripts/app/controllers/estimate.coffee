@@ -80,8 +80,11 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     error        = false
     message      = 'Необходимо выбрать сметный продукт'
 
+    regexp = new RegExp(/^\d+\.*\d{0,3}$/)
+
     product_in_stage = this.getProductFromStage(product.id)
     return @toaster.error('Сметный продукт "' + product.name + '" уже добавлен') if product_in_stage
+    return @toaster.error('Неверно указано количество') if parseFloat(quantity) <= 0 || regexp.exec(quantity) == null
 
     stage = this.getStage(stage_number)
     if product.custom
@@ -104,6 +107,10 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
           error = true
           message = 'Необходимо указать количество для всех составляющих сметного продукта'
 
+        if (parseFloat($(v).val()) <= 0 || regexp.exec($(v).val()) == null) && error == false
+          error = true
+          message = 'Неверно указано количество'
+
         product.price_with_work += set.items[i].value.price * $(v).val()
         unless set.items[i].value.work_primitive
           product.price_without_work += set.items[i].value.price * $(v).val()
@@ -113,6 +120,10 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       if quantity == ''
         error   = true
         message = 'Необходимо указать количество сметного продукта'
+
+      if (parseFloat(quantity) <= 0 || regexp.exec(quantity) == null) && error == false
+        error   = true
+        message = 'Неверно указано количество'
 
       product = Object.assign(product, {quantity: quantity, with_work: true})
 

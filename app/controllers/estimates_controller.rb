@@ -29,7 +29,6 @@ class EstimatesController < ApplicationController
     params[:estimate][:discount_by_stages].each do |key, value|
       @estimate.discount_by_stages[key.to_i] = value.blank? ? 0 : value
     end
-
     if @estimate.save
       @estimate.update_json_values(params[:json_stages])
       @estimate.calc_parameters

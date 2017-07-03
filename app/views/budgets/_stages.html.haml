@@ -73,7 +73,7 @@
                   %label.col-sm-3.control-label Количество*
                   .col-sm-8
                     %div
-                      %input.form-control#product-quantity{ placeholder: "Введите количество", }
+                      %input.form-control#product-quantity{ placeholder: "Введите количество", type: 'number' }
                   .col-sm-1
                     %h5 {{ selectedProduct.unit }}
 
@@ -95,7 +95,7 @@
                     %tr{ ng: { repeat: 'template in selectedSet.items' } }
                       %td {{ template.name }}
                       %td
-                        %input.form-control.template-quantity{ placeholder: "Введите количество", ng: { model: 'template.quantity', change: 'ctrl.updateTemplateValue(template)' } }
+                        %input.form-control.template-quantity{ placeholder: "Введите количество", type: 'number', ng: { model: 'template.quantity', change: 'ctrl.updateTemplateValue(template)' } }
                       %td {{ template.value.unit }}
         .modal-footer
           %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" } Отмена
@@ -148,7 +148,7 @@
                     %tr{ ng: { repeat: 'template in selectedEditSet.items' } }
                       %td {{ template.name }}
                       %td
-                        %input.form-control{ placeholder: "Введите количество", ng: { model: 'template.quantity', change: 'ctrl.recalcProduct(template)' } }
+                        %input.form-control{ placeholder: "Введите количество", type: 'number', ng: { model: 'template.quantity', change: 'ctrl.recalcProduct(template)' } }
                       %td {{ template.value.unit }}
         .modal-footer
           %button.btn.btn-default{ type: "button", data: { dismiss: "modal" } } Закрыть

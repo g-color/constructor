@@ -38,8 +38,9 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
       validate.message = "Должно быть не менее одного примитива или объекта"
 
     if validate.error == false
+      reg = new RegExp(/^\d+\.*\d{0,3}$/)
       $.each(compositions, (i, composition) ->
-        if composition.quantity == 0
+        if composition.quantity <= 0 || reg.exec(composition.quantity.toString()) == null
           validate.error   = true
           validate.message = "У одного или нескольких примитивов или объектов неверно указано количество"
       )
