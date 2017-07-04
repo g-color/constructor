@@ -72,6 +72,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     true
 
   addProduct: () ->
+    debugger
     estimate     = @scope.estimate
     discount     = @scope.discount
     stage_number = @scope.currentStage
@@ -84,7 +85,6 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
 
     product_in_stage = this.getProductFromStage(product.id)
     return @toaster.error('Сметный продукт "' + product.name + '" уже добавлен') if product_in_stage
-    return @toaster.error('Неверно указано количество') if parseFloat(quantity) <= 0 || regexp.exec(quantity) == null
 
     stage = this.getStage(stage_number)
     if product.custom
@@ -101,7 +101,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       $.each($('.template-quantity'), (i, v) ->
         quantity     = $(v).val()
         set.selected = true
-        set.items[i] = Object.assign(set.items[i], {quantity: $(v).val()})
+        set.items[i] = Object.assign(set.items[i], {quantity: parseFloat($(v).val())})
 
         if $(v).val() == '' && error == false
           error = true

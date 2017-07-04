@@ -174,7 +174,7 @@ class Budget < ApplicationRecord
       end
       new_stages
     else
-      stages.includes(:stage_products).map do |stage|
+      stages.order(:number).includes(:stage_products).map do |stage|
         {
           number:              stage.number,
           text:                get_stage_text(stage.number),

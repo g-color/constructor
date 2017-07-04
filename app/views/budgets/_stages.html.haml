@@ -128,7 +128,7 @@
                   %label.col-sm-3.control-label Количество*
                   .col-sm-8
                     %div
-                      %input.form-control{ placeholder: "Введите количество", ng: { model: 'selectedEditProduct.quantity', change: 'ctrl.recalcStage(currentStage)' } }
+                      %input.form-control{ placeholder: "Введите количество", type: 'number', ng: { model: 'selectedEditProduct.quantity', change: 'ctrl.recalcStage(currentStage)' } }
                   .col-sm-1
                     %h5 {{ product.unit }}
 
