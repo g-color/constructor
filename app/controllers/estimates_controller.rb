@@ -167,7 +167,7 @@ class EstimatesController < ApplicationController
       estimate: {
         area:         area,
         price:        price,
-        second_floor: @estimate.second_floor_height_min > 0
+        second_floor: @estimate.second_floor_height_min.nil? ? false : @estimate.second_floor_height_min > 0
       },
       products: @products,
       stages:   stages,
