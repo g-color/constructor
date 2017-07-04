@@ -80,7 +80,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     error        = false
     message      = 'Необходимо выбрать сметный продукт'
 
-    regexp = new RegExp(/^\d+\.*\d{0,3}$/)
+    regexp = new RegExp(/^\d+[\.,]*\d{0,3}$/)
 
     product_in_stage = this.getProductFromStage(product.id)
     return @toaster.error('Сметный продукт "' + product.name + '" уже добавлен') if product_in_stage
