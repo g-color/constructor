@@ -33,8 +33,6 @@ $(function(){
       window.location.reload();
     }
   })
-
-  
 })
 
 $.fn.exists = function () {
