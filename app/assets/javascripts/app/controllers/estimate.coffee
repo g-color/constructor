@@ -19,18 +19,35 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       this.recalcStage(i)
     this.saveJsonValue()
 
+    toaster = @toaster
+    $('input[type=number]').on('change', (e) ->
+      value  = $(this).val()
+      regexp = new RegExp(/^\d+[\.,]*\d{0,4}$/)
+      if parseFloat(value) <= 0 || regexp.exec(value) == null
+        toaster.error('Указано неверное значение')-41
+    )
     $('#floors').collapse('show') if @scope.estimate.second_floor
+
 
   validate: ->
     custom = @scope.custom
     stages = @scope.stages
     event.preventDefault()
 
-    validate = { error: true, message: 'Необходимо укзать хотя бы один сметный продукт' }
+    validate = { error: false, message: null }
 
     angular.forEach stages, (stage,k) ->
-      if stage.products.length > 0 && validate.error
-        validate = { error: false, message: null }
+      if stage.products.length <= 0 && !validate.error
+        validate = { error: true, message: 'Необходимо укзать хотя бы один сметный продукт' }
+      angular.forEach stage.products, (product,l) ->
+        if product.custom
+          angular.forEach product.sets, (set,m) ->
+            angular.forEach set.items, (item,n) ->
+              if item.quantity <= 0 && !validate.error
+                validate = { error: true, message: 'Неверно указано количество составляющей сметного продукта' }
+        else
+          if product.quantity <= 0 && !validate.error
+            validate = { error: true, message: 'Неверно указано количество сметного продукта' }
 
     if validate.error
       @toaster.error(validate.message)
@@ -72,7 +89,6 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     true
 
   addProduct: () ->
-    debugger
     estimate     = @scope.estimate
     discount     = @scope.discount
     stage_number = @scope.currentStage
@@ -125,7 +141,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
         error   = true
         message = 'Неверно указано количество'
 
-      product = Object.assign(product, {quantity: quantity, with_work: true})
+      product = Object.assign(product, {quantity: parseFloat(quantity), with_work: true})
 
     unless error
       this.recalcProductPrice(stage, product)

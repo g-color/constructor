@@ -1,0 +1,2676 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.5.6
+-- Dumped by pg_dump version 9.5.6
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: user_role; Type: TYPE; Schema: public; Owner: deploy
+--
+
+CREATE TYPE user_role AS ENUM (
+    'admin',
+    'architector',
+    'engineer'
+);
+
+
+ALTER TYPE user_role OWNER TO deploy;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE ar_internal_metadata (
+    key character varying NOT NULL,
+    value character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE ar_internal_metadata OWNER TO deploy;
+
+--
+-- Name: asset_files; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE asset_files (
+    id integer NOT NULL,
+    data_file_name character varying,
+    data_content_type character varying,
+    data_file_size integer,
+    data_updated_at timestamp without time zone
+);
+
+
+ALTER TABLE asset_files OWNER TO deploy;
+
+--
+-- Name: asset_files_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE asset_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE asset_files_id_seq OWNER TO deploy;
+
+--
+-- Name: asset_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE asset_files_id_seq OWNED BY asset_files.id;
+
+
+--
+-- Name: audits; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE audits (
+    id integer NOT NULL,
+    auditable_id integer,
+    auditable_type character varying,
+    associated_id integer,
+    associated_type character varying,
+    user_id integer,
+    user_type character varying,
+    username character varying,
+    action character varying,
+    audited_changes text,
+    version integer DEFAULT 0,
+    comment character varying,
+    remote_address character varying,
+    request_uuid character varying,
+    created_at timestamp without time zone
+);
+
+
+ALTER TABLE audits OWNER TO deploy;
+
+--
+-- Name: audits_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE audits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE audits_id_seq OWNER TO deploy;
+
+--
+-- Name: audits_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE audits_id_seq OWNED BY audits.id;
+
+
+--
+-- Name: budgets; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE budgets (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    client_id integer,
+    floors numeric,
+    first_floor_height numeric,
+    second_floor_height_min numeric DEFAULT 0,
+    second_floor_height_max numeric DEFAULT 0,
+    third_floor_height_min numeric DEFAULT 0,
+    third_floor_height_max numeric DEFAULT 0,
+    price numeric,
+    area numeric,
+    price_by_area numeric,
+    price_by_stage numeric[] DEFAULT '{0,0,0}'::numeric[],
+    price_by_stage_aggregated numeric[] DEFAULT '{0,0,0}'::numeric[],
+    price_by_area_per_stage numeric[] DEFAULT '{0,0,0}'::numeric[],
+    discount_title character varying,
+    discount_by_stages numeric[] DEFAULT '{0,0,0}'::numeric[],
+    discount_amount numeric[] DEFAULT '{0,0,0}'::numeric[],
+    price_by_stage_aggregated_discounted numeric[] DEFAULT '{0,0,0}'::numeric[],
+    price_by_area_per_stage_discounted numeric[] DEFAULT '{0,0,0}'::numeric[],
+    signed boolean DEFAULT false NOT NULL,
+    deleted_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    signing_date date,
+    user_id integer,
+    type character varying,
+    url character varying,
+    proposed boolean DEFAULT false,
+    proposer_id integer,
+    solution_id integer
+);
+
+
+ALTER TABLE budgets OWNER TO deploy;
+
+--
+-- Name: budgets_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE budgets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE budgets_id_seq OWNER TO deploy;
+
+--
+-- Name: budgets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE budgets_id_seq OWNED BY budgets.id;
+
+
+--
+-- Name: categories; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    product boolean DEFAULT false,
+    deleted_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE categories OWNER TO deploy;
+
+--
+-- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE categories_id_seq OWNER TO deploy;
+
+--
+-- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE categories_id_seq OWNED BY categories.id;
+
+
+--
+-- Name: client_files; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE client_files (
+    id integer NOT NULL,
+    budget_id integer NOT NULL,
+    asset_file_id integer NOT NULL
+);
+
+
+ALTER TABLE client_files OWNER TO deploy;
+
+--
+-- Name: client_files_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE client_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE client_files_id_seq OWNER TO deploy;
+
+--
+-- Name: client_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE client_files_id_seq OWNED BY client_files.id;
+
+
+--
+-- Name: clients; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE clients (
+    id integer NOT NULL,
+    first_name character varying NOT NULL,
+    last_name character varying,
+    middle_name character varying,
+    crm character varying,
+    archived boolean DEFAULT false,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    deleted_at timestamp without time zone
+);
+
+
+ALTER TABLE clients OWNER TO deploy;
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE clients_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE clients_id_seq OWNER TO deploy;
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE clients_id_seq OWNED BY clients.id;
+
+
+--
+-- Name: compositions; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE compositions (
+    id integer NOT NULL,
+    parent_id integer,
+    children_id integer,
+    value numeric,
+    deleted_at timestamp without time zone
+);
+
+
+ALTER TABLE compositions OWNER TO deploy;
+
+--
+-- Name: compositions_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE compositions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE compositions_id_seq OWNER TO deploy;
+
+--
+-- Name: compositions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE compositions_id_seq OWNED BY compositions.id;
+
+
+--
+-- Name: constructor_objects; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE constructor_objects (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    unit_id integer NOT NULL,
+    category_id integer NOT NULL,
+    price numeric,
+    date timestamp without time zone,
+    divisibility boolean DEFAULT false,
+    deleted_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    type character varying,
+    price_without_work numeric DEFAULT 0
+);
+
+
+ALTER TABLE constructor_objects OWNER TO deploy;
+
+--
+-- Name: constructor_objects_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE constructor_objects_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE constructor_objects_id_seq OWNER TO deploy;
+
+--
+-- Name: constructor_objects_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE constructor_objects_id_seq OWNED BY constructor_objects.id;
+
+
+--
+-- Name: expenses; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE expenses (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    percent numeric NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    deleted_at timestamp without time zone
+);
+
+
+ALTER TABLE expenses OWNER TO deploy;
+
+--
+-- Name: expenses_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE expenses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE expenses_id_seq OWNER TO deploy;
+
+--
+-- Name: expenses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE expenses_id_seq OWNED BY expenses.id;
+
+
+--
+-- Name: product_compositions; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE product_compositions (
+    id integer NOT NULL,
+    product_id integer,
+    constructor_object_id integer,
+    value numeric,
+    deleted_at timestamp without time zone
+);
+
+
+ALTER TABLE product_compositions OWNER TO deploy;
+
+--
+-- Name: product_compositions_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE product_compositions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE product_compositions_id_seq OWNER TO deploy;
+
+--
+-- Name: product_compositions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE product_compositions_id_seq OWNED BY product_compositions.id;
+
+
+--
+-- Name: product_sets; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE product_sets (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    deleted_at timestamp without time zone
+);
+
+
+ALTER TABLE product_sets OWNER TO deploy;
+
+--
+-- Name: product_sets_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE product_sets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE product_sets_id_seq OWNER TO deploy;
+
+--
+-- Name: product_sets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE product_sets_id_seq OWNED BY product_sets.id;
+
+
+--
+-- Name: product_template_sets; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE product_template_sets (
+    id integer NOT NULL,
+    product_id integer NOT NULL,
+    product_template_id integer NOT NULL,
+    product_set_id integer NOT NULL,
+    deleted_at timestamp without time zone,
+    constructor_object_id integer
+);
+
+
+ALTER TABLE product_template_sets OWNER TO deploy;
+
+--
+-- Name: product_template_sets_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE product_template_sets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE product_template_sets_id_seq OWNER TO deploy;
+
+--
+-- Name: product_template_sets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE product_template_sets_id_seq OWNED BY product_template_sets.id;
+
+
+--
+-- Name: product_templates; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE product_templates (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    deleted_at timestamp without time zone
+);
+
+
+ALTER TABLE product_templates OWNER TO deploy;
+
+--
+-- Name: product_templates_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE product_templates_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE product_templates_id_seq OWNER TO deploy;
+
+--
+-- Name: product_templates_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE product_templates_id_seq OWNED BY product_templates.id;
+
+
+--
+-- Name: products; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE products (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    description text,
+    hint text,
+    unit_id integer NOT NULL,
+    category_id integer NOT NULL,
+    stage integer NOT NULL,
+    custom boolean DEFAULT false,
+    display_components boolean DEFAULT false,
+    profit numeric,
+    deleted_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE products OWNER TO deploy;
+
+--
+-- Name: products_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE products_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE products_id_seq OWNER TO deploy;
+
+--
+-- Name: products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE products_id_seq OWNED BY products.id;
+
+
+--
+-- Name: report_primitives; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE report_primitives (
+    id integer NOT NULL,
+    constructor_object_id integer NOT NULL,
+    estimate_id integer NOT NULL,
+    amount integer DEFAULT 0 NOT NULL,
+    signing_date timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE report_primitives OWNER TO deploy;
+
+--
+-- Name: report_primitives_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE report_primitives_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE report_primitives_id_seq OWNER TO deploy;
+
+--
+-- Name: report_primitives_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE report_primitives_id_seq OWNED BY report_primitives.id;
+
+
+--
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE schema_migrations (
+    version character varying NOT NULL
+);
+
+
+ALTER TABLE schema_migrations OWNER TO deploy;
+
+--
+-- Name: stage_product_set_values; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE stage_product_set_values (
+    id integer NOT NULL,
+    stage_product_set_id integer,
+    product_template_id integer,
+    constructor_object_id integer,
+    quantity numeric,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE stage_product_set_values OWNER TO deploy;
+
+--
+-- Name: stage_product_set_values_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE stage_product_set_values_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE stage_product_set_values_id_seq OWNER TO deploy;
+
+--
+-- Name: stage_product_set_values_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE stage_product_set_values_id_seq OWNED BY stage_product_set_values.id;
+
+
+--
+-- Name: stage_product_sets; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE stage_product_sets (
+    id integer NOT NULL,
+    stage_product_id integer,
+    product_set_id integer,
+    selected boolean DEFAULT false,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE stage_product_sets OWNER TO deploy;
+
+--
+-- Name: stage_product_sets_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE stage_product_sets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE stage_product_sets_id_seq OWNER TO deploy;
+
+--
+-- Name: stage_product_sets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE stage_product_sets_id_seq OWNED BY stage_product_sets.id;
+
+
+--
+-- Name: stage_products; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE stage_products (
+    id integer NOT NULL,
+    product_id integer,
+    stage_id integer,
+    quantity numeric,
+    price_with_work numeric,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    with_work boolean DEFAULT true,
+    price_without_work numeric DEFAULT 0
+);
+
+
+ALTER TABLE stage_products OWNER TO deploy;
+
+--
+-- Name: stage_products_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE stage_products_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE stage_products_id_seq OWNER TO deploy;
+
+--
+-- Name: stage_products_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE stage_products_id_seq OWNED BY stage_products.id;
+
+
+--
+-- Name: stages; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE stages (
+    id integer NOT NULL,
+    budget_id integer,
+    number integer,
+    price numeric,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    price_with_discount numeric
+);
+
+
+ALTER TABLE stages OWNER TO deploy;
+
+--
+-- Name: stages_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE stages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE stages_id_seq OWNER TO deploy;
+
+--
+-- Name: stages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE stages_id_seq OWNED BY stages.id;
+
+
+--
+-- Name: technical_files; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE technical_files (
+    id integer NOT NULL,
+    budget_id integer NOT NULL,
+    asset_file_id integer NOT NULL
+);
+
+
+ALTER TABLE technical_files OWNER TO deploy;
+
+--
+-- Name: technical_files_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE technical_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE technical_files_id_seq OWNER TO deploy;
+
+--
+-- Name: technical_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE technical_files_id_seq OWNED BY technical_files.id;
+
+
+--
+-- Name: units; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE units (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    product boolean DEFAULT false,
+    deleted_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE units OWNER TO deploy;
+
+--
+-- Name: units_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE units_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE units_id_seq OWNER TO deploy;
+
+--
+-- Name: units_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE units_id_seq OWNED BY units.id;
+
+
+--
+-- Name: user_clients; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE user_clients (
+    id integer NOT NULL,
+    user_id integer,
+    client_id integer,
+    owner boolean DEFAULT false,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE user_clients OWNER TO deploy;
+
+--
+-- Name: user_clients_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE user_clients_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE user_clients_id_seq OWNER TO deploy;
+
+--
+-- Name: user_clients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE user_clients_id_seq OWNED BY user_clients.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: deploy
+--
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    email character varying DEFAULT ''::character varying NOT NULL,
+    encrypted_password character varying DEFAULT ''::character varying NOT NULL,
+    remember_created_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    role user_role DEFAULT 'architector'::user_role,
+    first_name character varying NOT NULL,
+    last_name character varying NOT NULL,
+    crm character varying NOT NULL,
+    phone character varying NOT NULL,
+    deleted_at timestamp without time zone
+);
+
+
+ALTER TABLE users OWNER TO deploy;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: deploy
+--
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE users_id_seq OWNER TO deploy;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: deploy
+--
+
+ALTER SEQUENCE users_id_seq OWNED BY users.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY asset_files ALTER COLUMN id SET DEFAULT nextval('asset_files_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY audits ALTER COLUMN id SET DEFAULT nextval('audits_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY budgets ALTER COLUMN id SET DEFAULT nextval('budgets_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY categories ALTER COLUMN id SET DEFAULT nextval('categories_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY client_files ALTER COLUMN id SET DEFAULT nextval('client_files_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY clients ALTER COLUMN id SET DEFAULT nextval('clients_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY compositions ALTER COLUMN id SET DEFAULT nextval('compositions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY constructor_objects ALTER COLUMN id SET DEFAULT nextval('constructor_objects_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY expenses ALTER COLUMN id SET DEFAULT nextval('expenses_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY product_compositions ALTER COLUMN id SET DEFAULT nextval('product_compositions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY product_sets ALTER COLUMN id SET DEFAULT nextval('product_sets_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY product_template_sets ALTER COLUMN id SET DEFAULT nextval('product_template_sets_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY product_templates ALTER COLUMN id SET DEFAULT nextval('product_templates_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY report_primitives ALTER COLUMN id SET DEFAULT nextval('report_primitives_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY stage_product_set_values ALTER COLUMN id SET DEFAULT nextval('stage_product_set_values_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY stage_product_sets ALTER COLUMN id SET DEFAULT nextval('stage_product_sets_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY stage_products ALTER COLUMN id SET DEFAULT nextval('stage_products_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY stages ALTER COLUMN id SET DEFAULT nextval('stages_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY technical_files ALTER COLUMN id SET DEFAULT nextval('technical_files_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY units ALTER COLUMN id SET DEFAULT nextval('units_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY user_clients ALTER COLUMN id SET DEFAULT nextval('user_clients_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Data for Name: ar_internal_metadata; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY ar_internal_metadata (key, value, created_at, updated_at) FROM stdin;
+environment	production	2017-06-12 16:34:44.869598	2017-06-12 16:34:44.869598
+\.
+
+
+--
+-- Data for Name: asset_files; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY asset_files (id, data_file_name, data_content_type, data_file_size, data_updated_at) FROM stdin;
+1	1.jpg	image/jpeg	1015060	2017-06-13 07:11:55.591808
+2	Весна_фасад_3.jpg	image/jpeg	992395	2017-06-13 07:15:56.414982
+3	1lfRF8AzBU4.jpg	image/jpeg	408507	2017-06-15 16:47:27.356445
+4	photo_2017-05-10_20-28-37.jpg	image/jpeg	24493	2017-06-15 16:47:43.03159
+5	photo_2017-05-10_20-28-37.jpg	image/jpeg	24493	2017-06-23 18:53:19.087987
+6	photo_2017-05-10_20-28-37.jpg	image/jpeg	24493	2017-06-23 19:08:27.102364
+7	photo_2017-05-10_20-28-37.jpg	image/jpeg	24493	2017-06-25 17:22:28.761306
+8	photo_2017-05-10_20-28-37.jpg	image/jpeg	24493	2017-06-25 17:23:49.975501
+9	calc.png	image/png	1011777	2017-06-25 17:27:49.459838
+10	calc.png	image/png	1011777	2017-06-25 17:27:56.860471
+\.
+
+
+--
+-- Name: asset_files_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('asset_files_id_seq', 10, true);
+
+
+--
+-- Data for Name: audits; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY audits (id, auditable_id, auditable_type, associated_id, associated_type, user_id, user_type, username, action, audited_changes, version, comment, remote_address, request_uuid, created_at) FROM stdin;
+30	1	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Саморез ж.ц. 3,5х40\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.3E0\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:13:51.971586765 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:13:51.971586765 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	b810d51c-605e-42cf-9590-dfd4263c2442	2017-06-13 07:13:52.03578
+31	2	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Саморез ж.ц. 5х90\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.15E1\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:14:08.746792668 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:14:08.746792668 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	2853c2ff-2a0f-4842-8796-4aa98530f5ce	2017-06-13 07:14:08.761245
+32	3	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Саморез ж.ц. 6х90\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.2E1\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:14:19.650675444 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:14:19.650675444 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	f717c20d-345f-4238-ae07-bc9d72f01c5c	2017-06-13 07:14:19.664376
+33	4	ConstructorObject	\N	\N	1	User	\N	create	---\nname: ULTRALAM OSB/3 E0,5 2500х1250х9 мм\nunit_id: 6\ncategory_id: 3\nprice: !ruby/object:BigDecimal 18:0.503E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:22:59.349153353 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:22:59.349153353 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	2bae6c42-8f40-4933-b43e-ee683c88c509	2017-06-13 07:22:59.372356
+34	5	ConstructorObject	\N	\N	1	User	\N	create	---\nname: ULTRALAM OSB/3 E0,5 2500х1250х12 мм\nunit_id: 6\ncategory_id: 3\nprice: !ruby/object:BigDecimal 18:0.654E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:23:26.892126921 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:23:26.892126921 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	6d64c694-432d-47d9-80b2-25989c737251	2017-06-13 07:23:26.907144
+35	6	ConstructorObject	\N	\N	1	User	\N	create	---\nname: ULTRALAM OSB/3 E0,5 2500х1250х22 мм\nunit_id: 6\ncategory_id: 3\nprice: !ruby/object:BigDecimal 18:0.1187E4\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:23:58.636081657 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:23:58.636081657 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	68808417-e4b5-44e6-8c23-6a7960426ec1	2017-06-13 07:23:58.652097
+36	7	ConstructorObject	\N	\N	1	User	\N	create	---\nname: ULTRALAM OSB/3 E0,5 2800х1250х12 мм\nunit_id: 6\ncategory_id: 3\nprice: !ruby/object:BigDecimal 18:0.715E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:24:29.353592792 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:24:29.353592792 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	5f7a68bb-dd7c-4f03-a03d-f81e2289c061	2017-06-13 07:24:29.380898
+37	4	Category	\N	\N	1	User	\N	update	---\nname:\n- Метизы\n- Метизы и крепежи\n	1	\N	178.34.158.46	908047e7-03b4-413b-bf94-053c745b6ecc	2017-06-13 07:26:07.714743
+38	5	Category	\N	\N	1	User	\N	update	---\nname:\n- Кровельные материалы\n- Кровельные материалы и комплектующие\n	1	\N	178.34.158.46	6f80629e-c723-468f-8fbd-e26a7f72cb4e	2017-06-13 07:26:16.168955
+39	7	Category	\N	\N	1	User	\N	update	---\nname:\n- Бетон\n- Бетон и арматура\n	1	\N	178.34.158.46	086b8fa8-68d8-483e-8c3f-d785782b30da	2017-06-13 07:26:26.615219
+40	16	Category	\N	\N	1	User	\N	create	---\nname: Отделка\nproduct: false\ndeleted_at: \n	1	\N	178.34.158.46	025ccc14-d3dc-44dd-ba1e-b8b759204fab	2017-06-13 07:26:39.681568
+41	17	Category	\N	\N	1	User	\N	create	---\nname: Окна и двери\nproduct: false\ndeleted_at: \n	1	\N	178.34.158.46	8eafedaa-3d0a-4858-bf95-bf2ac8a3a18f	2017-06-13 07:27:00.062601
+42	1	Category	\N	\N	1	User	\N	update	---\nname:\n- Работы на стройплощадке\n- Работа на стройплощадке\n	1	\N	178.34.158.46	9be7675e-7611-4255-8975-729f7bf91315	2017-06-13 07:27:09.904733
+43	16	Category	\N	\N	1	User	\N	update	---\nname:\n- Отделка\n- Отделочные материалы\n	2	\N	178.34.158.46	c174f408-6b8f-41bd-a0b5-7fc01c074a97	2017-06-13 07:27:36.161774
+44	8	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Пенополистирол ПСБ-С-25 ГОСТ\nunit_id: 3\ncategory_id: 3\nprice: !ruby/object:BigDecimal 18:0.275E4\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:30:03.039590144 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:30:03.039590144 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	131022cc-65a8-4084-a192-61e66cd9c970	2017-06-13 07:30:03.067019
+45	9	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Пенополистирол ПСБ-С-15 ГОСТ\nunit_id: 3\ncategory_id: 3\nprice: !ruby/object:BigDecimal 18:0.18E4\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:30:33.389380644 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:30:33.389380644 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	0fd23f95-85d8-435c-8c0b-b8ca7e850626	2017-06-13 07:30:33.406762
+46	1	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.3E0\n- !ruby/object:BigDecimal 18:0.27E0\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:13:51.971586000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:13:51.971586000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:30:43.555909189 Z\n  zone: *1\n  time: 2017-06-13 10:30:43.555909189 Z\n	2	\N	178.34.158.46	033aad63-edc9-416b-a2eb-8241f2fc20dc	2017-06-13 07:30:43.574039
+47	3	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.2E1\n- !ruby/object:BigDecimal 18:0.19E1\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:14:19.650675000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:14:19.650675000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:30:51.561254496 Z\n  zone: *1\n  time: 2017-06-13 10:30:51.561254496 Z\n	2	\N	178.34.158.46	5510441e-efc0-41b9-971a-8720e9025281	2017-06-13 07:30:51.571025
+59	2	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nsecond_floor_height_min:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.23E0\nsecond_floor_height_max:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.42E0\n	5	\N	31.28.240.81	50d83cc4-4ca6-4636-8474-4ad0b7c0c9a8	2017-06-23 19:30:13.632782
+48	10	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Клей однокомпонентный полиуретановый\nunit_id: 5\ncategory_id: 3\nprice: !ruby/object:BigDecimal 18:0.28E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:31:42.418531708 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:31:42.418531708 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	178.34.158.46	a99f1a68-387a-4457-8ebd-874cd4cc9062	2017-06-13 07:31:42.439256
+49	5	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.654E3\n- !ruby/object:BigDecimal 18:0.65412345E3\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:23:26.892126000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:23:26.892126000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 08:04:14.540407182 Z\n  zone: *1\n  time: 2017-06-13 11:04:14.540407182 Z\n	2	\N	178.34.158.46	0b8e418a-ac18-45c2-bd63-3902f41eda04	2017-06-13 08:04:14.557111
+50	5	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.65412345E3\n- !ruby/object:BigDecimal 18:0.654E3\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 08:04:14.540407000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 11:04:14.540407000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 08:04:20.476884456 Z\n  zone: *1\n  time: 2017-06-13 11:04:20.476884456 Z\n	3	\N	178.34.158.46	151fc6ec-fc94-4a95-a337-74683fcbc19c	2017-06-13 08:04:20.491044
+51	1	Client	\N	\N	1	User	\N	create	---\nfirst_name: Тест\nlast_name: Тест\nmiddle_name: Тест\ncrm: '1111111'\narchived: false\ndeleted_at: \n	1	\N	178.34.158.31	fe859fcd-f97e-431c-84a9-9dca0313b7ff	2017-06-22 07:55:56.411827
+52	1	Budget	\N	\N	1	User	\N	create	---\nname: Тест смета 1\nclient_id: 1\nfloors: \nfirst_floor_height: !ruby/object:BigDecimal 18:0.25E4\nsecond_floor_height_min: !ruby/object:BigDecimal 18:0.14E4\nsecond_floor_height_max: !ruby/object:BigDecimal 18:0.25E4\nthird_floor_height_min: !ruby/object:BigDecimal 18:0.0\nthird_floor_height_max: !ruby/object:BigDecimal 18:0.0\nprice: !ruby/object:BigDecimal 18:0.0\narea: !ruby/object:BigDecimal 18:0.1E3\nprice_by_area: \nprice_by_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\ndiscount_title: ''\ndiscount_by_stages:\n- '0'\n- '0'\n- '0'\ndiscount_amount:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nsigned: false\ndeleted_at: \nsigning_date: \nuser_id: 1\nurl: \nproposed: false\nproposer_id: \nsolution_id: \n	1	\N	178.34.158.31	7f28f036-668e-4e18-a3a0-beedc5b81c83	2017-06-22 08:00:27.775773
+53	1	Product	\N	\N	1	User	\N	create	---\nname: Тест сметный продукт 1\ndescription: Описание тестового сметного продукта\nhint: ''\nunit_id: 1\ncategory_id: 14\nstage: 1\ncustom: false\ndisplay_components: false\nprofit: !ruby/object:BigDecimal 18:0.1E2\ndeleted_at: \n	1	\N	178.34.158.31	3ec2e605-2ce4-4e43-b14b-20ea1ba356da	2017-06-22 08:06:35.891407
+54	1	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 1\nconstructor_object_id: 1\nvalue: !ruby/object:BigDecimal 18:0.1E2\ndeleted_at: \n	1	\N	178.34.158.31	3ec2e605-2ce4-4e43-b14b-20ea1ba356da	2017-06-22 08:06:35.941329
+55	2	Budget	\N	\N	1	User	\N	create	---\nname: Тест смета 2\nclient_id: 1\nfloors: \nfirst_floor_height: !ruby/object:BigDecimal 18:0.3E1\nsecond_floor_height_min: !ruby/object:BigDecimal 18:0.0\nsecond_floor_height_max: !ruby/object:BigDecimal 18:0.0\nthird_floor_height_min: !ruby/object:BigDecimal 18:0.0\nthird_floor_height_max: !ruby/object:BigDecimal 18:0.0\nprice: !ruby/object:BigDecimal 18:0.36531E3\narea: !ruby/object:BigDecimal 18:0.1E3\nprice_by_area: \nprice_by_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\ndiscount_title: ''\ndiscount_by_stages:\n- '0'\n- '0'\n- '0'\ndiscount_amount:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nsigned: false\ndeleted_at: \nsigning_date: \nuser_id: 1\nurl: \nproposed: false\nproposer_id: \nsolution_id: \n	1	\N	178.34.158.31	8eb7303b-dc1f-4ff7-b012-d3ba44b0e6c5	2017-06-22 08:14:11.539693
+56	2	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nfirst_floor_height:\n- !ruby/object:BigDecimal 18:0.3E1\n- !ruby/object:BigDecimal 18:0.32E1\n	2	\N	31.28.240.81	c0f3ed21-1a91-4c88-a3dc-358de6c3bbf1	2017-06-23 19:28:37.721692
+57	2	Budget	\N	\N	1	User	\N	update	---\nfloors:\n- \n- !ruby/object:BigDecimal 18:0.1E1\nprice_by_area:\n- \n- !ruby/object:BigDecimal 18:0.365E1\nprice_by_stage:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 27:0.36531E3\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 27:0.36531E3\n  - !ruby/object:BigDecimal 18:0.36531E3\n  - !ruby/object:BigDecimal 18:0.36531E3\nprice_by_area_per_stage:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 18:0.365E1\n  - !ruby/object:BigDecimal 18:0.365E1\n  - !ruby/object:BigDecimal 18:0.365E1\nprice_by_stage_aggregated_discounted:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 18:0.36531E3\n  - !ruby/object:BigDecimal 18:0.36531E3\n  - !ruby/object:BigDecimal 18:0.36531E3\nprice_by_area_per_stage_discounted:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 18:0.365E1\n  - !ruby/object:BigDecimal 18:0.365E1\n  - !ruby/object:BigDecimal 18:0.365E1\n	3	\N	31.28.240.81	c0f3ed21-1a91-4c88-a3dc-358de6c3bbf1	2017-06-23 19:28:37.939358
+58	2	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\n	4	\N	31.28.240.81	862a9a24-7c0c-44d0-9b1b-066bbe5d9d22	2017-06-23 19:28:51.56647
+60	2	Budget	\N	\N	1	User	\N	update	---\nfloors:\n- !ruby/object:BigDecimal 18:0.1E1\n- !ruby/object:BigDecimal 27:0.15E1\n	6	\N	31.28.240.81	50d83cc4-4ca6-4636-8474-4ad0b7c0c9a8	2017-06-23 19:30:13.712704
+61	18	Category	\N	\N	1	User	\N	create	---\nname: Для сметы\nproduct: true\ndeleted_at: \n	1	\N	31.135.105.60	4a2b55f6-9c00-40e8-a163-ed7134de5bcc	2017-06-24 21:43:28.76787
+62	18	Category	\N	\N	1	User	\N	update	---\nname:\n- Для сметы\n- Для сметы2\n	2	\N	31.135.105.60	cc4d63d2-0cde-47e9-b9f5-5f3a82b0bed5	2017-06-24 21:44:04.561061
+63	18	Category	\N	\N	1	User	\N	update	---\nproduct:\n- true\n- false\n	3	\N	31.135.105.60	1dd6d334-dd03-4980-a608-d8743e9cba7b	2017-06-24 21:44:09.720296
+64	18	Category	\N	\N	1	User	\N	destroy	---\nname: Для сметы2\nproduct: false\ndeleted_at: \n	4	\N	31.135.105.60	23753917-fa9b-41f1-8511-d0193ce15a87	2017-06-24 21:44:36.580528
+65	7	Unit	\N	\N	1	User	\N	create	---\nname: кек\nproduct: false\ndeleted_at: \n	1	\N	31.135.105.60	d19ec8c8-2ca9-4b00-9fa3-62b6a91872ea	2017-06-24 21:45:02.672981
+66	7	Unit	\N	\N	1	User	\N	update	---\nname:\n- кек\n- кек3\n	2	\N	31.135.105.60	158795e8-dc60-4cf3-b33e-bd61d8d39b08	2017-06-24 21:45:22.757394
+67	7	Unit	\N	\N	1	User	\N	update	---\nname:\n- кек3\n- йййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййй\n	3	\N	31.135.105.60	e9994e93-89cb-4019-8894-f7af169955e8	2017-06-24 21:45:56.821126
+68	7	Unit	\N	\N	1	User	\N	update	---\nname:\n- йййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййй\n- йййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййй\n	4	\N	31.135.105.60	d72db30f-2de4-4d53-a9e8-a631e7e16610	2017-06-24 21:46:05.371419
+69	7	Unit	\N	\N	1	User	\N	destroy	---\nname: йййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййй\nproduct: false\ndeleted_at: \n	5	\N	31.135.105.60	30196102-60ca-40db-b541-348a4844ac9d	2017-06-24 21:46:15.466505
+70	8	Unit	\N	\N	1	User	\N	create	---\nname: кек\nproduct: false\ndeleted_at: \n	1	\N	31.135.105.60	6474e754-245f-450a-bdf0-0fd4e4ca14bb	2017-06-24 21:46:21.529864
+71	9	Unit	\N	\N	1	User	\N	create	---\nname: tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt\nproduct: false\ndeleted_at: \n	1	\N	31.135.105.60	7fbfc9cc-1b6c-46ff-8c46-024333183a58	2017-06-24 21:50:15.315775
+72	9	Unit	\N	\N	1	User	\N	destroy	---\nname: tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt\nproduct: false\ndeleted_at: \n	2	\N	31.135.105.60	a67e3c9f-3e47-4146-b7ec-6df17d98ec50	2017-06-24 21:50:20.196136
+73	19	Category	\N	\N	1	User	\N	create	---\nname: qwe\nproduct: false\ndeleted_at: \n	1	\N	31.135.105.60	65df3d35-cd52-4281-ad99-cf290e354f08	2017-06-24 21:51:10.698006
+74	19	Category	\N	\N	1	User	\N	destroy	---\nname: qwe\nproduct: false\ndeleted_at: \n	2	\N	31.135.105.60	c45d9969-9f9a-424a-b677-e3b34ee41fcc	2017-06-24 21:51:14.834354
+75	10	Unit	\N	\N	1	User	\N	create	---\nname: qwe\nproduct: false\ndeleted_at: \n	1	\N	31.135.105.60	fb9b270b-2a8e-49c6-acb9-1736078ca321	2017-06-24 21:51:26.213447
+76	10	Unit	\N	\N	1	User	\N	destroy	---\nname: qwe\nproduct: false\ndeleted_at: \n	2	\N	31.135.105.60	f060fe87-2d9c-49f0-b845-a9b4a0975f27	2017-06-24 21:51:32.345846
+77	1	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.1E3\n	1	\N	31.135.105.60	a2c3f06c-473b-4d3a-a02c-edbd75671996	2017-06-24 21:52:14.905233
+78	1	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.1E3\n- !ruby/object:BigDecimal 18:0.101E3\n	2	\N	31.135.105.60	09207458-fc51-4c6d-9fe7-418bc1ea171a	2017-06-24 21:52:18.409026
+79	1	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.101E3\n- !ruby/object:BigDecimal 18:0.1E5\n	3	\N	31.135.105.60	32100bec-4011-4081-8ff2-9e1f7aa0efc9	2017-06-24 21:52:23.036082
+80	1	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.1E5\n- !ruby/object:BigDecimal 18:0.0\n	4	\N	31.135.105.60	3a5ab1f9-1f4a-4ba3-83f3-b3ca0a18eac3	2017-06-24 21:54:41.177542
+81	1	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.1E44\n	5	\N	31.135.105.60	1528dced-2359-455b-b08a-6531c32f955b	2017-06-24 21:54:48.897887
+82	1	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 45:0.1E44\n- !ruby/object:BigDecimal 18:0.12333213E8\n	6	\N	31.135.105.60	764061e2-8aa1-493a-b3e8-61d82affbab0	2017-06-24 21:57:14.267083
+83	1	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.12333213E8\n- !ruby/object:BigDecimal 18:0.1E1\n	7	\N	31.135.105.60	c685354a-dbd9-4c5d-b22d-628bbcdf2760	2017-06-24 21:58:59.569133
+84	2	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.2E1\n	1	\N	31.135.105.60	c685354a-dbd9-4c5d-b22d-628bbcdf2760	2017-06-24 21:58:59.604953
+85	3	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.3E1\n	1	\N	31.135.105.60	c685354a-dbd9-4c5d-b22d-628bbcdf2760	2017-06-24 21:58:59.630087
+86	4	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.4E1\n	1	\N	31.135.105.60	8abde81d-2ca9-4deb-9a19-4b95e38efcc5	2017-06-24 21:59:02.832725
+87	1	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.1E1\n- !ruby/object:BigDecimal 18:0.1E2\n	8	\N	31.135.105.60	f2f42f80-bf08-4783-8ee9-80cba0a2edf0	2017-06-24 21:59:14.077041
+88	2	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.2E1\n- !ruby/object:BigDecimal 18:-0.2E1\n	2	\N	31.135.105.60	f2f42f80-bf08-4783-8ee9-80cba0a2edf0	2017-06-24 21:59:14.101461
+89	3	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.3E1\n- !ruby/object:BigDecimal 18:0.5E1\n	2	\N	31.135.105.60	f2f42f80-bf08-4783-8ee9-80cba0a2edf0	2017-06-24 21:59:14.121626
+90	2	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:-0.2E1\n- !ruby/object:BigDecimal 18:0.1E2\n	3	\N	31.135.105.60	8960f7f0-fcd3-41af-8256-10fcb7ba48d1	2017-06-24 21:59:29.13322
+91	3	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.5E1\n- !ruby/object:BigDecimal 18:0.1E2\n	3	\N	31.135.105.60	8960f7f0-fcd3-41af-8256-10fcb7ba48d1	2017-06-24 21:59:29.159121
+92	4	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.4E1\n- !ruby/object:BigDecimal 18:0.1E2\n	2	\N	31.135.105.60	8960f7f0-fcd3-41af-8256-10fcb7ba48d1	2017-06-24 21:59:29.180782
+93	5	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.1E2\n	1	\N	31.135.105.60	8960f7f0-fcd3-41af-8256-10fcb7ba48d1	2017-06-24 21:59:29.201232
+94	5	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.1E2\n- !ruby/object:BigDecimal 18:-0.1E4\n	2	\N	31.135.105.60	5c64407a-bfeb-440a-a0e2-f0d2f798a418	2017-06-24 21:59:42.289056
+95	4	User	\N	\N	1	User	\N	create	---\nemail: yorke.diana@gmail.com\nencrypted_password: "$2a$11$oXxAVHuV9dCmAxhIgJBMju3VpyJSFHQeLYhlOz32FMcjnEImmdl3y"\nremember_created_at: \nrole: architector\nfirst_name: Claire\nlast_name: Boucher\ncrm: '1231233'\nphone: '79781234567'\ndeleted_at: \n	1	\N	31.135.105.60	cfa1332f-de66-4a5e-8273-52dc02436c10	2017-06-24 22:08:41.483042
+96	4	User	\N	\N	1	User	\N	update	---\nemail:\n- yorke.diana@gmail.com\n- yorke.diana2@gmail.com\nfirst_name:\n- Claire\n- Claire2\nlast_name:\n- Boucher\n- Boucher2\nphone:\n- '79781234567'\n- '79781234568'\ncrm:\n- '1231233'\n- '1231234'\nrole:\n- architector\n- admin\n	2	\N	31.135.105.60	3a9eb975-09f1-4530-8fc5-01078b7d7e59	2017-06-24 22:08:59.121245
+97	4	User	\N	\N	1	User	\N	update	---\nemail:\n- yorke.diana2@gmail.com\n- yorke.diana@gmail.com\nencrypted_password:\n- "$2a$11$oXxAVHuV9dCmAxhIgJBMju3VpyJSFHQeLYhlOz32FMcjnEImmdl3y"\n- "$2a$11$EGkoT507N0vJS/2ompR8xecL108leanlXXzVVPU/n/P9GIhlfD1Ja"\n	3	\N	31.135.105.60	a4c93563-c120-4f42-ae4b-ecd6fa26162e	2017-06-24 22:09:24.307219
+98	4	User	\N	\N	1	User	\N	update	---\nfirst_name:\n- Claire2\n- Claire\nlast_name:\n- Boucher2\n- Boucher\n	4	\N	31.135.105.60	17b1eb86-db45-4af0-9acd-9946e8695b42	2017-06-24 22:09:34.331239
+99	4	User	\N	\N	4	User	\N	update	---\nencrypted_password:\n- "$2a$11$EGkoT507N0vJS/2ompR8xecL108leanlXXzVVPU/n/P9GIhlfD1Ja"\n- "$2a$11$4P6x1pbDx/Q8cKmYX4aZtutACWvUt3UjH.re2JymlAzUXNCOXBpAG"\n	5	\N	31.135.105.60	dc064f43-60ec-4242-8a98-233952174ee0	2017-06-24 22:10:00.108404
+100	4	User	\N	\N	4	User	\N	update	---\nfirst_name:\n- Claire\n- Claire2\n	6	\N	31.135.105.60	e9aa2359-84b1-484d-bb24-8faedd486551	2017-06-24 22:10:19.738531
+101	4	User	\N	\N	4	User	\N	update	---\nfirst_name:\n- Claire2\n- Claire\n	7	\N	31.135.105.60	60a145db-c386-49e0-ab22-096103f231f9	2017-06-24 22:10:27.617474
+102	4	User	\N	\N	4	User	\N	update	---\nrole:\n- admin\n- engineer\n	8	\N	31.135.105.60	b213120a-7bb8-40b0-a0c5-4e8ffecefc07	2017-06-24 22:10:37.15699
+103	4	User	\N	\N	1	User	\N	destroy	---\nemail: yorke.diana@gmail.com\nencrypted_password: "$2a$11$4P6x1pbDx/Q8cKmYX4aZtutACWvUt3UjH.re2JymlAzUXNCOXBpAG"\nremember_created_at: \nrole: engineer\nfirst_name: Claire\nlast_name: Boucher\ncrm: '1231234'\nphone: '79781234568'\ndeleted_at: \n	9	\N	31.135.105.60	daffc3e4-6e97-4900-9891-7a85cf3b73dd	2017-06-24 22:11:03.057725
+104	2	Client	\N	\N	1	User	\N	create	---\nfirst_name: Мишель\nlast_name: Фуко\nmiddle_name: ''\ncrm: '4444444'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	51b036ed-ab01-420f-b366-a6bd92353cce	2017-06-24 22:13:06.994639
+105	3	Client	\N	\N	1	User	\N	create	---\nfirst_name: Жан\nlast_name: Сартр\nmiddle_name: Поль\ncrm: '6666666'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	5fa83cae-bf42-42e6-9b19-d247eee2659b	2017-06-24 22:13:25.870655
+106	4	Client	\N	\N	1	User	\N	create	---\nfirst_name: Рене\nlast_name: Декарт\nmiddle_name: ''\ncrm: '3333333'\narchived: true\ndeleted_at: \n	1	\N	31.135.105.60	3b101211-3be6-4ffe-af47-f102d41b841f	2017-06-24 22:14:05.644593
+107	5	Client	\N	\N	1	User	\N	create	---\nfirst_name: Фридрих\nlast_name: Ницше\nmiddle_name: ''\ncrm: '5432222'\narchived: true\ndeleted_at: \n	1	\N	31.135.105.60	74f75b6b-3ff5-472a-84bc-d8f59a0c0933	2017-06-24 22:21:26.609191
+108	6	Client	\N	\N	1	User	\N	create	---\nfirst_name: '2'\nlast_name: ''\nmiddle_name: ''\ncrm: '4444443'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	8dc7b8c0-4f41-4a30-a6d4-71d2a8558f45	2017-06-24 22:21:39.961362
+109	6	Client	\N	\N	1	User	\N	destroy	---\nfirst_name: '2'\nlast_name: ''\nmiddle_name: ''\ncrm: '4444443'\narchived: false\ndeleted_at: \n	2	\N	31.135.105.60	ca5e3e94-9461-4400-bfea-9ff02f2c0845	2017-06-24 22:22:15.518
+110	7	Client	\N	\N	1	User	\N	create	---\nfirst_name: Карл\nlast_name: Маркс\nmiddle_name: ''\ncrm: '5555543'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	cb09df5e-2d23-4f8e-9170-3ee5bc29a74e	2017-06-24 22:23:08.705755
+111	7	Client	\N	\N	1	User	\N	update	---\nfirst_name:\n- Карл\n- Адам\nlast_name:\n- Маркс\n- Смит\ncrm:\n- '5555543'\n- '6666667'\n	2	\N	31.135.105.60	e77e6630-2448-416f-97b2-8d8e1679ea32	2017-06-24 22:23:33.712394
+112	9	User	\N	\N	1	User	\N	create	---\nemail: yorke.diana6@gmail.com\nencrypted_password: "$2a$11$o8yFqPqBrzj.0itqbJs3qO50v44Gs5lKKgRZ4pHmTTy9LThLwvRgK"\nremember_created_at: \nrole: architector\nfirst_name: Claire\nlast_name: Boucher\ncrm: '1231230'\nphone: '79781234568'\ndeleted_at: \n	1	\N	31.135.105.60	4a6870da-4aef-436b-8da6-0c6367f06420	2017-06-24 22:30:59.201591
+114	9	User	\N	\N	1	User	\N	update	---\nemail:\n- yorke.diana6@gmail.com\n- yorke.diana1@gmail.com\n	2	\N	31.135.105.60	b1fbabd8-729d-4972-8f52-6809eb199398	2017-06-24 22:33:05.038052
+115	8	Client	\N	\N	9	User	\N	create	---\nfirst_name: Мартин\nlast_name: Хайдеггер\nmiddle_name: ''\ncrm: '6543124'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	1e053070-5981-4ac5-9178-986ef823dc6d	2017-06-24 22:34:43.217772
+116	8	Client	\N	\N	9	User	\N	update	---\nfirst_name:\n- Мартин\n- Мартин1\nlast_name:\n- Хайдеггер\n- Хайдеггер1\nmiddle_name:\n- ''\n- '1'\ncrm:\n- '6543124'\n- '6543125'\n	2	\N	31.135.105.60	87235db3-e17d-4856-8214-259fae60abc6	2017-06-24 22:34:56.755401
+117	8	Client	\N	\N	9	User	\N	update	---\nfirst_name:\n- Мартин1\n- Мартин\nlast_name:\n- Хайдеггер1\n- Хайдеггер\nmiddle_name:\n- '1'\n- ''\narchived:\n- false\n- true\n	3	\N	31.135.105.60	dc3e2762-f539-48b1-8751-88e57f3d7e78	2017-06-24 22:35:06.747217
+118	9	Client	\N	\N	9	User	\N	create	---\nfirst_name: Карл\nlast_name: Маркс\nmiddle_name: ''\ncrm: '5427587'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	9c8ee821-e207-40bf-a585-429c95dae483	2017-06-24 22:36:25.529871
+119	10	Client	\N	\N	1	User	\N	create	---\nfirst_name: Иммануил\nlast_name: Кант\nmiddle_name: ''\ncrm: '6745345'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	ee17b642-33c1-46ad-ba0a-cb0f0c6af965	2017-06-24 22:45:57.882159
+120	11	Client	\N	\N	1	User	\N	create	---\nfirst_name: Дэвид\nlast_name: Юм\nmiddle_name: ''\ncrm: '8767895'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	0c5af524-af64-46d9-aef1-d85210ef894b	2017-06-24 22:46:42.528252
+121	12	Client	\N	\N	1	User	\N	create	---\nfirst_name: Джон\nlast_name: Локк\nmiddle_name: ''\ncrm: '4563456'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	f8a47cbe-11e9-430d-8384-e03b8ac963b9	2017-06-24 22:47:50.71857
+122	13	Client	\N	\N	1	User	\N	create	---\nfirst_name: Бенедикт\nlast_name: Спиноза\nmiddle_name: ''\ncrm: '3463457'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	2d33aa54-5f71-4337-8b3d-0642d1220be4	2017-06-24 22:48:25.215272
+123	14	Client	\N	\N	1	User	\N	create	---\nfirst_name: Артур\nlast_name: Шопенгауэр\nmiddle_name: ''\ncrm: '6745369'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	0288d1c8-48a4-4c28-b7f5-825596369d3b	2017-06-24 22:48:59.734418
+234	15	Composition	\N	\N	1	User	\N	create	---\nparent_id: 31\nchildren_id: 7\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	bd559ee6-1522-456e-84d0-d894ccb9279a	2017-06-25 15:49:19.345692
+124	15	Client	\N	\N	1	User	\N	create	---\nfirst_name: Никколо\nlast_name: Макиавелли\nmiddle_name: ''\ncrm: '7534678'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	a5ab6953-a8de-4bba-8bd9-4af31c1c6c3d	2017-06-24 22:51:02.480736
+125	16	Client	\N	\N	1	User	\N	create	---\nfirst_name: Жан\nlast_name: Бодрийяр\nmiddle_name: ''\ncrm: '8535734'\narchived: false\ndeleted_at: \n	1	\N	31.135.105.60	7c85cb20-d939-42c3-9455-d8efedbb8948	2017-06-24 22:51:38.287381
+126	20	Category	\N	\N	1	User	\N	create	---\nname: Брус и пиломатериалы\nproduct: false\ndeleted_at: \n	1	\N	31.135.105.60	52bf7521-5a40-42cf-9875-e72cec0a8047	2017-06-25 14:16:52.985156
+127	11	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Брус камерной сушки 200х50х6000 мм\nunit_id: 3\ncategory_id: 20\nprice: !ruby/object:BigDecimal 18:0.15E5\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:20:48.891833416 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:20:48.891833416 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	d90632cd-8b75-4f3b-9eed-04ac9e406388	2017-06-25 14:20:48.972728
+128	12	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Брус камерной сушки 150х50х6000 мм\nunit_id: 3\ncategory_id: 20\nprice: !ruby/object:BigDecimal 18:0.135E5\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:22:50.634787065 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:22:50.634787065 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	fe3ee575-5242-4bb1-b9bd-5e88890b6154	2017-06-25 14:22:50.665859
+129	11	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.15E5\n- !ruby/object:BigDecimal 18:0.135E5\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:20:48.891833000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:20:48.891833000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:22:57.751510226 Z\n  zone: *1\n  time: 2017-06-25 17:22:57.751510226 Z\n	2	\N	31.135.105.60	c70b6083-6d20-46e9-8ffe-843a460fe2a5	2017-06-25 14:22:57.762914
+130	13	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Брус камерной сушки 100х50 мм\nunit_id: 3\ncategory_id: 20\nprice: !ruby/object:BigDecimal 18:0.135E5\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:23:52.443009806 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:23:52.443009806 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	fafb18f2-619f-4413-8eb6-180dd2da106c	2017-06-25 14:23:52.463047
+131	12	ConstructorObject	\N	\N	1	User	\N	update	---\nname:\n- Брус камерной сушки 150х50х6000 мм\n- Брус камерной сушки 150х50 мм\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:22:50.634787000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:22:50.634787000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:23:59.006623101 Z\n  zone: *1\n  time: 2017-06-25 17:23:59.006623101 Z\n	2	\N	31.135.105.60	f378cb1d-2048-49ee-bce4-b8f29d229989	2017-06-25 14:23:59.017022
+132	11	ConstructorObject	\N	\N	1	User	\N	update	---\nname:\n- Брус камерной сушки 200х50х6000 мм\n- Брус камерной сушки 200х50 мм\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:22:57.751510000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:22:57.751510000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:24:05.181487059 Z\n  zone: *1\n  time: 2017-06-25 17:24:05.181487059 Z\n	3	\N	31.135.105.60	ec3830fe-41ab-4af8-9d13-3ab80b5df587	2017-06-25 14:24:05.191384
+133	14	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Брус камерной сушки 200х100 мм\nunit_id: 3\ncategory_id: 20\nprice: !ruby/object:BigDecimal 18:0.135E5\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:25:22.353334479 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:25:22.353334479 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	f00f772e-5f17-462d-a918-0c53d6dea206	2017-06-25 14:25:22.376847
+134	15	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Брус камерной сушки 150х100 мм\nunit_id: 3\ncategory_id: 20\nprice: !ruby/object:BigDecimal 18:0.135E5\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:25:53.991713838 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:25:53.991713838 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	04712fbf-4306-4bee-a8b3-ad954d438bef	2017-06-25 14:25:54.007489
+135	16	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Брус камерной сушки 150х150 мм\nunit_id: 3\ncategory_id: 20\nprice: !ruby/object:BigDecimal 18:0.135E5\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:27:36.549889410 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:27:36.549889410 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	660954c4-4fdb-4b00-aeea-751f095709f1	2017-06-25 14:27:36.572303
+136	11	Unit	\N	\N	1	User	\N	create	---\nname: свая\nproduct: false\ndeleted_at: \n	1	\N	31.135.105.60	2903cee7-3bf7-47c9-8814-c7f7278814cb	2017-06-25 14:30:20.309806
+137	8	Unit	\N	\N	1	User	\N	destroy	---\nname: кек\nproduct: false\ndeleted_at: \n	2	\N	31.135.105.60	890dd31d-d00b-4d0a-bf76-16262c8584a8	2017-06-25 14:32:32.482726
+138	3	Budget	\N	\N	1	User	\N	create	---\nname: Дом Постмодерниста\nclient_id: 16\nfloors: \nfirst_floor_height: !ruby/object:BigDecimal 18:0.2E1\nsecond_floor_height_min: !ruby/object:BigDecimal 18:0.0\nsecond_floor_height_max: !ruby/object:BigDecimal 18:0.0\nthird_floor_height_min: !ruby/object:BigDecimal 18:0.0\nthird_floor_height_max: !ruby/object:BigDecimal 18:0.0\nprice: !ruby/object:BigDecimal 18:0.0\narea: !ruby/object:BigDecimal 18:0.15E3\nprice_by_area: \nprice_by_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\ndiscount_title: ''\ndiscount_by_stages:\n- '0'\n- '0'\n- '0'\ndiscount_amount:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nsigned: false\ndeleted_at: \nsigning_date: \nuser_id: 1\nurl: \nproposed: false\nproposer_id: \nsolution_id: \n	1	\N	31.135.105.60	ac31040a-09f5-421c-a21e-9152ee83e47e	2017-06-25 14:35:03.466578
+139	3	Budget	\N	\N	1	User	\N	update	---\nfloors:\n- \n- !ruby/object:BigDecimal 18:0.1E1\nprice_by_area:\n- \n- !ruby/object:BigDecimal 18:0.0\n	2	\N	31.135.105.60	ac31040a-09f5-421c-a21e-9152ee83e47e	2017-06-25 14:35:03.589643
+315	13	Unit	\N	\N	1	User	\N	create	---\nname: баллон\nproduct: false\ndeleted_at: \n	1	\N	5.189.145.149	4845598f-d0c3-488e-945a-c1520e4e8e23	2017-06-25 16:30:11.223826
+140	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\n	3	\N	31.135.105.60	fbec7349-3c65-4313-a1bc-801803dbbbad	2017-06-25 14:35:19.38697
+141	21	Category	\N	\N	1	User	\N	create	---\nname: Свайные фундаменты\nproduct: false\ndeleted_at: \n	1	\N	31.135.105.60	4545639c-310a-4392-b752-c560c8a21738	2017-06-25 14:35:27.780647
+142	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\n	4	\N	31.135.105.60	37a59155-8927-496d-b148-882cb0a619b0	2017-06-25 14:35:51.471945
+143	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\narea:\n- !ruby/object:BigDecimal 18:0.15E3\n- !ruby/object:BigDecimal 18:0.145E3\n	5	\N	31.135.105.60	8b2d499c-f25f-48e7-9f10-6fa085058c59	2017-06-25 14:36:28.433574
+144	17	ConstructorObject	\N	\N	1	User	\N	create	---\nname: йцу\nunit_id: 3\ncategory_id: 2\nprice: !ruby/object:BigDecimal 18:0.123E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:36:49.665037203 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:36:49.665037203 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	58499c82-fd34-421d-b1bb-bf5e0189fc87	2017-06-25 14:36:49.683722
+145	17	ConstructorObject	\N	\N	1	User	\N	update	---\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:36:49.665037000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:36:49.665037000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:36:53.688342207 Z\n  zone: *1\n  time: 2017-06-25 17:36:53.688342207 Z\n	2	\N	31.135.105.60	0beff623-611d-4e73-8c1d-bb57347d0b71	2017-06-25 14:36:53.697135
+146	17	ConstructorObject	\N	\N	1	User	\N	destroy	---\nname: йцу\nunit_id: 3\ncategory_id: 2\nprice: !ruby/object:BigDecimal 18:0.123E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:36:53.688342000 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:36:53.688342000 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	3	\N	31.135.105.60	d1021a4a-39c6-48ce-9dc7-dc933f9eea15	2017-06-25 14:36:57.492658
+147	18	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Огнебиозащита, МИГ-09 с красителем E139\nunit_id: 5\ncategory_id: 8\nprice: !ruby/object:BigDecimal 18:0.14E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:38:02.955058400 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:38:02.955058400 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	e6c265aa-ccd7-4606-95bd-1a66bfdb0065	2017-06-25 14:38:02.977583
+148	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nfirst_floor_height:\n- !ruby/object:BigDecimal 18:0.2E1\n- !ruby/object:BigDecimal 18:0.215E1\n	6	\N	31.135.105.60	0aaf8887-ea05-470b-8f9b-acd2c3841634	2017-06-25 14:38:05.639811
+149	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nfirst_floor_height:\n- !ruby/object:BigDecimal 18:0.215E1\n- !ruby/object:BigDecimal 18:0.2155E1\n	7	\N	31.135.105.60	8dc7dd5c-3873-4eb9-ba78-ccb1e03010b6	2017-06-25 14:38:19.93961
+150	18	ConstructorObject	\N	\N	1	User	\N	update	---\ncategory_id:\n- 8\n- 20\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:38:02.955058000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 17:38:02.955058000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 14:38:28.581941830 Z\n  zone: *1\n  time: 2017-06-25 17:38:28.581941830 Z\n	2	\N	31.135.105.60	9ae57b28-489b-4bc1-98fe-1a7efcbefdb9	2017-06-25 14:38:28.598864
+151	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nsecond_floor_height_min:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.2145E1\nsecond_floor_height_max:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.28E1\nthird_floor_height_min:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.17E1\nthird_floor_height_max:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.2543E1\n	8	\N	31.135.105.60	55f2a05b-575d-4c8c-8e77-c21f788a02ee	2017-06-25 14:38:53.958529
+152	3	Budget	\N	\N	1	User	\N	update	---\nfloors:\n- !ruby/object:BigDecimal 18:0.1E1\n- !ruby/object:BigDecimal 27:0.25E1\n	9	\N	31.135.105.60	55f2a05b-575d-4c8c-8e77-c21f788a02ee	2017-06-25 14:38:54.010267
+153	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nfirst_floor_height:\n- !ruby/object:BigDecimal 18:0.2155E1\n- !ruby/object:BigDecimal 18:0.21E1\n	10	\N	31.135.105.60	00635206-116f-4fd5-84de-4d9f73c2e8a9	2017-06-25 15:01:21.439252
+154	19	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Свая винтовая, 108 мм, 2,5 м, сварной наконечник\nunit_id: 11\ncategory_id: 21\nprice: !ruby/object:BigDecimal 18:0.205E4\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:01:21.890907592 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:01:21.890907592 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	43e5fe7a-7222-4326-a97c-a4f3b8e8acee	2017-06-25 15:01:21.908178
+155	20	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Свая винтовая, 108 мм, 2,5 м, литой наконечник\nunit_id: 11\ncategory_id: 21\nprice: !ruby/object:BigDecimal 18:0.265E4\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:01:50.435370200 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:01:50.435370200 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	aa275e41-fd27-415d-beb0-f31cc2170b48	2017-06-25 15:01:50.454854
+156	21	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Оголовок на сваю, 200х200 мм\nunit_id: 1\ncategory_id: 21\nprice: !ruby/object:BigDecimal 18:0.33E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:02:41.506491798 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:02:41.506491798 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	169a251b-2dfd-471a-b6f0-1389ab24e452	2017-06-25 15:02:41.524562
+157	22	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Установка сваи 2,5 м (с бетоном)\nunit_id: 11\ncategory_id: 1\nprice: !ruby/object:BigDecimal 18:0.15E4\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:04:38.183873928 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:04:38.183873928 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	81fd9bd2-0c21-410b-ab0b-f320422013cc	2017-06-25 15:04:38.210283
+158	23	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Отсечная гидроизоляция (подкладочный ковер)\nunit_id: 2\ncategory_id: 8\nprice: !ruby/object:BigDecimal 18:0.42E2\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:07:57.996993744 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:07:57.996993744 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	93b6c853-d17e-4c84-9be0-b307062f6602	2017-06-25 15:07:58.026017
+159	24	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Двутавровая балка БДКУ-302\nunit_id: 4\ncategory_id: 20\nprice: !ruby/object:BigDecimal 18:0.3E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:09:23.928528996 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:09:23.928528996 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	cc6696ac-bb37-4104-865e-7fd94bcf59d0	2017-06-25 15:09:23.949453
+160	24	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.3E3\n- !ruby/object:BigDecimal 18:0.21E4\nname:\n- Двутавровая балка БДКУ-302\n- Двутавровая балка БДКУ-302 6 м\nunit_id:\n- 4\n- 1\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:09:23.928528000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:09:23.928528000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:09:54.169784856 Z\n  zone: *1\n  time: 2017-06-25 18:09:54.169784856 Z\n	2	\N	31.135.105.60	a8a709a4-4d99-44ae-af0f-b214cbc7d260	2017-06-25 15:09:54.18791
+161	24	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.21E4\n- !ruby/object:BigDecimal 18:0.18E4\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:09:54.169784000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:09:54.169784000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:10:44.892714424 Z\n  zone: *1\n  time: 2017-06-25 18:10:44.892714424 Z\n	3	\N	31.135.105.60	af13fe9f-65cf-4b16-b6a8-9c65a666c183	2017-06-25 15:10:44.903829
+162	1	ConstructorObject	\N	\N	1	User	\N	update	---\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 07:30:43.555909000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 10:30:43.555909000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:11:05.903336226 Z\n  zone: *1\n  time: 2017-06-25 18:11:05.903336226 Z\n	3	\N	31.135.105.60	bd94461c-144a-4efc-aa0b-8e7e6a5ac16a	2017-06-25 15:11:05.909961
+163	25	ConstructorObject	\N	\N	1	User	\N	create	---\nname: lel\nunit_id: 1\ncategory_id: 2\nprice: !ruby/object:BigDecimal 18:0.9000544E4\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:11:43.687418707 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:11:43.687418707 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	72187af8-cb19-4be1-a352-b72bc67f87f4	2017-06-25 15:11:43.707301
+164	25	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.9000544E4\n- !ruby/object:BigDecimal 18:0.899854E4\nname:\n- lel\n- lel2\ncategory_id:\n- 2\n- 3\nunit_id:\n- 1\n- 2\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:11:43.687418000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:11:43.687418000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:12:14.436016515 Z\n  zone: *1\n  time: 2017-06-25 18:12:14.436016515 Z\n	2	\N	31.135.105.60	20e12290-c8cf-4b5a-ae97-d50e34a48b73	2017-06-25 15:12:14.44956
+165	5	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.654E3\n- !ruby/object:BigDecimal 18:0.655E3\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-13 08:04:20.476884000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-13 11:04:20.476884000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:12:34.462991024 Z\n  zone: *1\n  time: 2017-06-25 18:12:34.462991024 Z\n	4	\N	31.135.105.60	83f8b7c4-7e3d-48f9-9fe8-9e0f6c301cec	2017-06-25 15:12:34.480106
+166	5	ConstructorObject	\N	\N	1	User	\N	update	---\nprice:\n- !ruby/object:BigDecimal 18:0.655E3\n- !ruby/object:BigDecimal 18:0.67E3\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:12:34.462991000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:12:34.462991000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:13:04.248312501 Z\n  zone: *1\n  time: 2017-06-25 18:13:04.248312501 Z\n	5	\N	31.135.105.60	2c1f19f7-c4e6-4bf3-aded-58905b4a4878	2017-06-25 15:13:04.265479
+167	25	ConstructorObject	\N	\N	1	User	\N	destroy	---\nname: lel2\nunit_id: 2\ncategory_id: 3\nprice: !ruby/object:BigDecimal 18:0.899854E4\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:12:14.436016000 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:12:14.436016000 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	3	\N	31.135.105.60	51e231cb-9b6a-4b4a-b1ce-8d30eae6bf3e	2017-06-25 15:15:09.01215
+168	2	Product	\N	\N	1	User	\N	create	---\nname: Фундамент на винтовых сваях\ndescription: Ствол 108 мм, лопасть 300 мм, длина 2,5 м, заливка ствола сваи бетоном,\n  сварной наконечник, оголовки, гидроизоляция\nhint: "Площадь дома делить на 6 м2 = минимально необходимое количество свай.\\r\\nМежду\n  сваями не более 2,5 м. Допустимо для одноэтажного дома в одном направлении расстояние\n  между сваями до 3 м.\\r\\n"\nunit_id: 11\ncategory_id: 9\nstage: 1\ncustom: false\ndisplay_components: true\nprofit: !ruby/object:BigDecimal 18:0.1E2\ndeleted_at: \n	1	\N	31.135.105.60	fc905479-945a-4415-b4f5-2dc536844bbc	2017-06-25 15:17:32.521425
+169	2	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	fc905479-945a-4415-b4f5-2dc536844bbc	2017-06-25 15:17:32.55187
+170	3	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	fc905479-945a-4415-b4f5-2dc536844bbc	2017-06-25 15:17:32.57526
+171	2	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	31.135.105.60	e327926b-1395-4c41-b79c-24abc82f3c8e	2017-06-25 15:17:51.028177
+172	3	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	31.135.105.60	e327926b-1395-4c41-b79c-24abc82f3c8e	2017-06-25 15:17:51.046625
+173	4	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	e327926b-1395-4c41-b79c-24abc82f3c8e	2017-06-25 15:17:51.071019
+174	5	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	e327926b-1395-4c41-b79c-24abc82f3c8e	2017-06-25 15:17:51.092707
+175	4	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	31.135.105.60	3ff80f52-e23b-4326-8225-fd3b65eadf71	2017-06-25 15:18:27.538553
+176	5	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	31.135.105.60	3ff80f52-e23b-4326-8225-fd3b65eadf71	2017-06-25 15:18:27.558161
+177	6	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	3ff80f52-e23b-4326-8225-fd3b65eadf71	2017-06-25 15:18:27.591709
+178	7	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	3ff80f52-e23b-4326-8225-fd3b65eadf71	2017-06-25 15:18:27.625321
+179	6	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	31.135.105.60	307617fb-3255-4b4c-b0c3-5e5e0e01ebf3	2017-06-25 15:19:11.337693
+180	7	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	31.135.105.60	307617fb-3255-4b4c-b0c3-5e5e0e01ebf3	2017-06-25 15:19:11.360752
+181	8	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	307617fb-3255-4b4c-b0c3-5e5e0e01ebf3	2017-06-25 15:19:11.395958
+182	9	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	307617fb-3255-4b4c-b0c3-5e5e0e01ebf3	2017-06-25 15:19:11.421938
+183	8	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	31.135.105.60	addf588b-2286-46f7-9e32-9802293b1e04	2017-06-25 15:21:41.505536
+184	9	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	31.135.105.60	addf588b-2286-46f7-9e32-9802293b1e04	2017-06-25 15:21:41.526348
+185	10	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	addf588b-2286-46f7-9e32-9802293b1e04	2017-06-25 15:21:41.552991
+186	11	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	addf588b-2286-46f7-9e32-9802293b1e04	2017-06-25 15:21:41.577604
+187	12	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 23\nvalue: !ruby/object:BigDecimal 18:0.138E0\ndeleted_at: \n	1	\N	31.135.105.60	addf588b-2286-46f7-9e32-9802293b1e04	2017-06-25 15:21:41.600469
+188	1	Composition	\N	\N	1	User	\N	create	---\nparent_id: 26\nchildren_id: 20\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	31.135.105.60	c34b78b2-c2f5-40b4-9738-28cb6bc71861	2017-06-25 15:26:20.05389
+189	2	Composition	\N	\N	1	User	\N	create	---\nparent_id: 26\nchildren_id: 21\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	31.135.105.60	c34b78b2-c2f5-40b4-9738-28cb6bc71861	2017-06-25 15:26:20.071074
+190	26	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Объект\nunit_id: 1\ncategory_id: 1\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:26:19.942928853 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:26:19.942928853 Z\ndivisibility: true\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	31.135.105.60	c34b78b2-c2f5-40b4-9738-28cb6bc71861	2017-06-25 15:26:20.084413
+191	26	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.596E4\n	2	\N	\N	288ccb05-0ffe-4ffc-b0b3-419873de2c80	2017-06-25 15:26:20.206935
+192	26	ConstructorObject	\N	\N	1	User	\N	update	---\nname:\n- Объект\n- Объект2\ncategory_id:\n- 1\n- 2\nunit_id:\n- 1\n- 2\ndivisibility:\n- true\n- false\n	3	\N	31.135.105.60	0c40bd61-ab38-4cf4-989f-06ec590be57d	2017-06-25 15:26:34.755277
+193	2	Composition	\N	\N	1	User	\N	destroy	---\nparent_id: 26\nchildren_id: 21\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	2	\N	31.135.105.60	0c40bd61-ab38-4cf4-989f-06ec590be57d	2017-06-25 15:26:34.770194
+194	1	Composition	\N	\N	1	User	\N	update	---\nvalue:\n- !ruby/object:BigDecimal 18:0.2E1\n- !ruby/object:BigDecimal 18:0.1E1\n	2	\N	31.135.105.60	0c40bd61-ab38-4cf4-989f-06ec590be57d	2017-06-25 15:26:34.783061
+195	26	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.596E4\n- !ruby/object:BigDecimal 18:0.265E4\n	4	\N	\N	f9394f1b-fe6d-4af0-833b-f8d9fb0c6bec	2017-06-25 15:26:34.834558
+196	26	ConstructorObject	\N	\N	1	User	\N	destroy	---\nname: Объект2\nunit_id: 2\ncategory_id: 2\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:26:19.942928000 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:26:19.942928000 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.265E4\n	5	\N	31.135.105.60	6e2d9b5f-df7c-46ea-8843-c3bf1856d7b5	2017-06-25 15:26:51.684262
+197	10	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	5.189.145.149	7f094ef6-e196-493d-a81a-44b12e1d6c03	2017-06-25 15:28:43.22886
+198	11	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	5.189.145.149	7f094ef6-e196-493d-a81a-44b12e1d6c03	2017-06-25 15:28:43.25603
+199	12	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 23\nvalue: !ruby/object:BigDecimal 18:0.138E0\ndeleted_at: \n	2	\N	5.189.145.149	7f094ef6-e196-493d-a81a-44b12e1d6c03	2017-06-25 15:28:43.280532
+200	13	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	7f094ef6-e196-493d-a81a-44b12e1d6c03	2017-06-25 15:28:43.317593
+201	14	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	7f094ef6-e196-493d-a81a-44b12e1d6c03	2017-06-25 15:28:43.345708
+202	15	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 23\nvalue: !ruby/object:BigDecimal 18:0.138E0\ndeleted_at: \n	1	\N	5.189.145.149	7f094ef6-e196-493d-a81a-44b12e1d6c03	2017-06-25 15:28:43.375529
+203	2	Product	\N	\N	1	User	\N	update	---\nhint:\n- "Площадь дома делить на 6 м2 = минимально необходимое количество свай.\\r\\nМежду\n  сваями не более 2,5 м. Допустимо для одноэтажного дома в одном направлении расстояние\n  между сваями до 3 м.\\r\\n"\n- "Площадь дома делить на 6 м2 = минимально необходимое количество свай.\\r\\nМежду\n  сваями не более 2,5 м. Допустимо для небольшого одноэтажного дома в одном направлении\n  расстояние между сваями до 3 м."\n	2	\N	5.189.145.149	a579c6b0-a28f-4329-b6ec-4159b2c6aaed	2017-06-25 15:31:23.473454
+204	13	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	5.189.145.149	a579c6b0-a28f-4329-b6ec-4159b2c6aaed	2017-06-25 15:31:23.508144
+205	14	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	5.189.145.149	a579c6b0-a28f-4329-b6ec-4159b2c6aaed	2017-06-25 15:31:23.527448
+206	15	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 23\nvalue: !ruby/object:BigDecimal 18:0.138E0\ndeleted_at: \n	2	\N	5.189.145.149	a579c6b0-a28f-4329-b6ec-4159b2c6aaed	2017-06-25 15:31:23.545071
+207	16	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	a579c6b0-a28f-4329-b6ec-4159b2c6aaed	2017-06-25 15:31:23.572689
+208	17	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	a579c6b0-a28f-4329-b6ec-4159b2c6aaed	2017-06-25 15:31:23.596409
+209	18	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 23\nvalue: !ruby/object:BigDecimal 18:0.138E0\ndeleted_at: \n	1	\N	5.189.145.149	a579c6b0-a28f-4329-b6ec-4159b2c6aaed	2017-06-25 15:31:23.625309
+210	19	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 22\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	a579c6b0-a28f-4329-b6ec-4159b2c6aaed	2017-06-25 15:31:23.651439
+211	3	Composition	\N	\N	1	User	\N	create	---\nparent_id: 27\nchildren_id: 5\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	806afc80-45aa-42ce-9b26-f521e7df4edd	2017-06-25 15:33:36.482629
+212	4	Composition	\N	\N	1	User	\N	create	---\nparent_id: 27\nchildren_id: 8\nvalue: !ruby/object:BigDecimal 18:0.45E0\ndeleted_at: \n	1	\N	5.189.145.149	806afc80-45aa-42ce-9b26-f521e7df4edd	2017-06-25 15:33:36.496844
+213	27	ConstructorObject	\N	\N	1	User	\N	create	---\nname: СИП 174 мм 2500х1250 ULTRALAM\nunit_id: 1\ncategory_id: 3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:33:36.441772607 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:33:36.441772607 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	806afc80-45aa-42ce-9b26-f521e7df4edd	2017-06-25 15:33:36.510217
+214	27	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.25775E4\n	2	\N	\N	9603cb02-4c28-475b-82dc-1ecd03ad2090	2017-06-25 15:33:36.560845
+215	5	Composition	\N	\N	1	User	\N	create	---\nparent_id: 27\nchildren_id: 10\nvalue: !ruby/object:BigDecimal 18:0.13E1\ndeleted_at: \n	1	\N	5.189.145.149	7f3c50e4-cfa1-420e-9b60-b5ad0399e1d1	2017-06-25 15:35:02.017188
+216	27	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.25775E4\n- !ruby/object:BigDecimal 18:0.29415E4\n	3	\N	\N	ad9d54e6-5fb1-4b3c-ad7a-b38c3d5c48f3	2017-06-25 15:35:02.089512
+217	12	Unit	\N	\N	1	User	\N	create	---\nname: панель\nproduct: false\ndeleted_at: \n	1	\N	5.189.145.149	b581f642-9bc8-4805-8eb8-414febd3700c	2017-06-25 15:35:34.349723
+218	28	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Изготовление СИП-панели\nunit_id: 12\ncategory_id: 2\nprice: !ruby/object:BigDecimal 18:0.6E2\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:36:31.827483619 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:36:31.827483619 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	d43f07bc-eb64-4d4f-afd7-d0f183f99a33	2017-06-25 15:36:31.8652
+219	6	Composition	\N	\N	1	User	\N	create	---\nparent_id: 27\nchildren_id: 28\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	f1afad38-ce89-4e95-8535-11158b97ed20	2017-06-25 15:37:04.133623
+220	27	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.29415E4\n- !ruby/object:BigDecimal 18:0.30015E4\n	4	\N	\N	6a9e50ca-b3f2-4895-b63f-577060beb220	2017-06-25 15:37:04.185298
+221	7	Composition	\N	\N	1	User	\N	create	---\nparent_id: 29\nchildren_id: 5\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	4211caf9-6cab-4ff0-9cea-c57c4750fce2	2017-06-25 15:42:24.099757
+222	8	Composition	\N	\N	1	User	\N	create	---\nparent_id: 29\nchildren_id: 8\nvalue: !ruby/object:BigDecimal 18:0.6E0\ndeleted_at: \n	1	\N	5.189.145.149	4211caf9-6cab-4ff0-9cea-c57c4750fce2	2017-06-25 15:42:24.11291
+223	9	Composition	\N	\N	1	User	\N	create	---\nparent_id: 29\nchildren_id: 10\nvalue: !ruby/object:BigDecimal 18:0.13E1\ndeleted_at: \n	1	\N	5.189.145.149	4211caf9-6cab-4ff0-9cea-c57c4750fce2	2017-06-25 15:42:24.124628
+224	29	ConstructorObject	\N	\N	1	User	\N	create	---\nname: СИП 224 мм 2500х1250 ULTRALAM\nunit_id: 12\ncategory_id: 3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:42:24.033795922 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:42:24.033795922 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	4211caf9-6cab-4ff0-9cea-c57c4750fce2	2017-06-25 15:42:24.145091
+225	29	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.3354E4\n	2	\N	\N	8a489c72-7c2f-4a49-91c5-1c751e022283	2017-06-25 15:42:24.199284
+226	10	Composition	\N	\N	1	User	\N	create	---\nparent_id: 29\nchildren_id: 28\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	87065f64-55c0-476e-b7ab-b9b1e6341c19	2017-06-25 15:43:12.621067
+227	29	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.3354E4\n- !ruby/object:BigDecimal 18:0.3414E4\n	3	\N	\N	7782b7a9-080c-457a-a7a7-47923a86376d	2017-06-25 15:43:12.677486
+228	11	Composition	\N	\N	1	User	\N	create	---\nparent_id: 30\nchildren_id: 5\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	b9cb5eb6-d4d7-410a-83ad-cf8560fd3f17	2017-06-25 15:44:19.268432
+229	12	Composition	\N	\N	1	User	\N	create	---\nparent_id: 30\nchildren_id: 8\nvalue: !ruby/object:BigDecimal 18:0.3E0\ndeleted_at: \n	1	\N	5.189.145.149	b9cb5eb6-d4d7-410a-83ad-cf8560fd3f17	2017-06-25 15:44:19.280543
+230	13	Composition	\N	\N	1	User	\N	create	---\nparent_id: 30\nchildren_id: 10\nvalue: !ruby/object:BigDecimal 18:0.13E1\ndeleted_at: \n	1	\N	5.189.145.149	b9cb5eb6-d4d7-410a-83ad-cf8560fd3f17	2017-06-25 15:44:19.290675
+231	14	Composition	\N	\N	1	User	\N	create	---\nparent_id: 30\nchildren_id: 28\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	b9cb5eb6-d4d7-410a-83ad-cf8560fd3f17	2017-06-25 15:44:19.301566
+232	30	ConstructorObject	\N	\N	1	User	\N	create	---\nname: СИП 124 мм 2500х1250 ULTRALAM\nunit_id: 12\ncategory_id: 3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:44:19.199548630 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:44:19.199548630 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	b9cb5eb6-d4d7-410a-83ad-cf8560fd3f17	2017-06-25 15:44:19.312247
+233	30	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.2589E4\n	2	\N	\N	1f7f52ce-1da6-45b6-88cb-025c9ebaf8d0	2017-06-25 15:44:19.357166
+235	16	Composition	\N	\N	1	User	\N	create	---\nparent_id: 31\nchildren_id: 8\nvalue: !ruby/object:BigDecimal 18:0.505E0\ndeleted_at: \n	1	\N	5.189.145.149	bd559ee6-1522-456e-84d0-d894ccb9279a	2017-06-25 15:49:19.389881
+236	31	ConstructorObject	\N	\N	1	User	\N	create	---\nname: СИП 174 мм 2800х1250 ULTRALAM\nunit_id: 12\ncategory_id: 3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:49:19.262756440 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:49:19.262756440 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	bd559ee6-1522-456e-84d0-d894ccb9279a	2017-06-25 15:49:19.402498
+238	17	Composition	\N	\N	1	User	\N	create	---\nparent_id: 31\nchildren_id: 10\nvalue: !ruby/object:BigDecimal 18:0.15E1\ndeleted_at: \n	1	\N	5.189.145.149	d9996193-b351-4b1f-9230-d6bd5a4f4ab0	2017-06-25 15:49:46.171683
+239	18	Composition	\N	\N	1	User	\N	create	---\nparent_id: 31\nchildren_id: 28\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	d9996193-b351-4b1f-9230-d6bd5a4f4ab0	2017-06-25 15:49:46.184832
+241	19	Composition	\N	\N	1	User	\N	create	---\nparent_id: 32\nchildren_id: 7\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	df116642-4d83-42b0-8269-7bd77b38aec9	2017-06-25 15:55:53.574756
+242	20	Composition	\N	\N	1	User	\N	create	---\nparent_id: 32\nchildren_id: 8\nvalue: !ruby/object:BigDecimal 18:0.34E0\ndeleted_at: \n	1	\N	5.189.145.149	df116642-4d83-42b0-8269-7bd77b38aec9	2017-06-25 15:55:53.587869
+243	21	Composition	\N	\N	1	User	\N	create	---\nparent_id: 32\nchildren_id: 10\nvalue: !ruby/object:BigDecimal 18:0.15E1\ndeleted_at: \n	1	\N	5.189.145.149	df116642-4d83-42b0-8269-7bd77b38aec9	2017-06-25 15:55:53.599364
+244	22	Composition	\N	\N	1	User	\N	create	---\nparent_id: 32\nchildren_id: 28\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	df116642-4d83-42b0-8269-7bd77b38aec9	2017-06-25 15:55:53.611613
+245	32	ConstructorObject	\N	\N	1	User	\N	create	---\nname: СИП 124 мм 2800х1250 ULTRALAM\nunit_id: 12\ncategory_id: 3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 15:55:53.483088089 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 18:55:53.483088089 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	df116642-4d83-42b0-8269-7bd77b38aec9	2017-06-25 15:55:53.622834
+247	12	Client	\N	\N	1	User	\N	update	---\nlast_name:\n- Локк\n- Локкк\n	2	\N	5.189.145.149	1b60e650-8682-441d-8a17-b9400f58ab07	2017-06-25 15:56:00.879447
+248	27	ConstructorObject	\N	\N	1	User	\N	update	---\nunit_id:\n- 1\n- 12\n	5	\N	5.189.145.149	d670d025-deaf-42a3-901e-f820142ff493	2017-06-25 15:56:06.962177
+249	12	Client	\N	\N	1	User	\N	update	---\nlast_name:\n- Локкк\n- Локк\n	3	\N	5.189.145.149	c0b9fe51-4483-4512-ac28-50ed29c8e515	2017-06-25 15:56:10.361795
+250	1	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nname:\n- Тест смета 1\n- Тест смета 11\n	2	\N	5.189.145.149	00cced8e-930d-4f8a-a584-26ef271145c0	2017-06-25 15:56:18.743355
+251	1	Budget	\N	\N	1	User	\N	update	---\nfloors:\n- \n- !ruby/object:BigDecimal 27:0.15E1\nprice_by_area:\n- \n- !ruby/object:BigDecimal 18:0.0\n	3	\N	5.189.145.149	00cced8e-930d-4f8a-a584-26ef271145c0	2017-06-25 15:56:18.804894
+252	1	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nname:\n- Тест смета 11\n- Тест смета 1\n	4	\N	5.189.145.149	94a238ed-c6e4-4b20-913f-ac46c117154d	2017-06-25 15:56:27.98865
+253	2	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nprice:\n- !ruby/object:BigDecimal 18:0.36531E3\n- !ruby/object:BigDecimal 27:-0.28228500000000004E4\n	7	\N	5.189.145.149	d9f65d03-de87-4f74-8ea6-cb865be0b6c4	2017-06-25 15:56:58.750617
+254	2	Budget	\N	\N	1	User	\N	update	---\nprice_by_area:\n- !ruby/object:BigDecimal 18:0.365E1\n- !ruby/object:BigDecimal 27:-0.2823E2\nprice_by_stage:\n- - !ruby/object:BigDecimal 18:0.36531E3\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 27:-0.282285E4\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated:\n- - !ruby/object:BigDecimal 18:0.36531E3\n  - !ruby/object:BigDecimal 18:0.36531E3\n  - !ruby/object:BigDecimal 18:0.36531E3\n- - !ruby/object:BigDecimal 27:-0.282285E4\n  - !ruby/object:BigDecimal 18:-0.282285E4\n  - !ruby/object:BigDecimal 18:-0.282285E4\nprice_by_area_per_stage:\n- - !ruby/object:BigDecimal 18:0.365E1\n  - !ruby/object:BigDecimal 18:0.365E1\n  - !ruby/object:BigDecimal 18:0.365E1\n- - !ruby/object:BigDecimal 18:-0.2823E2\n  - !ruby/object:BigDecimal 18:-0.2823E2\n  - !ruby/object:BigDecimal 18:-0.2823E2\nprice_by_stage_aggregated_discounted:\n- - !ruby/object:BigDecimal 18:0.36531E3\n  - !ruby/object:BigDecimal 18:0.36531E3\n  - !ruby/object:BigDecimal 18:0.36531E3\n- - !ruby/object:BigDecimal 18:-0.282285E4\n  - !ruby/object:BigDecimal 18:-0.282285E4\n  - !ruby/object:BigDecimal 18:-0.282285E4\nprice_by_area_per_stage_discounted:\n- - !ruby/object:BigDecimal 18:0.365E1\n  - !ruby/object:BigDecimal 18:0.365E1\n  - !ruby/object:BigDecimal 18:0.365E1\n- - !ruby/object:BigDecimal 18:-0.2823E2\n  - !ruby/object:BigDecimal 18:-0.2823E2\n  - !ruby/object:BigDecimal 18:-0.2823E2\n	8	\N	5.189.145.149	d9f65d03-de87-4f74-8ea6-cb865be0b6c4	2017-06-25 15:56:58.950787
+255	16	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	5.189.145.149	0c0144d2-46c7-486e-878f-117e373b4a6e	2017-06-25 15:59:17.707512
+256	17	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	2	\N	5.189.145.149	0c0144d2-46c7-486e-878f-117e373b4a6e	2017-06-25 15:59:17.72721
+257	18	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 2\nconstructor_object_id: 23\nvalue: !ruby/object:BigDecimal 18:0.138E0\ndeleted_at: \n	2	\N	5.189.145.149	0c0144d2-46c7-486e-878f-117e373b4a6e	2017-06-25 15:59:17.746073
+258	20	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 19\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	0c0144d2-46c7-486e-878f-117e373b4a6e	2017-06-25 15:59:17.77674
+259	21	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 21\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	0c0144d2-46c7-486e-878f-117e373b4a6e	2017-06-25 15:59:17.801001
+260	22	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 2\nconstructor_object_id: 23\nvalue: !ruby/object:BigDecimal 18:0.138E0\ndeleted_at: \n	1	\N	5.189.145.149	0c0144d2-46c7-486e-878f-117e373b4a6e	2017-06-25 15:59:17.832987
+261	3	Product	\N	\N	1	User	\N	create	---\nname: Ростверк по свайному фундаменту\ndescription: Брус камерной сушки 150х150 мм, крепежи, огнебиозащита\nhint: Укладывается по сваям, затем по нему выполняется нулевое перекрытие дома\nunit_id: 4\ncategory_id: 9\nstage: 1\ncustom: false\ndisplay_components: false\nprofit: !ruby/object:BigDecimal 18:0.1E2\ndeleted_at: \n	1	\N	5.189.145.149	57231535-f566-4fae-a8b9-0c9afbd87d7f	2017-06-25 16:02:15.825301
+237	31	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.281875E4\n	2	\N	\N	7bdc264d-68fa-4dcd-80b6-89224cd0f6b9	2017-06-25 15:49:19.456633
+240	31	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.281875E4\n- !ruby/object:BigDecimal 18:0.329875E4\n	3	\N	\N	c061f5c2-90a0-45e5-95bd-cb69cc34672b	2017-06-25 15:49:46.248354
+246	32	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.2845E4\n	2	\N	\N	b4693b52-2e19-4b0b-a184-47cfda92a036	2017-06-25 15:55:53.680113
+268	33	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.18883E4\n	2	\N	\N	1d45ef8a-4fc4-4b02-9db7-5ebbd92e202b	2017-06-25 16:05:55.632689
+273	33	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.18883E4\n- !ruby/object:BigDecimal 18:0.193285E4\n	4	\N	\N	4eca1918-0ed3-4086-83f1-a20ce383d54a	2017-06-25 16:09:21.038742
+262	23	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 3\nconstructor_object_id: 16\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	1	\N	5.189.145.149	ea50377a-828c-4500-902a-75c895495fd5	2017-06-25 16:02:33.944192
+263	3	Product	\N	\N	1	User	\N	destroy	---\nname: Ростверк по свайному фундаменту\ndescription: Брус камерной сушки 150х150 мм, крепежи, огнебиозащита\nhint: Укладывается по сваям, затем по нему выполняется нулевое перекрытие дома\nunit_id: 4\ncategory_id: 9\nstage: 1\ncustom: false\ndisplay_components: false\nprofit: !ruby/object:BigDecimal 18:0.1E2\ndeleted_at: \n	2	\N	5.189.145.149	cd7444ba-4160-4694-93d2-097f9414d8b9	2017-06-25 16:02:54.120334
+264	4	Product	\N	\N	1	User	\N	create	---\nname: Ростверк по свайному фундаменту\ndescription: ''\nhint: ''\nunit_id: 4\ncategory_id: 9\nstage: 1\ncustom: false\ndisplay_components: false\nprofit: !ruby/object:BigDecimal 18:0.1E2\ndeleted_at: \n	1	\N	5.189.145.149	3995557d-b5e2-4a61-a99d-2effff1b58e9	2017-06-25 16:03:25.2196
+265	23	Composition	\N	\N	1	User	\N	create	---\nparent_id: 33\nchildren_id: 16\nvalue: !ruby/object:BigDecimal 18:0.135E0\ndeleted_at: \n	1	\N	5.189.145.149	b6478492-e2ef-4328-a4bc-b27bd952b8e8	2017-06-25 16:05:55.536818
+266	24	Composition	\N	\N	1	User	\N	create	---\nparent_id: 33\nchildren_id: 18\nvalue: !ruby/object:BigDecimal 18:0.47E0\ndeleted_at: \n	1	\N	5.189.145.149	b6478492-e2ef-4328-a4bc-b27bd952b8e8	2017-06-25 16:05:55.549833
+267	33	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Брус 150х150х6000 мм обработанный\nunit_id: 1\ncategory_id: 20\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:05:55.493386647 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:05:55.493386647 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	b6478492-e2ef-4328-a4bc-b27bd952b8e8	2017-06-25 16:05:55.561649
+269	33	ConstructorObject	\N	\N	1	User	\N	update	---\nname:\n- Брус 150х150х6000 мм обработанный\n- Брус 150х150х6000 мм с ОБЗ\n	3	\N	5.189.145.149	9cd967b5-a02d-4856-83cc-2f13807195d5	2017-06-25 16:06:26.3144
+270	34	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Обработка бруса ОБЗ (большие сечения)\nunit_id: 3\ncategory_id: 2\nprice: !ruby/object:BigDecimal 18:0.33E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:07:47.743014574 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:07:47.743014574 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	0e171181-657f-4316-9a75-70bd9b2301f6	2017-06-25 16:07:47.767965
+271	34	ConstructorObject	\N	\N	1	User	\N	update	---\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:07:47.743014000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:07:47.743014000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:09:06.741177641 Z\n  zone: *1\n  time: 2017-06-25 19:09:06.741177641 Z\n	2	\N	5.189.145.149	efa9b528-d30f-4f96-b1f4-4d6aec55dc57	2017-06-25 16:09:06.758074
+272	25	Composition	\N	\N	1	User	\N	create	---\nparent_id: 33\nchildren_id: 34\nvalue: !ruby/object:BigDecimal 18:0.135E0\ndeleted_at: \n	1	\N	5.189.145.149	80e1ec5f-235a-4e36-bb5e-c1ccb069dfd3	2017-06-25 16:09:20.996424
+274	35	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Монтаж ростверка по сваям 150х150 мм\nunit_id: 4\ncategory_id: 1\nprice: !ruby/object:BigDecimal 18:0.16E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:10:54.098780349 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:10:54.098780349 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	db8e8b61-c9c3-4563-8fd8-d8e41ebad826	2017-06-25 16:10:54.125736
+275	36	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Крепеж шуруп-глухарь 10х120\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.654E1\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:12:09.212432303 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:12:09.212432303 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	051295fc-03f3-450a-a47d-b9c2b9391c9b	2017-06-25 16:12:09.233329
+276	37	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Крепеж шайба усиленная М10\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.163E1\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:13:00.011402934 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:13:00.011402934 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	8f1cec3a-b098-4366-ae9b-29c3147d91b3	2017-06-25 16:13:00.047154
+277	38	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Уголок усиленный KKU 70х70х55х2\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.125E2\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:14:23.290763260 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:14:23.290763260 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	11fe6935-1431-4bd4-9252-0218d689dbf7	2017-06-25 16:14:23.317089
+278	24	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 33\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	1	\N	5.189.145.149	d1d8ed28-c8d9-4ba9-ad9d-a55499debc23	2017-06-25 16:16:32.204593
+279	4	Product	\N	\N	1	User	\N	update	---\nname:\n- Ростверк по свайному фундаменту\n- Ростверк по свайному фундаменту 150х150 мм\ndescription:\n- ''\n- Брус камерной сушки, крепежи, огнебиозащита\n	2	\N	5.189.145.149	b424ef2f-c6d5-4eec-ac02-9a9bad4220f5	2017-06-25 16:19:30.23176
+280	24	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 33\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	2	\N	5.189.145.149	b424ef2f-c6d5-4eec-ac02-9a9bad4220f5	2017-06-25 16:19:30.280891
+281	25	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 33\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	1	\N	5.189.145.149	b424ef2f-c6d5-4eec-ac02-9a9bad4220f5	2017-06-25 16:19:30.307841
+282	26	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 38\nvalue: !ruby/object:BigDecimal 18:0.46E0\ndeleted_at: \n	1	\N	5.189.145.149	b424ef2f-c6d5-4eec-ac02-9a9bad4220f5	2017-06-25 16:19:30.331575
+283	27	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 36\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	b424ef2f-c6d5-4eec-ac02-9a9bad4220f5	2017-06-25 16:19:30.363618
+284	28	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 37\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	b424ef2f-c6d5-4eec-ac02-9a9bad4220f5	2017-06-25 16:19:30.38897
+285	25	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 33\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	2	\N	5.189.145.149	9355e34a-3629-4375-bd8a-1445cf9e44df	2017-06-25 16:19:46.390888
+286	26	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 38\nvalue: !ruby/object:BigDecimal 18:0.46E0\ndeleted_at: \n	2	\N	5.189.145.149	9355e34a-3629-4375-bd8a-1445cf9e44df	2017-06-25 16:19:46.414159
+287	27	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 36\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	2	\N	5.189.145.149	9355e34a-3629-4375-bd8a-1445cf9e44df	2017-06-25 16:19:46.430835
+288	28	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 37\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	2	\N	5.189.145.149	9355e34a-3629-4375-bd8a-1445cf9e44df	2017-06-25 16:19:46.447339
+289	29	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 33\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	1	\N	5.189.145.149	9355e34a-3629-4375-bd8a-1445cf9e44df	2017-06-25 16:19:46.472363
+290	30	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 38\nvalue: !ruby/object:BigDecimal 18:0.46E0\ndeleted_at: \n	1	\N	5.189.145.149	9355e34a-3629-4375-bd8a-1445cf9e44df	2017-06-25 16:19:46.498419
+291	31	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 36\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	9355e34a-3629-4375-bd8a-1445cf9e44df	2017-06-25 16:19:46.524275
+292	32	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 37\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	9355e34a-3629-4375-bd8a-1445cf9e44df	2017-06-25 16:19:46.549798
+293	33	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 1\nvalue: !ruby/object:BigDecimal 18:0.736E1\ndeleted_at: \n	1	\N	5.189.145.149	9355e34a-3629-4375-bd8a-1445cf9e44df	2017-06-25 16:19:46.57476
+294	29	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 33\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	2	\N	5.189.145.149	96bade5e-c849-4778-9276-5f2c738accd0	2017-06-25 16:20:33.581778
+295	30	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 38\nvalue: !ruby/object:BigDecimal 18:0.46E0\ndeleted_at: \n	2	\N	5.189.145.149	96bade5e-c849-4778-9276-5f2c738accd0	2017-06-25 16:20:33.633033
+296	31	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 36\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	2	\N	5.189.145.149	96bade5e-c849-4778-9276-5f2c738accd0	2017-06-25 16:20:33.650152
+297	32	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 37\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	2	\N	5.189.145.149	96bade5e-c849-4778-9276-5f2c738accd0	2017-06-25 16:20:33.670642
+298	34	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 33\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	1	\N	5.189.145.149	96bade5e-c849-4778-9276-5f2c738accd0	2017-06-25 16:20:33.694284
+299	35	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 38\nvalue: !ruby/object:BigDecimal 18:0.46E0\ndeleted_at: \n	1	\N	5.189.145.149	96bade5e-c849-4778-9276-5f2c738accd0	2017-06-25 16:20:33.720112
+300	36	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 36\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	96bade5e-c849-4778-9276-5f2c738accd0	2017-06-25 16:20:33.742649
+301	37	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 37\nvalue: !ruby/object:BigDecimal 18:0.2E1\ndeleted_at: \n	1	\N	5.189.145.149	96bade5e-c849-4778-9276-5f2c738accd0	2017-06-25 16:20:33.764771
+302	38	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 35\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	96bade5e-c849-4778-9276-5f2c738accd0	2017-06-25 16:20:33.792735
+303	34	ProductComposition	\N	\N	1	User	\N	destroy	---\nproduct_id: 4\nconstructor_object_id: 33\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	2	\N	5.189.145.149	87c1e6bc-7afb-4ffc-9381-450ac39a502c	2017-06-25 16:21:11.524369
+304	39	ProductComposition	\N	\N	1	User	\N	create	---\nproduct_id: 4\nconstructor_object_id: 33\nvalue: !ruby/object:BigDecimal 18:0.2E0\ndeleted_at: \n	1	\N	5.189.145.149	87c1e6bc-7afb-4ffc-9381-450ac39a502c	2017-06-25 16:21:11.558794
+305	26	Composition	\N	\N	1	User	\N	create	---\nparent_id: 39\nchildren_id: 27\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	ca7751c1-045c-412f-a776-1f4ff8f47586	2017-06-25 16:24:42.665439
+306	39	ConstructorObject	\N	\N	1	User	\N	create	---\nname: СИП 174 мм 2,5 м для несущих стен\nunit_id: 12\ncategory_id: 3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:24:42.619845466 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:24:42.619845466 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	ca7751c1-045c-412f-a776-1f4ff8f47586	2017-06-25 16:24:42.700741
+307	39	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.30015E4\n	2	\N	\N	02c99299-38b8-47a6-8119-13f8f1beec55	2017-06-25 16:24:42.747586
+308	40	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Монтаж СИП 174 стена\nunit_id: 2\ncategory_id: 1\nprice: !ruby/object:BigDecimal 18:0.23E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:25:37.731292243 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:25:37.731292243 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	3841bb3f-f2cc-4912-b18c-b44113a04fa4	2017-06-25 16:25:37.748938
+309	27	Composition	\N	\N	1	User	\N	create	---\nparent_id: 41\nchildren_id: 12\nvalue: !ruby/object:BigDecimal 18:0.45E-1\ndeleted_at: \n	1	\N	5.189.145.149	3a02a159-cf9d-4c5f-bf5e-8febb61e0cd8	2017-06-25 16:27:51.931275
+310	28	Composition	\N	\N	1	User	\N	create	---\nparent_id: 41\nchildren_id: 18\nvalue: !ruby/object:BigDecimal 18:0.18E0\ndeleted_at: \n	1	\N	5.189.145.149	3a02a159-cf9d-4c5f-bf5e-8febb61e0cd8	2017-06-25 16:27:51.945101
+311	29	Composition	\N	\N	1	User	\N	create	---\nparent_id: 41\nchildren_id: 34\nvalue: !ruby/object:BigDecimal 18:0.45E-1\ndeleted_at: \n	1	\N	5.189.145.149	3a02a159-cf9d-4c5f-bf5e-8febb61e0cd8	2017-06-25 16:27:51.976719
+312	41	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Брус 150х50х6000 мм с ОБЗ\nunit_id: 1\ncategory_id: 3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:27:51.871958348 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:27:51.871958348 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	3a02a159-cf9d-4c5f-bf5e-8febb61e0cd8	2017-06-25 16:27:51.987149
+313	41	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.64755E3\n	2	\N	\N	91d70830-5794-4a08-9c6e-2960a9262a3a	2017-06-25 16:27:52.038924
+314	42	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Проф. монтажная пена, выход 65 л\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.25E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:29:59.419026144 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:29:59.419026144 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	69cf9c41-c69b-4be0-b61c-48a6fc78f833	2017-06-25 16:29:59.437168
+316	42	ConstructorObject	\N	\N	1	User	\N	update	---\nunit_id:\n- 1\n- 13\ndate:\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:29:59.419026000 Z\n  zone: &1 !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:29:59.419026000 Z\n- !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:30:28.980709003 Z\n  zone: *1\n  time: 2017-06-25 19:30:28.980709003 Z\n	2	\N	5.189.145.149	a42d5563-8ccf-4a49-94dd-3beac3344982	2017-06-25 16:30:28.992683
+317	43	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Очиститель для монтажной пены, 500 мл\nunit_id: 13\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.1E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:31:26.354669474 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:31:26.354669474 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	45ec0e9b-c003-4791-ba4d-a9dbc52492da	2017-06-25 16:31:26.375116
+318	30	Composition	\N	\N	1	User	\N	create	---\nparent_id: 39\nchildren_id: 41\nvalue: !ruby/object:BigDecimal 18:0.15E1\ndeleted_at: \n	1	\N	5.189.145.149	b356163d-7f21-46b4-9d2d-96d1c71aebd4	2017-06-25 16:34:44.167787
+319	31	Composition	\N	\N	1	User	\N	create	---\nparent_id: 39\nchildren_id: 1\nvalue: !ruby/object:BigDecimal 18:0.18E3\ndeleted_at: \n	1	\N	5.189.145.149	b356163d-7f21-46b4-9d2d-96d1c71aebd4	2017-06-25 16:34:44.182406
+320	32	Composition	\N	\N	1	User	\N	create	---\nparent_id: 39\nchildren_id: 2\nvalue: !ruby/object:BigDecimal 18:0.16E2\ndeleted_at: \n	1	\N	5.189.145.149	b356163d-7f21-46b4-9d2d-96d1c71aebd4	2017-06-25 16:34:44.193681
+321	33	Composition	\N	\N	1	User	\N	create	---\nparent_id: 39\nchildren_id: 42\nvalue: !ruby/object:BigDecimal 18:0.65E0\ndeleted_at: \n	1	\N	5.189.145.149	b356163d-7f21-46b4-9d2d-96d1c71aebd4	2017-06-25 16:34:44.204863
+322	34	Composition	\N	\N	1	User	\N	create	---\nparent_id: 39\nchildren_id: 43\nvalue: !ruby/object:BigDecimal 18:0.13E-2\ndeleted_at: \n	1	\N	5.189.145.149	b356163d-7f21-46b4-9d2d-96d1c71aebd4	2017-06-25 16:34:44.216119
+324	39	ConstructorObject	\N	\N	1	User	\N	update	---\ndivisibility:\n- false\n- true\n	4	\N	5.189.145.149	3d1873aa-fe07-46e1-9a90-c40c75ddf582	2017-06-25 16:35:49.135991
+325	35	Composition	\N	\N	1	User	\N	create	---\nparent_id: 39\nchildren_id: 38\nvalue: !ruby/object:BigDecimal 18:0.11E1\ndeleted_at: \n	1	\N	5.189.145.149	3d1873aa-fe07-46e1-9a90-c40c75ddf582	2017-06-25 16:35:49.156419
+327	44	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Крепеж SIP-шуруп Wurth 8х240 с пресс-шайбой\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.413E2\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:36:41.861464402 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:36:41.861464402 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	2f45c0fd-e030-43fd-b08f-eda5569f93b1	2017-06-25 16:36:41.882591
+328	36	Composition	\N	\N	1	User	\N	create	---\nparent_id: 45\nchildren_id: 44\nvalue: !ruby/object:BigDecimal 18:0.5E1\ndeleted_at: \n	1	\N	5.189.145.149	658a1cf5-08ae-41c3-b184-c149ad381e93	2017-06-25 16:38:42.583144
+329	45	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Крепление угла СИП дома (до 3,2 м)\nunit_id: 1\ncategory_id: 3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:38:42.546744353 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:38:42.546744353 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	658a1cf5-08ae-41c3-b184-c149ad381e93	2017-06-25 16:38:42.596727
+331	5	Product	\N	\N	1	User	\N	create	---\nname: Несущие стены из СИП-панели\ndescription: "СИП-панель: OSB/3 ULTRALAM 12 мм E0,5; ПСБ-С-25 Ф по ГОСТ 15588-86 (плотность\n  от 16 кг/м3)\\r\\nБрус камерной сушки (вл. 10-14%), огнебиозащита, крепежи, пена монтажная"\nhint: Задаем количество панелей, необходимых на дом и количество наружных углов дома\nunit_id: 12\ncategory_id: 10\nstage: 1\ncustom: true\ndisplay_components: false\nprofit: !ruby/object:BigDecimal 18:0.1E2\ndeleted_at: \n	1	\N	5.189.145.149	a530f7b2-3e2e-4e56-8c84-b51a33ac2d68	2017-06-25 16:41:45.477453
+332	1	ProductSet	\N	\N	1	User	\N	create	---\nname: СИП 174 мм\ndeleted_at: \n	1	\N	5.189.145.149	a530f7b2-3e2e-4e56-8c84-b51a33ac2d68	2017-06-25 16:41:45.522613
+333	1	ProductTemplate	\N	\N	1	User	\N	create	---\nname: 'Кол-во панелей:'\ndeleted_at: \n	1	\N	5.189.145.149	a530f7b2-3e2e-4e56-8c84-b51a33ac2d68	2017-06-25 16:41:45.551614
+334	1	ProductTemplateSet	\N	\N	1	User	\N	create	---\nproduct_id: 5\nproduct_template_id: 1\nproduct_set_id: 1\ndeleted_at: \nconstructor_object_id: 39\n	1	\N	5.189.145.149	a530f7b2-3e2e-4e56-8c84-b51a33ac2d68	2017-06-25 16:41:45.596285
+335	2	ProductTemplate	\N	\N	1	User	\N	create	---\nname: 'Кол-во углов:'\ndeleted_at: \n	1	\N	5.189.145.149	a530f7b2-3e2e-4e56-8c84-b51a33ac2d68	2017-06-25 16:41:45.614706
+336	2	ProductTemplateSet	\N	\N	1	User	\N	create	---\nproduct_id: 5\nproduct_template_id: 2\nproduct_set_id: 1\ndeleted_at: \nconstructor_object_id: 45\n	1	\N	5.189.145.149	a530f7b2-3e2e-4e56-8c84-b51a33ac2d68	2017-06-25 16:41:45.63501
+337	37	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 27\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	fab710bb-eb3d-46e5-b854-d15b2398a7f7	2017-06-25 16:43:47.423667
+338	46	ConstructorObject	\N	\N	1	User	\N	create	---\nname: СИП 174 мм 2,5 м для нулевого перекрытия\nunit_id: 12\ncategory_id: 3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:43:47.380491308 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:43:47.380491308 Z\ndivisibility: true\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	fab710bb-eb3d-46e5-b854-d15b2398a7f7	2017-06-25 16:43:47.437162
+340	47	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Раскрой СИП панели\nunit_id: 12\ncategory_id: 2\nprice: !ruby/object:BigDecimal 18:0.135E3\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:44:16.115383702 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:44:16.115383702 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	8a351e3c-f121-4c20-855d-717542de9dc4	2017-06-25 16:44:16.136627
+341	38	Composition	\N	\N	1	User	\N	create	---\nparent_id: 39\nchildren_id: 47\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	5.189.145.149	05f1cebf-a5f2-4bff-92df-c1ea0a059c33	2017-06-25 16:44:52.885358
+343	39	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 41\nvalue: !ruby/object:BigDecimal 18:0.15E1\ndeleted_at: \n	1	\N	5.189.145.149	3557b1d4-2027-4bbc-a7e1-f926d6a9ca75	2017-06-25 16:47:58.285306
+344	40	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 1\nvalue: !ruby/object:BigDecimal 18:0.18E3\ndeleted_at: \n	1	\N	5.189.145.149	3557b1d4-2027-4bbc-a7e1-f926d6a9ca75	2017-06-25 16:47:58.298867
+345	41	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 3\nvalue: !ruby/object:BigDecimal 18:0.33E1\ndeleted_at: \n	1	\N	5.189.145.149	3557b1d4-2027-4bbc-a7e1-f926d6a9ca75	2017-06-25 16:47:58.310997
+323	39	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.30015E4\n- !ruby/object:BigDecimal 27:0.4208055E4\n	3	\N	\N	4c4057e0-201f-44b1-bc2c-d29bdc54d4b1	2017-06-25 16:34:44.271213
+326	39	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.4208055E4\n- !ruby/object:BigDecimal 18:0.4221805E4\n	5	\N	\N	d8f7ec6e-713a-4211-9ffd-60724f10f934	2017-06-25 16:35:49.237641
+330	45	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.2065E3\n	2	\N	\N	056287f4-b5d5-4f11-bbb2-d40c1b91dce0	2017-06-25 16:38:42.650286
+339	46	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.30015E4\n	2	\N	\N	d392234b-2493-485a-be96-7219c705ac8d	2017-06-25 16:43:47.484834
+342	39	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.4221805E4\n- !ruby/object:BigDecimal 18:0.4356805E4\n	6	\N	\N	60d60f88-99d8-4367-af4f-ea2e692830f1	2017-06-25 16:44:52.967944
+346	46	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.30015E4\n- !ruby/object:BigDecimal 18:0.4027695E4\n	3	\N	\N	bacf193f-fcd5-4b0e-9d07-86d187a6a978	2017-06-25 16:47:58.371802
+352	46	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.4027695E4\n- !ruby/object:BigDecimal 18:0.4498215E4\n	4	\N	\N	a8c87bbe-842c-4aa1-aaa4-69841934774c	2017-06-25 16:52:03.315568
+356	46	ConstructorObject	\N	\N	\N	\N	\N	update	---\nprice_without_work:\n- !ruby/object:BigDecimal 18:0.4498215E4\n- !ruby/object:BigDecimal 18:0.4647095E4\n	5	\N	\N	d7710fcc-e7e9-41e5-a00c-66e0c2ad38da	2017-06-25 16:54:34.270246
+347	48	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Крепеж SIP-шуруп Wurth 8х160 с пресс-шайбой\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.15E2\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:48:38.664905438 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:48:38.664905438 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	946303f3-3773-424d-8c96-146735935dc1	2017-06-25 16:48:38.690142
+348	49	ConstructorObject	\N	\N	1	User	\N	create	---\nname: Крепеж SIP-шуруп Wurth 8х300 с пресс-шайбой\nunit_id: 1\ncategory_id: 4\nprice: !ruby/object:BigDecimal 18:0.471E2\ndate: !ruby/object:ActiveSupport::TimeWithZone\n  utc: 2017-06-25 16:49:35.651245671 Z\n  zone: !ruby/object:ActiveSupport::TimeZone\n    name: Europe/Moscow\n  time: 2017-06-25 19:49:35.651245671 Z\ndivisibility: false\ndeleted_at: \nprice_without_work: !ruby/object:BigDecimal 18:0.0\n	1	\N	5.189.145.149	0378780d-669d-4cbc-81fa-35b2d2ddde7f	2017-06-25 16:49:35.66867
+349	42	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 48\nvalue: !ruby/object:BigDecimal 18:0.19E1\ndeleted_at: \n	1	\N	31.135.105.60	edce1500-f5ea-4f1e-ac93-806c2c3c7f6e	2017-06-25 16:52:03.227742
+350	43	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 49\nvalue: !ruby/object:BigDecimal 18:0.62E1\ndeleted_at: \n	1	\N	31.135.105.60	edce1500-f5ea-4f1e-ac93-806c2c3c7f6e	2017-06-25 16:52:03.239291
+351	44	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 42\nvalue: !ruby/object:BigDecimal 18:0.6E0\ndeleted_at: \n	1	\N	31.135.105.60	edce1500-f5ea-4f1e-ac93-806c2c3c7f6e	2017-06-25 16:52:03.250832
+353	45	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 43\nvalue: !ruby/object:BigDecimal 18:0.13E-2\ndeleted_at: \n	1	\N	31.135.105.60	a6a1ac27-e6d5-40a2-8031-4bae99347d3f	2017-06-25 16:54:34.15751
+354	46	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 38\nvalue: !ruby/object:BigDecimal 18:0.11E1\ndeleted_at: \n	1	\N	31.135.105.60	a6a1ac27-e6d5-40a2-8031-4bae99347d3f	2017-06-25 16:54:34.168531
+355	47	Composition	\N	\N	1	User	\N	create	---\nparent_id: 46\nchildren_id: 47\nvalue: !ruby/object:BigDecimal 18:0.1E1\ndeleted_at: \n	1	\N	31.135.105.60	a6a1ac27-e6d5-40a2-8031-4bae99347d3f	2017-06-25 16:54:34.17849
+357	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nsecond_floor_height_min:\n- !ruby/object:BigDecimal 18:0.2145E1\n- \nsecond_floor_height_max:\n- !ruby/object:BigDecimal 18:0.28E1\n- \nthird_floor_height_min:\n- !ruby/object:BigDecimal 18:0.17E1\n- \nthird_floor_height_max:\n- !ruby/object:BigDecimal 18:0.2543E1\n- \n	11	\N	31.135.105.60	d687ae7e-b7bb-453e-b4fd-46bc589ca9e4	2017-06-25 16:55:06.337496
+358	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nsecond_floor_height_min:\n- \n- !ruby/object:BigDecimal 18:0.0\nsecond_floor_height_max:\n- \n- !ruby/object:BigDecimal 18:0.0\nthird_floor_height_min:\n- \n- !ruby/object:BigDecimal 18:0.0\nthird_floor_height_max:\n- \n- !ruby/object:BigDecimal 18:0.0\n	12	\N	31.135.105.60	17c555dc-77cb-4d84-b219-8b0d663588c2	2017-06-25 16:55:18.587079
+359	3	Budget	\N	\N	1	User	\N	update	---\nfloors:\n- !ruby/object:BigDecimal 18:0.25E1\n- !ruby/object:BigDecimal 18:0.1E1\n	13	\N	31.135.105.60	17c555dc-77cb-4d84-b219-8b0d663588c2	2017-06-25 16:55:18.63256
+360	6	Product	\N	\N	1	User	\N	create	---\nname: Нулевое перекрытие из СИП-панели\ndescription: "СИП-панель: OSB/3 ULTRALAM 12 мм E0,5; ПСБ-С-25 Ф по ГОСТ 15588-86 (плотность\n  от 16 кг/м3)\\r\\nБрус камерной сушки (вл. 10-14%), огнебиозащита, крепежи, пена монтажная"\nhint: Площадь перекрытия делить на 3,125 = количество необходимых панелей. Округлять\n  вверх до целого\nunit_id: 12\ncategory_id: 10\nstage: 1\ncustom: true\ndisplay_components: false\nprofit: !ruby/object:BigDecimal 18:0.1E2\ndeleted_at: \n	1	\N	31.135.105.60	abda042e-1093-41d4-9b29-171eca51829b	2017-06-25 16:56:27.083553
+361	3	ProductTemplateSet	\N	\N	1	User	\N	create	---\nproduct_id: 6\nproduct_template_id: 1\nproduct_set_id: 1\ndeleted_at: \nconstructor_object_id: 46\n	1	\N	31.135.105.60	abda042e-1093-41d4-9b29-171eca51829b	2017-06-25 16:56:27.123088
+362	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nsecond_floor_height_min:\n- !ruby/object:BigDecimal 18:0.0\n- \n	14	\N	31.135.105.60	e1b502c6-dd41-4d67-a134-8e4470de387f	2017-06-25 16:56:36.894172
+363	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nprice:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 27:-0.19569571250000002E6\nsecond_floor_height_min:\n- \n- !ruby/object:BigDecimal 18:0.0\n	15	\N	31.135.105.60	340090c4-a38b-4bc1-9bf5-b19ce4d1bc61	2017-06-25 16:57:34.660532
+364	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nprice:\n- !ruby/object:BigDecimal 27:-0.19569571250000002E6\n- !ruby/object:BigDecimal 18:-0.16514633E6\n	16	\N	31.135.105.60	be5798ec-7141-4e5b-85e6-f57d66370b76	2017-06-25 16:57:58.210838
+365	3	Budget	\N	\N	1	User	\N	update	---\nprice_by_area:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 36:-0.113894E4\nprice_by_stage:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 27:-0.16514633E6\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 27:-0.16514633E6\n  - !ruby/object:BigDecimal 18:-0.16514633E6\n  - !ruby/object:BigDecimal 18:-0.16514633E6\nprice_by_area_per_stage:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 36:-0.113894E4\n  - !ruby/object:BigDecimal 36:-0.113894E4\n  - !ruby/object:BigDecimal 36:-0.113894E4\nprice_by_stage_aggregated_discounted:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 18:-0.16514633E6\n  - !ruby/object:BigDecimal 18:-0.16514633E6\n  - !ruby/object:BigDecimal 18:-0.16514633E6\nprice_by_area_per_stage_discounted:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 36:-0.113894E4\n  - !ruby/object:BigDecimal 36:-0.113894E4\n  - !ruby/object:BigDecimal 36:-0.113894E4\n	17	\N	31.135.105.60	be5798ec-7141-4e5b-85e6-f57d66370b76	2017-06-25 16:57:58.338966
+366	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nprice:\n- !ruby/object:BigDecimal 18:-0.16514633E6\n- !ruby/object:BigDecimal 27:-0.3590867925E6\n	18	\N	31.135.105.60	f6e86572-eaf7-4cee-b1b8-6254518c62bf	2017-06-25 16:58:13.300709
+367	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nprice:\n- !ruby/object:BigDecimal 27:-0.3590867925E6\n- !ruby/object:BigDecimal 18:-0.16514633E6\n	19	\N	31.135.105.60	975beed6-6d2a-41b9-b121-fa2f1674d0a8	2017-06-25 17:01:33.733949
+368	1	Expense	\N	\N	1	User	\N	update	---\npercent:\n- !ruby/object:BigDecimal 18:0.1E2\n- !ruby/object:BigDecimal 18:0.1E4\n	9	\N	31.135.105.60	6f317c87-686e-4cc7-80e1-08589c0b4b37	2017-06-25 17:31:03.574349
+369	4	Budget	\N	\N	1	User	\N	create	---\nname: Тест смета 3\nclient_id: 1\nfloors: \nfirst_floor_height: !ruby/object:BigDecimal 18:0.2E1\nsecond_floor_height_min: !ruby/object:BigDecimal 18:0.0\nsecond_floor_height_max: !ruby/object:BigDecimal 18:0.0\nthird_floor_height_min: !ruby/object:BigDecimal 18:0.0\nthird_floor_height_max: !ruby/object:BigDecimal 18:0.0\nprice: !ruby/object:BigDecimal 27:-0.1148640275E7\narea: !ruby/object:BigDecimal 18:0.1E3\nprice_by_area: \nprice_by_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\ndiscount_title: ''\ndiscount_by_stages:\n- '0'\n- '0'\n- '0'\ndiscount_amount:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nsigned: false\ndeleted_at: \nsigning_date: \nuser_id: 1\nurl: \nproposed: false\nproposer_id: \nsolution_id: \n	1	\N	31.135.105.60	452d93ff-485d-47f3-a450-121af88436a3	2017-06-25 17:31:04.898133
+370	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nprice:\n- !ruby/object:BigDecimal 18:-0.16514633E6\n- !ruby/object:BigDecimal 27:0.27200571999999996E5\n	20	\N	31.135.105.60	69c6f877-8c16-4b3b-b136-cd3fecdd9b4b	2017-06-25 17:35:26.190614
+371	3	Budget	\N	\N	1	User	\N	update	---\nprice_by_area:\n- !ruby/object:BigDecimal 18:-0.113894E4\n- !ruby/object:BigDecimal 45:0.18759E3\nprice_by_stage:\n- - !ruby/object:BigDecimal 18:-0.16514633E6\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - !ruby/object:BigDecimal 27:0.27200572E5\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated:\n- - !ruby/object:BigDecimal 18:-0.16514633E6\n  - !ruby/object:BigDecimal 18:-0.16514633E6\n  - !ruby/object:BigDecimal 18:-0.16514633E6\n- - !ruby/object:BigDecimal 27:0.27200572E5\n  - !ruby/object:BigDecimal 18:0.27200572E5\n  - !ruby/object:BigDecimal 18:0.27200572E5\nprice_by_area_per_stage:\n- - !ruby/object:BigDecimal 18:-0.113894E4\n  - !ruby/object:BigDecimal 18:-0.113894E4\n  - !ruby/object:BigDecimal 18:-0.113894E4\n- - !ruby/object:BigDecimal 36:0.18759E3\n  - !ruby/object:BigDecimal 36:0.18759E3\n  - !ruby/object:BigDecimal 36:0.18759E3\nprice_by_stage_aggregated_discounted:\n- - !ruby/object:BigDecimal 18:-0.16514633E6\n  - !ruby/object:BigDecimal 18:-0.16514633E6\n  - !ruby/object:BigDecimal 18:-0.16514633E6\n- - !ruby/object:BigDecimal 18:0.27200572E5\n  - !ruby/object:BigDecimal 18:0.27200572E5\n  - !ruby/object:BigDecimal 18:0.27200572E5\nprice_by_area_per_stage_discounted:\n- - !ruby/object:BigDecimal 18:-0.113894E4\n  - !ruby/object:BigDecimal 18:-0.113894E4\n  - !ruby/object:BigDecimal 18:-0.113894E4\n- - !ruby/object:BigDecimal 36:0.18759E3\n  - !ruby/object:BigDecimal 36:0.18759E3\n  - !ruby/object:BigDecimal 36:0.18759E3\n	21	\N	31.135.105.60	69c6f877-8c16-4b3b-b136-cd3fecdd9b4b	2017-06-25 17:35:26.341981
+372	7	Product	\N	\N	1	User	\N	create	---\nname: qwe\ndescription: qwe\nhint: qwe\nunit_id: 2\ncategory_id: 10\nstage: 1\ncustom: false\ndisplay_components: false\nprofit: !ruby/object:BigDecimal 18:0.13E2\ndeleted_at: \n	1	\N	31.135.105.60	77e54832-d9b3-43d1-8df5-52896d23bcaf	2017-06-25 17:37:00.882477
+373	3	Budget	\N	\N	1	User	\N	update	---\ndiscount_by_stages:\n- - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n  - !ruby/object:BigDecimal 18:0.0\n- - '0'\n  - '0'\n  - '0'\nsecond_floor_height_min:\n- !ruby/object:BigDecimal 18:0.0\n- \n	22	\N	31.135.105.60	02702817-5395-482b-9741-48ce6ba726f7	2017-06-25 17:43:41.569798
+374	9	User	\N	\N	1	User	\N	update	---\nencrypted_password:\n- "$2a$11$o8yFqPqBrzj.0itqbJs3qO50v44Gs5lKKgRZ4pHmTTy9LThLwvRgK"\n- "$2a$11$TA/ID6o/O0S0ksR7dj1.Ees4XS4Tq7YgUken5nQfaHTrsyuXdXSsC"\n	3	\N	31.28.240.81	878eb1d4-97e8-45f0-aea0-1dbd6a1bfd7f	2017-06-26 20:14:11.531919
+375	5	Budget	\N	\N	9	User	\N	create	---\nname: '213'\nclient_id: 1\nfloors: \nfirst_floor_height: !ruby/object:BigDecimal 18:0.12E2\nsecond_floor_height_min: !ruby/object:BigDecimal 18:0.0\nsecond_floor_height_max: !ruby/object:BigDecimal 18:0.0\nthird_floor_height_min: !ruby/object:BigDecimal 18:0.0\nthird_floor_height_max: !ruby/object:BigDecimal 18:0.0\nprice: !ruby/object:BigDecimal 18:0.6388627E4\narea: !ruby/object:BigDecimal 18:0.12E2\nprice_by_area: \nprice_by_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\ndiscount_title: ''\ndiscount_by_stages:\n- '0'\n- '0'\n- '0'\ndiscount_amount:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_stage_aggregated_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nprice_by_area_per_stage_discounted:\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\n- !ruby/object:BigDecimal 18:0.0\nsigned: false\ndeleted_at: \nsigning_date: \nuser_id: 9\nurl: \nproposed: false\nproposer_id: \nsolution_id: \n	1	\N	31.28.240.81	4e4e94df-5b69-4ffc-a175-50dceb31e84a	2017-06-26 20:57:37.2148
+\.
+
+
+--
+-- Name: audits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('audits_id_seq', 375, true);
+
+
+--
+-- Data for Name: budgets; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY budgets (id, name, client_id, floors, first_floor_height, second_floor_height_min, second_floor_height_max, third_floor_height_min, third_floor_height_max, price, area, price_by_area, price_by_stage, price_by_stage_aggregated, price_by_area_per_stage, discount_title, discount_by_stages, discount_amount, price_by_stage_aggregated_discounted, price_by_area_per_stage_discounted, signed, deleted_at, created_at, updated_at, signing_date, user_id, type, url, proposed, proposer_id, solution_id) FROM stdin;
+4	Тест смета 3	1	\N	2.0	0	0	0	0	-1148640.275	100.0	\N	{0,0,0}	{0,0,0}	{0,0,0}		{0,0,0}	{0,0,0}	{0,0,0}	{0,0,0}	f	\N	2017-06-25 17:31:04.853617	2017-06-25 17:31:04.853617	\N	1	Estimate	\N	f	\N	\N
+1	Тест смета 1	1	1.5	2500.0	1400.0	2500.0	0	0	0.0	100.0	0.0	{0,0,0}	{0,0,0}	{0,0,0}		{0,0,0}	{0,0,0}	{0,0,0}	{0,0,0}	f	\N	2017-06-22 08:00:27.673629	2017-06-25 15:56:27.977918	\N	1	Estimate	\N	f	\N	\N
+2	Тест смета 2	1	1.5	3.2	0.23	0.42	0	0	-2822.8500000000004	100.0	-28.23	{-2822.85,0.0,0.0}	{-2822.85,-2822.85,-2822.85}	{-28.23,-28.23,-28.23}		{0,0,0}	{0,0,0}	{-2822.85,-2822.85,-2822.85}	{-28.23,-28.23,-28.23}	f	\N	2017-06-22 08:14:11.485275	2017-06-25 15:56:58.890009	\N	1	Estimate	\N	f	\N	\N
+3	Дом Постмодерниста	16	1.0	2.1	\N	0.0	0.0	0.0	27200.571999999996	145.0	187.59	{27200.572,0.0,0.0}	{27200.572,27200.572,27200.572}	{187.59,187.59,187.59}		{0,0,0}	{0,0,0}	{27200.572,27200.572,27200.572}	{187.59,187.59,187.59}	f	\N	2017-06-25 14:35:03.389863	2017-06-25 17:43:41.557463	\N	1	Estimate	\N	f	\N	\N
+5	213	1	\N	12.0	0	0	0	0	6388.627	12.0	\N	{0,0,0}	{0,0,0}	{0,0,0}		{0,0,0}	{0,0,0}	{0,0,0}	{0,0,0}	f	\N	2017-06-26 20:57:37.12977	2017-06-26 20:57:37.12977	\N	9	Estimate	\N	f	\N	\N
+\.
+
+
+--
+-- Name: budgets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('budgets_id_seq', 5, true);
+
+
+--
+-- Data for Name: categories; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY categories (id, name, product, deleted_at, created_at, updated_at) FROM stdin;
+2	Работа на складе	f	\N	2017-06-12 16:34:45.727012	2017-06-12 16:34:45.727012
+3	Ключевые материалы	f	\N	2017-06-12 16:34:45.748688	2017-06-12 16:34:45.748688
+6	Гипсокартон и комплектующие	f	\N	2017-06-12 16:34:45.797862	2017-06-12 16:34:45.797862
+8	Прочее	f	\N	2017-06-12 16:34:45.834907	2017-06-12 16:34:45.834907
+9	Фундамент	t	\N	2017-06-12 16:34:45.85686	2017-06-12 16:34:45.85686
+10	Ключевые материалы	t	\N	2017-06-12 16:34:45.886213	2017-06-12 16:34:45.886213
+11	Кровля	t	\N	2017-06-12 16:34:45.902549	2017-06-12 16:34:45.902549
+12	Перекрытия	t	\N	2017-06-12 16:34:45.918388	2017-06-12 16:34:45.918388
+13	Фасадная отделка	t	\N	2017-06-12 16:34:45.93297	2017-06-12 16:34:45.93297
+14	Прочее	t	\N	2017-06-12 16:34:45.949327	2017-06-12 16:34:45.949327
+15	Стены	t	\N	2017-06-12 16:34:45.967719	2017-06-12 16:34:45.967719
+4	Метизы и крепежи	f	\N	2017-06-12 16:34:45.764128	2017-06-13 07:26:07.708305
+5	Кровельные материалы и комплектующие	f	\N	2017-06-12 16:34:45.780491	2017-06-13 07:26:16.165234
+7	Бетон и арматура	f	\N	2017-06-12 16:34:45.81544	2017-06-13 07:26:26.611484
+17	Окна и двери	f	\N	2017-06-13 07:27:00.055718	2017-06-13 07:27:00.055718
+1	Работа на стройплощадке	f	\N	2017-06-12 16:34:45.710972	2017-06-13 07:27:09.895089
+16	Отделочные материалы	f	\N	2017-06-13 07:26:39.673593	2017-06-13 07:27:36.157785
+18	Для сметы2	f	2017-06-24 21:44:36.585979	2017-06-24 21:43:28.729497	2017-06-24 21:44:36.586022
+19	qwe	f	2017-06-24 21:51:14.839432	2017-06-24 21:51:10.689498	2017-06-24 21:51:14.839498
+20	Брус и пиломатериалы	f	\N	2017-06-25 14:16:52.976019	2017-06-25 14:16:52.976019
+21	Свайные фундаменты	f	\N	2017-06-25 14:35:27.775101	2017-06-25 14:35:27.775101
+\.
+
+
+--
+-- Name: categories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('categories_id_seq', 21, true);
+
+
+--
+-- Data for Name: client_files; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY client_files (id, budget_id, asset_file_id) FROM stdin;
+\.
+
+
+--
+-- Name: client_files_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('client_files_id_seq', 1, true);
+
+
+--
+-- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY clients (id, first_name, last_name, middle_name, crm, archived, created_at, updated_at, deleted_at) FROM stdin;
+1	Тест	Тест	Тест	1111111	f	2017-06-22 07:55:56.376344	2017-06-22 07:55:56.376344	\N
+2	Мишель	Фуко		4444444	f	2017-06-24 22:13:06.986594	2017-06-24 22:13:06.986594	\N
+3	Жан	Сартр	Поль	6666666	f	2017-06-24 22:13:25.864573	2017-06-24 22:13:25.864573	\N
+4	Рене	Декарт		3333333	t	2017-06-24 22:14:05.637103	2017-06-24 22:14:05.637103	\N
+5	Фридрих	Ницше		5432222	t	2017-06-24 22:21:26.602759	2017-06-24 22:21:26.602759	\N
+6	2			4444443	f	2017-06-24 22:21:39.955269	2017-06-24 22:22:15.529802	2017-06-24 22:22:15.529751
+7	Адам	Смит		6666667	f	2017-06-24 22:23:08.697592	2017-06-24 22:23:33.707053	\N
+8	Мартин	Хайдеггер		6543125	t	2017-06-24 22:34:43.210609	2017-06-24 22:35:06.742566	\N
+9	Карл	Маркс		5427587	f	2017-06-24 22:36:25.521029	2017-06-24 22:36:25.521029	\N
+10	Иммануил	Кант		6745345	f	2017-06-24 22:45:57.874559	2017-06-24 22:45:57.874559	\N
+11	Дэвид	Юм		8767895	f	2017-06-24 22:46:42.520882	2017-06-24 22:46:42.520882	\N
+13	Бенедикт	Спиноза		3463457	f	2017-06-24 22:48:25.206323	2017-06-24 22:48:25.206323	\N
+14	Артур	Шопенгауэр		6745369	f	2017-06-24 22:48:59.728648	2017-06-24 22:48:59.728648	\N
+15	Никколо	Макиавелли		7534678	f	2017-06-24 22:51:02.468524	2017-06-24 22:51:02.468524	\N
+16	Жан	Бодрийяр		8535734	f	2017-06-24 22:51:38.281711	2017-06-24 22:51:38.281711	\N
+12	Джон	Локк		4563456	f	2017-06-24 22:47:50.711906	2017-06-25 15:56:10.358013	\N
+\.
+
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('clients_id_seq', 16, true);
+
+
+--
+-- Data for Name: compositions; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY compositions (id, parent_id, children_id, value, deleted_at) FROM stdin;
+2	26	21	2.0	2017-06-25 15:26:34.775031
+1	26	20	1.0	\N
+3	27	5	2.0	\N
+4	27	8	0.45	\N
+5	27	10	1.3	\N
+6	27	28	1.0	\N
+7	29	5	2.0	\N
+8	29	8	0.6	\N
+9	29	10	1.3	\N
+10	29	28	1.0	\N
+11	30	5	2.0	\N
+12	30	8	0.3	\N
+13	30	10	1.3	\N
+14	30	28	1.0	\N
+15	31	7	2.0	\N
+16	31	8	0.505	\N
+17	31	10	1.5	\N
+18	31	28	1.0	\N
+19	32	7	2.0	\N
+20	32	8	0.34	\N
+21	32	10	1.5	\N
+22	32	28	1.0	\N
+23	33	16	0.135	\N
+24	33	18	0.47	\N
+25	33	34	0.135	\N
+26	39	27	1.0	\N
+27	41	12	0.045	\N
+28	41	18	0.18	\N
+29	41	34	0.045	\N
+30	39	41	1.5	\N
+31	39	1	180.0	\N
+32	39	2	16.0	\N
+33	39	42	0.65	\N
+34	39	43	0.0013	\N
+35	39	38	1.1	\N
+36	45	44	5.0	\N
+37	46	27	1.0	\N
+38	39	47	1.0	\N
+39	46	41	1.5	\N
+40	46	1	180.0	\N
+41	46	3	3.3	\N
+42	46	48	1.9	\N
+43	46	49	6.2	\N
+44	46	42	0.6	\N
+45	46	43	0.0013	\N
+46	46	38	1.1	\N
+47	46	47	1.0	\N
+\.
+
+
+--
+-- Name: compositions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('compositions_id_seq', 47, true);
+
+
+--
+-- Data for Name: constructor_objects; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY constructor_objects (id, name, unit_id, category_id, price, date, divisibility, deleted_at, created_at, updated_at, type, price_without_work) FROM stdin;
+2	Саморез ж.ц. 5х90	1	4	1.5	2017-06-13 07:14:08.746792	f	\N	2017-06-13 07:14:08.751793	2017-06-13 07:14:08.751793	Primitive	0
+4	ULTRALAM OSB/3 E0,5 2500х1250х9 мм	6	3	503.0	2017-06-13 07:22:59.349153	f	\N	2017-06-13 07:22:59.35748	2017-06-13 07:22:59.35748	Primitive	0
+6	ULTRALAM OSB/3 E0,5 2500х1250х22 мм	6	3	1187.0	2017-06-13 07:23:58.636081	f	\N	2017-06-13 07:23:58.641619	2017-06-13 07:23:58.641619	Primitive	0
+7	ULTRALAM OSB/3 E0,5 2800х1250х12 мм	6	3	715.0	2017-06-13 07:24:29.353592	f	\N	2017-06-13 07:24:29.362934	2017-06-13 07:24:29.362934	Primitive	0
+8	Пенополистирол ПСБ-С-25 ГОСТ	3	3	2750.0	2017-06-13 07:30:03.03959	f	\N	2017-06-13 07:30:03.049894	2017-06-13 07:30:03.049894	Primitive	0
+9	Пенополистирол ПСБ-С-15 ГОСТ	3	3	1800.0	2017-06-13 07:30:33.38938	f	\N	2017-06-13 07:30:33.395986	2017-06-13 07:30:33.395986	Primitive	0
+28	Изготовление СИП-панели	12	2	60.0	2017-06-25 15:36:31.827483	f	\N	2017-06-25 15:36:31.834542	2017-06-25 15:36:31.834542	Primitive	0
+3	Саморез ж.ц. 6х90	1	4	1.9	2017-06-13 07:30:51.561254	f	\N	2017-06-13 07:14:19.655398	2017-06-13 07:30:51.562965	Primitive	0
+10	Клей однокомпонентный полиуретановый	5	3	280.0	2017-06-13 07:31:42.418531	f	\N	2017-06-13 07:31:42.426364	2017-06-13 07:31:42.426364	Primitive	0
+37	Крепеж шайба усиленная М10	1	4	1.63	2017-06-25 16:13:00.011402	f	\N	2017-06-25 16:13:00.031307	2017-06-25 16:13:00.031307	Primitive	0
+38	Уголок усиленный KKU 70х70х55х2	1	4	12.5	2017-06-25 16:14:23.290763	f	\N	2017-06-25 16:14:23.30082	2017-06-25 16:14:23.30082	Primitive	0
+13	Брус камерной сушки 100х50 мм	3	20	13500.0	2017-06-25 14:23:52.443009	f	\N	2017-06-25 14:23:52.450394	2017-06-25 14:23:52.450394	Primitive	0
+12	Брус камерной сушки 150х50 мм	3	20	13500.0	2017-06-25 14:23:59.006623	f	\N	2017-06-25 14:22:50.646776	2017-06-25 14:23:59.011704	Primitive	0
+11	Брус камерной сушки 200х50 мм	3	20	13500.0	2017-06-25 14:24:05.181487	f	\N	2017-06-25 14:20:48.901394	2017-06-25 14:24:05.18645	Primitive	0
+14	Брус камерной сушки 200х100 мм	3	20	13500.0	2017-06-25 14:25:22.353334	f	\N	2017-06-25 14:25:22.361483	2017-06-25 14:25:22.361483	Primitive	0
+15	Брус камерной сушки 150х100 мм	3	20	13500.0	2017-06-25 14:25:53.991713	f	\N	2017-06-25 14:25:53.997366	2017-06-25 14:25:53.997366	Primitive	0
+16	Брус камерной сушки 150х150 мм	3	20	13500.0	2017-06-25 14:27:36.549889	f	\N	2017-06-25 14:27:36.557414	2017-06-25 14:27:36.557414	Primitive	0
+29	СИП 224 мм 2500х1250 ULTRALAM	12	3	3414.0	2017-06-25 15:42:24.033795	f	\N	2017-06-25 15:42:24.087142	2017-06-25 15:43:12.668735	Composite	3414.0
+17	йцу	3	2	123.0	2017-06-25 14:36:53.688342	f	2017-06-25 14:36:57.50392	2017-06-25 14:36:49.671745	2017-06-25 14:36:57.504012	Primitive	0
+18	Огнебиозащита, МИГ-09 с красителем E139	5	20	140.0	2017-06-25 14:38:28.581941	f	\N	2017-06-25 14:38:02.963138	2017-06-25 14:38:28.585979	Primitive	0
+19	Свая винтовая, 108 мм, 2,5 м, сварной наконечник	11	21	2050.0	2017-06-25 15:01:21.890907	f	\N	2017-06-25 15:01:21.897498	2017-06-25 15:01:21.897498	Primitive	0
+20	Свая винтовая, 108 мм, 2,5 м, литой наконечник	11	21	2650.0	2017-06-25 15:01:50.43537	f	\N	2017-06-25 15:01:50.441743	2017-06-25 15:01:50.441743	Primitive	0
+21	Оголовок на сваю, 200х200 мм	1	21	330.0	2017-06-25 15:02:41.506491	f	\N	2017-06-25 15:02:41.512591	2017-06-25 15:02:41.512591	Primitive	0
+22	Установка сваи 2,5 м (с бетоном)	11	1	1500.0	2017-06-25 15:04:38.183873	f	\N	2017-06-25 15:04:38.193568	2017-06-25 15:04:38.193568	Primitive	0
+23	Отсечная гидроизоляция (подкладочный ковер)	2	8	42.0	2017-06-25 15:07:57.996993	f	\N	2017-06-25 15:07:58.009005	2017-06-25 15:07:58.009005	Primitive	0
+24	Двутавровая балка БДКУ-302 6 м	1	20	1800.0	2017-06-25 15:10:44.892714	f	\N	2017-06-25 15:09:23.935912	2017-06-25 15:10:44.894526	Primitive	0
+1	Саморез ж.ц. 3,5х40	1	4	0.27	2017-06-25 15:11:05.903336	f	\N	2017-06-13 07:13:51.995399	2017-06-25 15:11:05.905283	Primitive	0
+5	ULTRALAM OSB/3 E0,5 2500х1250х12 мм	6	3	670.0	2017-06-25 15:13:04.248312	f	\N	2017-06-13 07:23:26.897119	2017-06-25 15:13:04.252923	Primitive	0
+25	lel2	2	3	8998.54	2017-06-25 15:12:14.436016	f	2017-06-25 15:15:09.021917	2017-06-25 15:11:43.694195	2017-06-25 15:15:09.021975	Primitive	0
+30	СИП 124 мм 2500х1250 ULTRALAM	12	3	2589.0	2017-06-25 15:44:19.199548	f	\N	2017-06-25 15:44:19.257256	2017-06-25 15:44:19.349487	Composite	2589.0
+26	Объект2	2	2	2650.0	2017-06-25 15:26:19.942928	f	2017-06-25 15:26:51.690925	2017-06-25 15:26:20.037851	2017-06-25 15:26:51.690975	Composite	2650.0
+45	Крепление угла СИП дома (до 3,2 м)	1	3	206.5	2017-06-25 16:38:42.546744	f	\N	2017-06-25 16:38:42.570036	2017-06-25 16:38:42.638872	Composite	206.5
+31	СИП 174 мм 2800х1250 ULTRALAM	12	3	3298.75	2017-06-25 15:49:19.262756	f	\N	2017-06-25 15:49:19.327378	2017-06-25 15:49:46.238587	Composite	3298.75
+32	СИП 124 мм 2800х1250 ULTRALAM	12	3	2845.0	2017-06-25 15:55:53.483088	f	\N	2017-06-25 15:55:53.56174	2017-06-25 15:55:53.670952	Composite	2845.0
+27	СИП 174 мм 2500х1250 ULTRALAM	12	3	3001.5	2017-06-25 15:33:36.441772	f	\N	2017-06-25 15:33:36.469975	2017-06-25 15:56:06.957362	Composite	3001.5
+40	Монтаж СИП 174 стена	2	1	230.0	2017-06-25 16:25:37.731292	f	\N	2017-06-25 16:25:37.73741	2017-06-25 16:25:37.73741	Primitive	0
+34	Обработка бруса ОБЗ (большие сечения)	3	2	330.0	2017-06-25 16:09:06.741177	f	\N	2017-06-25 16:07:47.753075	2017-06-25 16:09:06.748278	Primitive	0
+33	Брус 150х150х6000 мм с ОБЗ	1	20	1932.85	2017-06-25 16:05:55.493386	f	\N	2017-06-25 16:05:55.525271	2017-06-25 16:09:21.029951	Composite	1932.85
+35	Монтаж ростверка по сваям 150х150 мм	4	1	160.0	2017-06-25 16:10:54.09878	f	\N	2017-06-25 16:10:54.110749	2017-06-25 16:10:54.110749	Primitive	0
+36	Крепеж шуруп-глухарь 10х120	1	4	6.54	2017-06-25 16:12:09.212432	f	\N	2017-06-25 16:12:09.219263	2017-06-25 16:12:09.219263	Primitive	0
+41	Брус 150х50х6000 мм с ОБЗ	1	3	647.55	2017-06-25 16:27:51.871958	f	\N	2017-06-25 16:27:51.918119	2017-06-25 16:27:52.026887	Composite	647.55
+42	Проф. монтажная пена, выход 65 л	13	4	250.0	2017-06-25 16:30:28.980709	f	\N	2017-06-25 16:29:59.425183	2017-06-25 16:30:28.984427	Primitive	0
+43	Очиститель для монтажной пены, 500 мл	13	4	100.0	2017-06-25 16:31:26.354669	f	\N	2017-06-25 16:31:26.361557	2017-06-25 16:31:26.361557	Primitive	0
+46	СИП 174 мм 2,5 м для нулевого перекрытия	12	3	4647.095	2017-06-25 16:43:47.380491	t	\N	2017-06-25 16:43:47.410929	2017-06-25 16:54:34.260961	Composite	4647.095
+44	Крепеж SIP-шуруп Wurth 8х240 с пресс-шайбой	1	4	41.3	2017-06-25 16:36:41.861464	f	\N	2017-06-25 16:36:41.869007	2017-06-25 16:36:41.869007	Primitive	0
+48	Крепеж SIP-шуруп Wurth 8х160 с пресс-шайбой	1	4	15.0	2017-06-25 16:48:38.664905	f	\N	2017-06-25 16:48:38.674855	2017-06-25 16:48:38.674855	Primitive	0
+47	Раскрой СИП панели	12	2	135.0	2017-06-25 16:44:16.115383	f	\N	2017-06-25 16:44:16.122778	2017-06-25 16:44:16.122778	Primitive	0
+39	СИП 174 мм 2,5 м для несущих стен	12	3	4356.805	2017-06-25 16:24:42.619845	t	\N	2017-06-25 16:24:42.652436	2017-06-25 16:44:52.957686	Composite	4356.805
+49	Крепеж SIP-шуруп Wurth 8х300 с пресс-шайбой	1	4	47.1	2017-06-25 16:49:35.651245	f	\N	2017-06-25 16:49:35.657982	2017-06-25 16:49:35.657982	Primitive	0
+\.
+
+
+--
+-- Name: constructor_objects_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('constructor_objects_id_seq', 49, true);
+
+
+--
+-- Data for Name: expenses; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY expenses (id, name, percent, created_at, updated_at, deleted_at) FROM stdin;
+2	Транспортные расходы	10.0	2017-06-12 16:34:45.621332	2017-06-24 21:59:29.125508	\N
+3	Налоговые расходы	10.0	2017-06-12 16:34:45.640325	2017-06-24 21:59:29.15209	\N
+4	Премия архитектора	10.0	2017-06-12 16:34:45.656994	2017-06-24 21:59:29.173225	\N
+5	Премия инженера	-1000.0	2017-06-12 16:34:45.674396	2017-06-24 21:59:42.280948	\N
+1	Административные расходы	1000.0	2017-06-12 16:34:45.600053	2017-06-25 17:31:03.564432	\N
+\.
+
+
+--
+-- Name: expenses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('expenses_id_seq', 5, true);
+
+
+--
+-- Data for Name: product_compositions; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY product_compositions (id, product_id, constructor_object_id, value, deleted_at) FROM stdin;
+1	1	1	10.0	\N
+2	2	19	1.0	2017-06-25 15:17:51.035365
+3	2	21	1.0	2017-06-25 15:17:51.051516
+4	2	19	1.0	2017-06-25 15:18:27.546767
+5	2	21	1.0	2017-06-25 15:18:27.563254
+6	2	19	1.0	2017-06-25 15:19:11.344767
+7	2	21	1.0	2017-06-25 15:19:11.366064
+8	2	19	1.0	2017-06-25 15:21:41.512306
+9	2	21	1.0	2017-06-25 15:21:41.531413
+10	2	19	1.0	2017-06-25 15:28:43.238995
+11	2	21	1.0	2017-06-25 15:28:43.26476
+12	2	23	0.138	2017-06-25 15:28:43.288413
+13	2	19	1.0	2017-06-25 15:31:23.514965
+14	2	21	1.0	2017-06-25 15:31:23.533354
+15	2	23	0.138	2017-06-25 15:31:23.55074
+19	2	22	1.0	\N
+16	2	19	1.0	2017-06-25 15:59:17.715105
+17	2	21	1.0	2017-06-25 15:59:17.732637
+18	2	23	0.138	2017-06-25 15:59:17.752057
+20	2	19	1.0	\N
+21	2	21	1.0	\N
+22	2	23	0.138	\N
+23	3	16	0.2	\N
+24	4	33	0.2	2017-06-25 16:19:30.286173
+25	4	33	0.2	2017-06-25 16:19:46.397283
+26	4	38	0.46	2017-06-25 16:19:46.419668
+27	4	36	2.0	2017-06-25 16:19:46.435766
+28	4	37	2.0	2017-06-25 16:19:46.452273
+33	4	1	7.36	\N
+29	4	33	0.2	2017-06-25 16:20:33.588201
+30	4	38	0.46	2017-06-25 16:20:33.638153
+31	4	36	2.0	2017-06-25 16:20:33.655851
+32	4	37	2.0	2017-06-25 16:20:33.675885
+35	4	38	0.46	\N
+36	4	36	2.0	\N
+37	4	37	2.0	\N
+38	4	35	1.0	\N
+34	4	33	0.2	2017-06-25 16:21:11.530264
+39	4	33	0.2	\N
+\.
+
+
+--
+-- Name: product_compositions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('product_compositions_id_seq', 39, true);
+
+
+--
+-- Data for Name: product_sets; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY product_sets (id, name, deleted_at) FROM stdin;
+1	СИП 174 мм	\N
+\.
+
+
+--
+-- Name: product_sets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('product_sets_id_seq', 1, true);
+
+
+--
+-- Data for Name: product_template_sets; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY product_template_sets (id, product_id, product_template_id, product_set_id, deleted_at, constructor_object_id) FROM stdin;
+1	5	1	1	\N	39
+2	5	2	1	\N	45
+3	6	1	1	\N	46
+\.
+
+
+--
+-- Name: product_template_sets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('product_template_sets_id_seq', 3, true);
+
+
+--
+-- Data for Name: product_templates; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY product_templates (id, name, deleted_at) FROM stdin;
+1	Кол-во панелей:	\N
+2	Кол-во углов:	\N
+\.
+
+
+--
+-- Name: product_templates_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('product_templates_id_seq', 2, true);
+
+
+--
+-- Data for Name: products; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY products (id, name, description, hint, unit_id, category_id, stage, custom, display_components, profit, deleted_at, created_at, updated_at) FROM stdin;
+1	Тест сметный продукт 1	Описание тестового сметного продукта		1	14	1	f	f	10.0	\N	2017-06-22 08:06:35.879444	2017-06-22 08:06:35.879444
+2	Фундамент на винтовых сваях	Ствол 108 мм, лопасть 300 мм, длина 2,5 м, заливка ствола сваи бетоном, сварной наконечник, оголовки, гидроизоляция	Площадь дома делить на 6 м2 = минимально необходимое количество свай.\r\nМежду сваями не более 2,5 м. Допустимо для небольшого одноэтажного дома в одном направлении расстояние между сваями до 3 м.	11	9	1	f	t	10.0	\N	2017-06-25 15:17:32.51064	2017-06-25 15:31:23.465358
+3	Ростверк по свайному фундаменту	Брус камерной сушки 150х150 мм, крепежи, огнебиозащита	Укладывается по сваям, затем по нему выполняется нулевое перекрытие дома	4	9	1	f	f	10.0	2017-06-25 16:02:54.129497	2017-06-25 16:02:15.81281	2017-06-25 16:02:54.129555
+4	Ростверк по свайному фундаменту 150х150 мм	Брус камерной сушки, крепежи, огнебиозащита		4	9	1	f	f	10.0	\N	2017-06-25 16:03:25.208177	2017-06-25 16:19:30.224432
+5	Несущие стены из СИП-панели	СИП-панель: OSB/3 ULTRALAM 12 мм E0,5; ПСБ-С-25 Ф по ГОСТ 15588-86 (плотность от 16 кг/м3)\r\nБрус камерной сушки (вл. 10-14%), огнебиозащита, крепежи, пена монтажная	Задаем количество панелей, необходимых на дом и количество наружных углов дома	12	10	1	t	f	10.0	\N	2017-06-25 16:41:45.467053	2017-06-25 16:41:45.467053
+6	Нулевое перекрытие из СИП-панели	СИП-панель: OSB/3 ULTRALAM 12 мм E0,5; ПСБ-С-25 Ф по ГОСТ 15588-86 (плотность от 16 кг/м3)\r\nБрус камерной сушки (вл. 10-14%), огнебиозащита, крепежи, пена монтажная	Площадь перекрытия делить на 3,125 = количество необходимых панелей. Округлять вверх до целого	12	10	1	t	f	10.0	\N	2017-06-25 16:56:27.068031	2017-06-25 16:56:27.068031
+7	qwe	qwe	qwe	2	10	1	f	f	13.0	\N	2017-06-25 17:37:00.870772	2017-06-25 17:37:00.870772
+\.
+
+
+--
+-- Name: products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('products_id_seq', 7, true);
+
+
+--
+-- Data for Name: report_primitives; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY report_primitives (id, constructor_object_id, estimate_id, amount, signing_date, created_at, updated_at) FROM stdin;
+12	1	2	1230	\N	2017-06-25 15:56:58.98447	2017-06-25 15:56:58.98447
+41	22	3	5	\N	2017-06-25 17:43:41.597245	2017-06-25 17:43:41.597245
+42	19	3	5	\N	2017-06-25 17:43:41.601515	2017-06-25 17:43:41.601515
+43	21	3	5	\N	2017-06-25 17:43:41.605429	2017-06-25 17:43:41.605429
+44	23	3	0	\N	2017-06-25 17:43:41.609058	2017-06-25 17:43:41.609058
+\.
+
+
+--
+-- Name: report_primitives_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('report_primitives_id_seq', 44, true);
+
+
+--
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY schema_migrations (version) FROM stdin;
+20170227204553
+20170306191131
+20170306192819
+20170306192903
+20170306192911
+20170311194348
+20170316194852
+20170322181159
+20170402091757
+20170402091933
+20170412181510
+20170413115055
+20170415181613
+20170415205040
+20170415210828
+20170415230405
+20170415231915
+20170417235944
+20170418055828
+20170418114211
+20170418122821
+20170420121125
+20170422003137
+20170422222248
+20170423012833
+20170423092753
+20170425002439
+20170425002757
+20170425092450
+20170425092503
+20170425171808
+20170426222257
+20170428235151
+20170502153202
+20170503211214
+20170505145819
+20170529194502
+\.
+
+
+--
+-- Data for Name: stage_product_set_values; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY stage_product_set_values (id, stage_product_set_id, product_template_id, constructor_object_id, quantity, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: stage_product_set_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('stage_product_set_values_id_seq', 1, false);
+
+
+--
+-- Data for Name: stage_product_sets; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY stage_product_sets (id, stage_product_id, product_set_id, selected, created_at, updated_at) FROM stdin;
+1	2	1	t	2017-06-25 16:57:34.7539	2017-06-25 16:57:34.7539
+2	4	1	t	2017-06-25 16:58:13.383486	2017-06-25 16:58:13.383486
+3	7	1	t	2017-06-25 17:31:04.958715	2017-06-25 17:31:04.958715
+4	8	1	t	2017-06-26 20:57:37.271174	2017-06-26 20:57:37.271174
+\.
+
+
+--
+-- Name: stage_product_sets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('stage_product_sets_id_seq', 4, true);
+
+
+--
+-- Data for Name: stage_products; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY stage_products (id, product_id, stage_id, quantity, price_with_work, created_at, updated_at, with_work, price_without_work) FROM stdin;
+1	1	4	123.0	2.7	2017-06-22 08:14:11.633164	2017-06-25 15:56:58.856112	f	2.7
+3	2	7	5.0	3885.796	2017-06-25 16:57:58.263961	2017-06-25 16:57:58.263961	t	2385.796
+4	5	7	1.0	0.0	2017-06-25 16:58:13.370965	2017-06-25 17:01:33.826761	f	0.0
+5	2	10	10.0	3885.796	2017-06-25 17:31:04.929195	2017-06-25 17:31:04.929195	t	2385.796
+6	4	10	50.0	570.6472	2017-06-25 17:31:04.937454	2017-06-25 17:31:04.937454	t	410.6472
+7	6	10	1.0	65059.33	2017-06-25 17:31:04.947472	2017-06-25 17:31:04.947472	t	65059.33
+8	5	11	1.0	4563.305	2017-06-26 20:57:37.259099	2017-06-26 20:57:37.259099	t	4563.305
+\.
+
+
+--
+-- Name: stage_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('stage_products_id_seq', 8, true);
+
+
+--
+-- Data for Name: stages; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY stages (id, budget_id, number, price, created_at, updated_at, price_with_discount) FROM stdin;
+1	1	1	0.0	2017-06-22 08:00:27.849968	2017-06-22 08:00:27.849968	0.0
+2	1	2	0.0	2017-06-22 08:00:27.876159	2017-06-22 08:00:27.876159	0.0
+3	1	3	0.0	2017-06-22 08:00:27.890425	2017-06-22 08:00:27.890425	0.0
+5	2	2	0.0	2017-06-22 08:14:11.647849	2017-06-22 08:14:11.647849	0.0
+6	2	3	0.0	2017-06-22 08:14:11.66295	2017-06-22 08:14:11.66295	0.0
+8	3	2	0.0	2017-06-25 14:35:03.527041	2017-06-25 14:35:03.527041	0.0
+9	3	3	0.0	2017-06-25 14:35:03.552159	2017-06-25 14:35:03.552159	0.0
+4	2	1	-2822.85	2017-06-22 08:14:11.575717	2017-06-25 15:56:58.834678	-2822.85
+10	4	1	-1148640.275	2017-06-25 17:31:04.917691	2017-06-25 17:31:04.917691	-1148640.27
+7	3	1	27200.572	2017-06-25 14:35:03.50871	2017-06-25 17:35:26.255122	27200.57
+11	5	1	6388.627	2017-06-26 20:57:37.24507	2017-06-26 20:57:37.24507	6388.63
+\.
+
+
+--
+-- Name: stages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('stages_id_seq', 11, true);
+
+
+--
+-- Data for Name: technical_files; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY technical_files (id, budget_id, asset_file_id) FROM stdin;
+\.
+
+
+--
+-- Name: technical_files_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('technical_files_id_seq', 1, false);
+
+
+--
+-- Data for Name: units; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY units (id, name, product, deleted_at, created_at, updated_at) FROM stdin;
+1	шт	f	\N	2017-06-12 16:34:46.000385	2017-06-12 16:34:46.000385
+2	м2	f	\N	2017-06-12 16:34:46.019663	2017-06-12 16:34:46.019663
+3	м3	f	\N	2017-06-12 16:34:46.036689	2017-06-12 16:34:46.036689
+4	м.п.	f	\N	2017-06-12 16:34:46.053993	2017-06-12 16:34:46.053993
+5	кг	f	\N	2017-06-12 16:34:46.069896	2017-06-12 16:34:46.069896
+6	лист	f	\N	2017-06-12 16:34:46.087537	2017-06-12 16:34:46.087537
+7	йййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййййй	f	2017-06-24 21:46:15.473832	2017-06-24 21:45:02.662968	2017-06-24 21:46:15.47388
+9	tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt	f	2017-06-24 21:50:20.201959	2017-06-24 21:50:15.307574	2017-06-24 21:50:20.202004
+10	qwe	f	2017-06-24 21:51:32.351029	2017-06-24 21:51:26.207037	2017-06-24 21:51:32.351065
+11	свая	f	\N	2017-06-25 14:30:20.301674	2017-06-25 14:30:20.301674
+8	кек	f	2017-06-25 14:32:32.49129	2017-06-24 21:46:21.524834	2017-06-25 14:32:32.491344
+12	панель	f	\N	2017-06-25 15:35:34.344357	2017-06-25 15:35:34.344357
+13	баллон	f	\N	2017-06-25 16:30:11.217443	2017-06-25 16:30:11.217443
+\.
+
+
+--
+-- Name: units_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('units_id_seq', 13, true);
+
+
+--
+-- Data for Name: user_clients; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY user_clients (id, user_id, client_id, owner, created_at, updated_at) FROM stdin;
+1	1	1	t	2017-06-22 07:55:56.442058	2017-06-22 07:55:56.442058
+2	1	2	t	2017-06-24 22:13:07.009009	2017-06-24 22:13:07.009009
+3	1	3	t	2017-06-24 22:13:25.885399	2017-06-24 22:13:25.885399
+4	1	4	t	2017-06-24 22:14:05.658838	2017-06-24 22:14:05.658838
+5	1	5	t	2017-06-24 22:21:26.622212	2017-06-24 22:21:26.622212
+7	1	7	t	2017-06-24 22:23:08.720702	2017-06-24 22:23:08.720702
+9	9	8	t	2017-06-24 22:34:43.240114	2017-06-24 22:34:43.240114
+11	9	9	t	2017-06-24 22:36:25.546661	2017-06-24 22:36:25.546661
+12	1	10	t	2017-06-24 22:45:57.895941	2017-06-24 22:45:57.895941
+13	1	11	t	2017-06-24 22:46:42.545301	2017-06-24 22:46:42.545301
+14	1	12	t	2017-06-24 22:47:50.734206	2017-06-24 22:47:50.734206
+15	1	13	t	2017-06-24 22:48:25.236172	2017-06-24 22:48:25.236172
+16	1	14	t	2017-06-24 22:48:59.767689	2017-06-24 22:48:59.767689
+17	1	15	t	2017-06-24 22:51:02.500307	2017-06-24 22:51:02.500307
+18	1	16	t	2017-06-24 22:51:38.300943	2017-06-24 22:51:38.300943
+\.
+
+
+--
+-- Name: user_clients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('user_clients_id_seq', 18, true);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: deploy
+--
+
+COPY users (id, email, encrypted_password, remember_created_at, created_at, updated_at, role, first_name, last_name, crm, phone, deleted_at) FROM stdin;
+1	admin@test.test	$2a$11$CM7gXASDxWnQM5FXuFeZm.ECw/3DcpnYSETaItQ50VNFA3M0GHRaW	\N	2017-06-12 16:34:45.120102	2017-06-12 16:34:45.120102	admin	Админ	Фамилия	1111111	1234567890	\N
+2	arch@test.test	$2a$11$pDAe6Gy2aFH8ErJnUPl/q.kZZobFs15EdqzLnKjNSK/bxdrK0fmo6	\N	2017-06-12 16:34:45.364671	2017-06-12 16:34:45.364671	architector	Архитектор	Фамилия	1111112	1234567890	\N
+3	eng@test.test	$2a$11$zds9W7.vEglWbf/3TlEQoexz4/0V.GW/s6Trcj3BK36Q7qr1.9Lpq	\N	2017-06-12 16:34:45.564047	2017-06-12 16:34:45.564047	engineer	Инженер	Фамилия	1111113	1234567890	\N
+4	yorke.diana@gmail.com	$2a$11$4P6x1pbDx/Q8cKmYX4aZtutACWvUt3UjH.re2JymlAzUXNCOXBpAG	\N	2017-06-24 22:08:41.473068	2017-06-24 22:11:03.063717	engineer	Claire	Boucher	1231234	79781234568	2017-06-24 22:11:03.063671
+9	yorke.diana1@gmail.com	$2a$11$TA/ID6o/O0S0ksR7dj1.Ees4XS4Tq7YgUken5nQfaHTrsyuXdXSsC	\N	2017-06-24 22:30:59.191972	2017-06-26 20:14:11.524468	architector	Claire	Boucher	1231230	79781234568	\N
+\.
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: deploy
+--
+
+SELECT pg_catalog.setval('users_id_seq', 9, true);
+
+
+--
+-- Name: ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY ar_internal_metadata
+    ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: asset_files_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY asset_files
+    ADD CONSTRAINT asset_files_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: audits_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY audits
+    ADD CONSTRAINT audits_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: budgets_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY budgets
+    ADD CONSTRAINT budgets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: categories_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY categories
+    ADD CONSTRAINT categories_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: client_files_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY client_files
+    ADD CONSTRAINT client_files_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: clients_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY clients
+    ADD CONSTRAINT clients_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: compositions_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY compositions
+    ADD CONSTRAINT compositions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: constructor_objects_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY constructor_objects
+    ADD CONSTRAINT constructor_objects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: expenses_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY expenses
+    ADD CONSTRAINT expenses_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: product_compositions_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY product_compositions
+    ADD CONSTRAINT product_compositions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: product_sets_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY product_sets
+    ADD CONSTRAINT product_sets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: product_template_sets_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY product_template_sets
+    ADD CONSTRAINT product_template_sets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: product_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY product_templates
+    ADD CONSTRAINT product_templates_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: products_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY products
+    ADD CONSTRAINT products_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: report_primitives_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY report_primitives
+    ADD CONSTRAINT report_primitives_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: stage_product_set_values_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY stage_product_set_values
+    ADD CONSTRAINT stage_product_set_values_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stage_product_sets_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY stage_product_sets
+    ADD CONSTRAINT stage_product_sets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stage_products_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY stage_products
+    ADD CONSTRAINT stage_products_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: stages_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY stages
+    ADD CONSTRAINT stages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: technical_files_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY technical_files
+    ADD CONSTRAINT technical_files_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: units_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY units
+    ADD CONSTRAINT units_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_clients_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY user_clients
+    ADD CONSTRAINT user_clients_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: associated_index; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX associated_index ON audits USING btree (associated_id, associated_type);
+
+
+--
+-- Name: auditable_index; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX auditable_index ON audits USING btree (auditable_id, auditable_type);
+
+
+--
+-- Name: index_audits_on_created_at; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_audits_on_created_at ON audits USING btree (created_at);
+
+
+--
+-- Name: index_audits_on_request_uuid; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_audits_on_request_uuid ON audits USING btree (request_uuid);
+
+
+--
+-- Name: index_budgets_on_client_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_budgets_on_client_id ON budgets USING btree (client_id);
+
+
+--
+-- Name: index_categories_on_deleted_at; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_categories_on_deleted_at ON categories USING btree (deleted_at);
+
+
+--
+-- Name: index_client_files_on_asset_file_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_client_files_on_asset_file_id ON client_files USING btree (asset_file_id);
+
+
+--
+-- Name: index_client_files_on_budget_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_client_files_on_budget_id ON client_files USING btree (budget_id);
+
+
+--
+-- Name: index_clients_on_deleted_at; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_clients_on_deleted_at ON clients USING btree (deleted_at);
+
+
+--
+-- Name: index_compositions_on_deleted_at; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_compositions_on_deleted_at ON compositions USING btree (deleted_at);
+
+
+--
+-- Name: index_constructor_objects_on_category_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_constructor_objects_on_category_id ON constructor_objects USING btree (category_id);
+
+
+--
+-- Name: index_constructor_objects_on_deleted_at; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_constructor_objects_on_deleted_at ON constructor_objects USING btree (deleted_at);
+
+
+--
+-- Name: index_constructor_objects_on_unit_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_constructor_objects_on_unit_id ON constructor_objects USING btree (unit_id);
+
+
+--
+-- Name: index_expenses_on_deleted_at; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_expenses_on_deleted_at ON expenses USING btree (deleted_at);
+
+
+--
+-- Name: index_product_compositions_on_constructor_object_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_product_compositions_on_constructor_object_id ON product_compositions USING btree (constructor_object_id);
+
+
+--
+-- Name: index_product_compositions_on_product_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_product_compositions_on_product_id ON product_compositions USING btree (product_id);
+
+
+--
+-- Name: index_product_template_sets_on_product_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_product_template_sets_on_product_id ON product_template_sets USING btree (product_id);
+
+
+--
+-- Name: index_product_template_sets_on_product_set_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_product_template_sets_on_product_set_id ON product_template_sets USING btree (product_set_id);
+
+
+--
+-- Name: index_product_template_sets_on_product_template_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_product_template_sets_on_product_template_id ON product_template_sets USING btree (product_template_id);
+
+
+--
+-- Name: index_products_on_category_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_products_on_category_id ON products USING btree (category_id);
+
+
+--
+-- Name: index_products_on_deleted_at; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_products_on_deleted_at ON products USING btree (deleted_at);
+
+
+--
+-- Name: index_products_on_unit_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_products_on_unit_id ON products USING btree (unit_id);
+
+
+--
+-- Name: index_report_primitives_on_constructor_object_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_report_primitives_on_constructor_object_id ON report_primitives USING btree (constructor_object_id);
+
+
+--
+-- Name: index_report_primitives_on_estimate_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_report_primitives_on_estimate_id ON report_primitives USING btree (estimate_id);
+
+
+--
+-- Name: index_stage_product_set_values_on_constructor_object_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_stage_product_set_values_on_constructor_object_id ON stage_product_set_values USING btree (constructor_object_id);
+
+
+--
+-- Name: index_stage_product_set_values_on_product_template_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_stage_product_set_values_on_product_template_id ON stage_product_set_values USING btree (product_template_id);
+
+
+--
+-- Name: index_stage_product_set_values_on_stage_product_set_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_stage_product_set_values_on_stage_product_set_id ON stage_product_set_values USING btree (stage_product_set_id);
+
+
+--
+-- Name: index_stage_product_sets_on_product_set_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_stage_product_sets_on_product_set_id ON stage_product_sets USING btree (product_set_id);
+
+
+--
+-- Name: index_stage_product_sets_on_stage_product_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_stage_product_sets_on_stage_product_id ON stage_product_sets USING btree (stage_product_id);
+
+
+--
+-- Name: index_stage_products_on_product_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_stage_products_on_product_id ON stage_products USING btree (product_id);
+
+
+--
+-- Name: index_stage_products_on_stage_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_stage_products_on_stage_id ON stage_products USING btree (stage_id);
+
+
+--
+-- Name: index_stages_on_budget_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_stages_on_budget_id ON stages USING btree (budget_id);
+
+
+--
+-- Name: index_technical_files_on_asset_file_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_technical_files_on_asset_file_id ON technical_files USING btree (asset_file_id);
+
+
+--
+-- Name: index_technical_files_on_budget_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_technical_files_on_budget_id ON technical_files USING btree (budget_id);
+
+
+--
+-- Name: index_units_on_deleted_at; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_units_on_deleted_at ON units USING btree (deleted_at);
+
+
+--
+-- Name: index_user_clients_on_client_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_user_clients_on_client_id ON user_clients USING btree (client_id);
+
+
+--
+-- Name: index_user_clients_on_user_id; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX index_user_clients_on_user_id ON user_clients USING btree (user_id);
+
+
+--
+-- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
+
+
+--
+-- Name: user_index; Type: INDEX; Schema: public; Owner: deploy
+--
+
+CREATE INDEX user_index ON audits USING btree (user_id, user_type);
+
+
+--
+-- Name: fk_rails_52f09efd3d; Type: FK CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY client_files
+    ADD CONSTRAINT fk_rails_52f09efd3d FOREIGN KEY (asset_file_id) REFERENCES asset_files(id);
+
+
+--
+-- Name: fk_rails_56051405e4; Type: FK CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY report_primitives
+    ADD CONSTRAINT fk_rails_56051405e4 FOREIGN KEY (constructor_object_id) REFERENCES constructor_objects(id);
+
+
+--
+-- Name: fk_rails_5dfc425bb0; Type: FK CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY report_primitives
+    ADD CONSTRAINT fk_rails_5dfc425bb0 FOREIGN KEY (estimate_id) REFERENCES budgets(id);
+
+
+--
+-- Name: fk_rails_a387c62b65; Type: FK CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY technical_files
+    ADD CONSTRAINT fk_rails_a387c62b65 FOREIGN KEY (budget_id) REFERENCES budgets(id);
+
+
+--
+-- Name: fk_rails_c75bb12bc9; Type: FK CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY technical_files
+    ADD CONSTRAINT fk_rails_c75bb12bc9 FOREIGN KEY (asset_file_id) REFERENCES asset_files(id);
+
+
+--
+-- Name: fk_rails_eb1f9b9e3e; Type: FK CONSTRAINT; Schema: public; Owner: deploy
+--
+
+ALTER TABLE ONLY client_files
+    ADD CONSTRAINT fk_rails_eb1f9b9e3e FOREIGN KEY (budget_id) REFERENCES budgets(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
