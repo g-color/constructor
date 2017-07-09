@@ -36,9 +36,10 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
 
     validate = { error: false, message: null }
 
+    if stages[0].products.length <= 0 && stages[1].products.length <= 0 && stages[2].products.length <= 0
+      validate = { error: true, message: 'Необходимо указать хотя бы один сметный продукт' }
+
     angular.forEach stages, (stage,k) ->
-      if stage.products.length <= 0 && !validate.error
-        validate = { error: true, message: 'Необходимо укзать хотя бы один сметный продукт' }
       angular.forEach stage.products, (product,l) ->
         if product.custom
           angular.forEach product.sets, (set,m) ->
