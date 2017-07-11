@@ -283,6 +283,9 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     $.each(stages, (i,v) -> estimate.price += v.price_with_discount)
     this.saveJsonValue()
 
+  productPrice: (product) ->
+    (product.price * product.quantity).toFixed(2)
+
   recalcProduct: (template) ->
     this.updateTemplateValue(template) unless template == undefined
 
@@ -380,6 +383,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       stages[i].price               = parseFloat(stage.price)
       stages[i].price_with_discount = parseFloat(stage.price_with_discount)
       $.each(stage.products, (i,product) ->
+        product.quantity = parseFloat(product.quantity)
         $.each(product.sets, (i,set) ->
           $.each(set.items, (i,item) ->
             set.items[i].value.price = parseFloat(item.value.price)
@@ -392,6 +396,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
           $.each(product.sets, (i,set) ->
             if set.selected
               $.each(set.items, (i,item) ->
+                item.quantity = parseFloat(item.quantity)
                 price_with_work = item.value.price * parseFloat(item.quantity)
                 price_without_work = item.value.price * parseFloat(item.quantity) unless item.work_primitive
               )

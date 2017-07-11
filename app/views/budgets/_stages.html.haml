@@ -17,7 +17,7 @@
           %td {{ product.name }}
           %td
             %span{ ng: { hide: 'product.custom' } } {{ product.quantity }} {{ product.unit }}
-          %td {{ (product.price * product.quantity).toFixed(2) }}
+          %td {{ ctrl.productPrice(product) }}
           %td
             %input{ type: 'checkbox', disabled: show.present?, ng: { model: 'product.with_work', change: 'ctrl.recalcProductPrice(stage, product)' } }
           %td
