@@ -11,7 +11,7 @@
         %button.btn.btn-default.col-sm-12 Поиск
       .col-sm-3{ style: 'padding-top: 7px' }
         %label
-          = check_box_tag :archived, nil, params[:archived].present?
+          %input{ type: "checkbox", name: "archived", id: "archived", ng: { model: 'showArchived' } }
           Показывать архивных клиентов
 
       .col-sm-2.col-sm-offset-1
@@ -21,7 +21,27 @@
 
   - if @owned.present? || @delegated.present?
     .row.main-content
-      - if @owned.present?
-        = render 'table', header: 'Мои клиенты', user_clients: @owned
-      - if @delegated.present?
-        = render 'table', header: 'Доступные клиенты', user_clients: @delegated
+      .table-responsive{ ng: { show: 'ctrl.ownedPresent()' } }
+        %h4.stage Мои клиенты
+        %table.table.table-hover.clients-datatable
+          %thead
+            %tr
+              %th.col-sm-5 Имя
+              %th.col-sm-1
+              %th.col-sm-2 ID в CRM
+              %th.col-sm-2 Количество смет
+              %th.col-sm-1 Действия
+
+          %tbody
+            %tr{ ng: { repeat: 'client in owned_users track by $index', show: 'ctrl.showClient(client)', class: 'ctrl.clientRowClass(client)' } }
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.full_name }}
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
+                %span{ ng: { show: 'client.archived' } } Архивирован
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
+                %a{href: "https://artkarkas.megaplan.ru/crm/client.crm/card/", target: 'blank', rel: 'no-follow'} {{ client.crm }}
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.estimates }}
+              %td
+                %a.btn.btn-warning{ title: 'Редактировать', href: '{{client.edit_link}}'}
+                  %span.glyphicon.glyphicon-pencil
+                %a.btn.btn-danger{ title: 'Удалить', href: '{{client.delete_link}}', data: { confirm: 'Вы уверены?', method: 'delete' } }
+                  %span.glyphicon.glyphicon-trash

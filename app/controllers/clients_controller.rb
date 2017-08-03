@@ -4,18 +4,21 @@ class ClientsController < ApplicationController
 
   def index
     @user_clients = UserClient.joins(:client)
-
-    unless params[:archived].present?
-      @user_clients = @user_clients.where(clients: {archived: false})
-    end
-
-    @owned     = @user_clients.owner(current_user).includes(client: [:estimates])
-    @delegated = @user_clients.delegated(current_user).includes(client: [:estimates])
+    @owned        = @user_clients.owner(current_user)
+                                 .includes(client: [:estimates])
+    @delegated    = @user_clients.delegated(current_user)
+                                 .includes(client: [:estimates])
 
     if params[:name].present?
-      @owned = @owned.select { |m| m.client.full_name.downcase.include? params[:name].downcase }
+      @owned     = @owned.select     { |m| m.client.full_name.downcase.include? params[:name].downcase }
       @delegated = @delegated.select { |m| m.client.full_name.downcase.include? params[:name].downcase }
     end
+
+    gon.push(
+      owned_users:     map_to_json(@owned),
+      delegated_users: map_to_json(@delegated),
+      show_archived:   params[:archived].present?
+    )
   end
 
   def new
@@ -89,5 +92,19 @@ class ClientsController < ApplicationController
 
   def client_params
     params.require(:client).permit(:first_name, :last_name, :middle_name, :crm, :archived)
+  end
+
+  def map_to_json(clients)
+    clients.map do |c|
+      {
+        id:          c.client.id,
+        archived:    c.client.archived,
+        full_name:   c.client.full_name,
+        crm:         c.client.crm,
+        estimates:   c.client.estimates.count,
+        edit_link:   Rails.application.routes.url_helpers.edit_client_path(c.client),
+        delete_link: Rails.application.routes.url_helpers.client_path(c.client)
+      }
+    end
   end
 end

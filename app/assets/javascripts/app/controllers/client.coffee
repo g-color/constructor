@@ -8,8 +8,24 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
     @scope.shared_users      = @pHelper.get('shared_users')
     @scope.shared_users_json = @pHelper.get('shared_users_json')
 
+    @scope.owned_users       = @pHelper.get('owned_users')
+    @scope.delegated_users   = @pHelper.get('deledated_users')
+    @scope.showArchived      = @pHelper.get('show_archived')
+
     client     = @scope.client
     client.crm = parseInt(client.crm) if client && client.crm != null
+
+  ownedPresent: () ->
+    @scope.owned_users.length > 0
+
+  delegatedPresent: () ->
+    @scope.delegated_users.length > 0
+
+  showClient: (client) ->
+    if @scope.showArchived then true else !client.archived
+
+  clientRowClass: (client) ->
+    if client.archived then 'archived-client' else ''
 
   shareClient: () ->
     scope = @scope

@@ -24,10 +24,10 @@ class ProductComposition < ApplicationRecord
   end
 
   def to_s
-    product.name
+    product&.name
   end
 
   def link
-    Rails.application.routes.url_helpers.edit_product_path(product)
+    product ? Rails.application.routes.url_helpers.edit_product_path(product) : ''
   end
 end

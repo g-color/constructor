@@ -1,6 +1,7 @@
 $(document).on 'turbolinks:load', () ->
   $('.audits-datatable').DataTable({
     searching: false,
+    autoWidth: false,
     bInfo: false,
     columns: [
       null,
@@ -9,7 +10,8 @@ $(document).on 'turbolinks:load', () ->
       null,
       { "orderable": false },
       null
-    ]
+    ],
+    order: [[ 5, "desc" ]]
   })
 
   $('.clients-datatable').DataTable({
