@@ -34,7 +34,7 @@ class PrimitivesController < ApplicationController
       PriceUpdateJob.perform_later(@primitive)
       log_changes(Enums::Audit::Action::UPDATE)
       respond_to do |format|
-        format.json { render json: { id: @primitive.id, date: l(@primitive.date, format: "%d %b, %Y") }, status: :success }
+        format.json { render json: { id: @primitive.id, date: l(@primitive.date, format: "%d %b, %Y") } }
         format.html { redirect_to primitives_path }
       end
     else
