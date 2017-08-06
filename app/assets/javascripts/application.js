@@ -36,8 +36,8 @@ $(function(){
 
   $('.update-price-link').on('click', function(e){
     e.preventDefault();
-    let primitiveId = $(this).data('id')
-    let price = $('.primitive-price[data-id=' + primitiveId + ']').val()
+    var primitiveId = $(this).data('id')
+    var price = $('.primitive-price[data-id=' + primitiveId + ']').val()
     $.ajax({
       type: "PUT",
       url:  '/primitives/' + primitiveId,
