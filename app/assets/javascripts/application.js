@@ -43,9 +43,9 @@ $(function(){
       url:  '/primitives/' + primitiveId,
       data: { 'primitive[price]': price }
     })
-    .always(function(data) {
-      date = data.responseJSON.date
-      id   = data.responseJSON.id
+    .done(function(data) {
+      date = data.date
+      id   = data.id
       button = $('.primitive-actions[data-id=' + id + ']')
       button.removeClass('btn-warning btn-danger').addClass('btn-default').html(date + ' <span class="caret"></span>')
     });
