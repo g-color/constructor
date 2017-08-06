@@ -4,8 +4,12 @@ class Expense < ApplicationRecord
 
   def self.update_values(values)
     values.each do |val|
-      exp = find(val)
-      exp.update(percent: values[val]) unless values[val] == exp.percent.to_s
+      expense = find(val)
+      expense.percent = values[val]
+      next unless expense.changed?
+
+      expense.save
+      log_changes
     end
   end
 
@@ -22,5 +26,15 @@ class Expense < ApplicationRecord
 
   def link
     Rails.application.routes.url_helpers.expenses_path
+  end
+
+  def self.log_changes
+    Services::Audit::Log.new(
+      user:        current_user,
+      action:      Enums::Audit::Action::UPDATE,
+      object_type: 'expense',
+      object_name: expense.name,
+      object_link: expense.link
+    )
   end
 end
