@@ -100,6 +100,7 @@ $(document).on 'turbolinks:load', () ->
     searching: false,
     paging: false,
     bInfo: false,
+    autoWidth: false,
     columns: [
       null,
       null,
