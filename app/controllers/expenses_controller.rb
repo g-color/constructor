@@ -7,7 +7,7 @@ class ExpensesController < ApplicationController
   end
 
   def update
-    Expense.update_values(params[:values])
+    Expense.update_values(params[:values], current_user)
     redirect_to expenses_path
   end
 

@@ -3,6 +3,7 @@ class Enums::Object::Type
   CLIENT    = 'client'.freeze
   COMPOSITE = 'composite'.freeze
   ESTIMATE  = 'estimate'.freeze
+  EXPENSE   = 'expense'.freeze
   PRIMITIVE = 'primitive'.freeze
   PRODUCT   = 'product'.freeze
   SOLUTION  = 'solution'.freeze
@@ -19,6 +20,7 @@ class Enums::Object::Type
       CLIENT    => 'Клиент',
       COMPOSITE => 'Объект',
       ESTIMATE  => 'Смета',
+      EXPENSE   => 'Административные расходы',
       PRIMITIVE => 'Примитив',
       PRODUCT   => 'Сметный продукт',
       SOLUTION  => 'Готовое решение',
