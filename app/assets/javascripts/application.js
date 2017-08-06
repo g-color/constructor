@@ -33,23 +33,6 @@ $(function(){
       window.location.reload();
     }
   })
-
-  $('.update-price-link').on('click', function(e){
-    e.preventDefault();
-    var primitiveId = $(this).data('id')
-    var price = $('.primitive-price[data-id=' + primitiveId + ']').val()
-    $.ajax({
-      type: "PUT",
-      url:  '/primitives/' + primitiveId,
-      data: { 'primitive[price]': price }
-    })
-    .done(function(data) {
-      date = data.date
-      id   = data.id
-      button = $('.primitive-actions[data-id=' + id + ']')
-      button.removeClass('btn-warning btn-danger').addClass('btn-default').html(date + ' <span class="caret"></span>')
-    });
-  });
 })
 
 $.fn.exists = function () {
