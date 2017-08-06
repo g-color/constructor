@@ -7,9 +7,9 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 users = [
-  { name: 'Админ',      role: UserRole::ADMIN,       email: 'admin@test.test' },
-  { name: 'Архитектор', role: UserRole::ARCHITECTOR, email: 'arch@test.test' },
-  { name: 'Инженер',    role: UserRole::ENGINEER,    email: 'eng@test.test' }
+  { name: 'Админ',      role: Enums::User::Role::ADMIN,       email: 'admin@test.test' },
+  { name: 'Архитектор', role: Enums::User::Role::ARCHITECTOR, email: 'arch@test.test' },
+  { name: 'Инженер',    role: Enums::User::Role::ENGINEER,    email: 'eng@test.test' }
 ]
 
 id = 1111110

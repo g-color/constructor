@@ -29,7 +29,7 @@ class ProductsController < ApplicationController
       else
         @product.save_compositions(JSON.parse(params[:product_compositions]))
       end
-
+      log_changes(Enums::Audit::Action::CREATE)
       redirect_to products_path
     else
       flash.now[:alert] = @product.errors.messages[:base].first if @product.errors.messages[:base].present?
@@ -59,7 +59,7 @@ class ProductsController < ApplicationController
       else
         @product.save_compositions(JSON.parse(params[:product_compositions]))
       end
-
+      log_changes(Enums::Audit::Action::UPDATE)
       redirect_to products_path
     else
       flash.now[:alert] = @product.errors.messages[:base].first if @product.errors.messages[:base].present?
@@ -78,6 +78,7 @@ class ProductsController < ApplicationController
       flash[:alert] = "Can't be destroyed"
     else
       @product.destroy
+      log_changes(Enums::Audit::Action::DESTROY)
     end
     redirect_to products_path
   end
@@ -103,5 +104,15 @@ class ProductsController < ApplicationController
   def product_params
     params.require(:product).permit(:name, :category_id, :unit_id, :profit, :stage,
       :description, :hint, :custom, :display_components, :product_compositions, :product_templates, :product_sets)
+  end
+
+  def log_changes(action)
+    Services::Audit::Log.new(
+      user:        current_user,
+      object_type: 'product',
+      object_name: @product.name,
+      object_link: @product.name,
+      action:      action
+    ).call
   end
 end

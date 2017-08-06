@@ -9,7 +9,7 @@
       = f.input :first_name, label: 'Имя',     input_html: { placeholder: 'Введите имя' }
       = f.input :last_name,  label: 'Фамилия', input_html: { placeholder: 'Введите фамилию' }
       = f.input :role, label: 'Роль' do
-        = f.select :role, UserRole.values, {}, class: 'form-control'
+        = f.select :role, Enums::User::Role.values, {}, class: 'form-control'
       = f.input :phone, label: 'Телефон',           input_html: { placeholder: 'Введите номер телефона' }
       = f.input :crm,   label: 'ID в CRM',          input_html: { placeholder: 'Введите id' }
       = f.input :email, label: 'Электронная почта', input_html: { placeholder: 'Введите адрес электронной почты' }

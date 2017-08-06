@@ -1,7 +1,6 @@
 class Composition < ApplicationRecord
   acts_as_paranoid
-  audited
-
+  
   belongs_to :parent,
             class_name: "ConstructorObject",
             foreign_key: :parent_id

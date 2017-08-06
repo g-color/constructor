@@ -1,6 +1,5 @@
 class Client < ApplicationRecord
   acts_as_paranoid
-  audited
 
   validates :first_name, presence: true
   validates :crm, uniqueness: true, presence: true, length: { minimum: 7, maximum: 7 }

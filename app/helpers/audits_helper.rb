@@ -2,7 +2,7 @@ module AuditsHelper
   def self.get_action(audit)
     get_auditable(audit)
     return 'Изменение' if ObjectClassName.subclasses.key?(@auditable.class.to_s)
-    AuditAction.fetch(audit.action)
+    Enums::Audit::Action.fetch(audit.action)
   end
 
   def self.get_class(audit)

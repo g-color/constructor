@@ -3,16 +3,19 @@ class AuditsController < ApplicationController
   before_action :check_ability
 
   def index
+    @audits = Audit.all
+
     if search? || date_filter?
-      @audits = Audit.includes(:user, :auditable)
-      params[:search].each_pair do |name, val|
-        @audits = @audits.where("#{name} = '#{val}'") if val.present?
+      if params[:search]['user_id'].present?
+        user = User.find(params[:search]['user_id'])
+        @audits = @audits.where(user_name: user.full_name)
+      end
+      if params[:search]['object_type'].present?
+        @audits = @audits.where(object_type: params[:search]['object_type'])
       end
 
       @audits = @audits.where('created_at >= ?', params[:from]) if params[:from].present?
       @audits = @audits.where('created_at <= ?', params[:till]) if params[:till].present?
-    else
-      @audits = Audit.includes(:user, :auditable).all
     end
 
     @audits = @audits.order(created_at: :desc)

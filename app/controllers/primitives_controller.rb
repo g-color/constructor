@@ -17,6 +17,7 @@ class PrimitivesController < ApplicationController
     @primitive = Primitive.new(primitive_params.merge(date: Time.now))
     if @primitive.save
       PriceUpdateJob.perform_later(@primitive)
+      log_changes(Enums::Audit::Action::CREATE)
       redirect_to primitives_path
     else
       render 'new'
@@ -31,6 +32,7 @@ class PrimitivesController < ApplicationController
     params.merge!(date: Time.now) unless price_equal?
     if @primitive.update(params)
       PriceUpdateJob.perform_later(@primitive)
+      log_changes(Enums::Audit::Action::UPDATE)
       redirect_to primitives_path
     else
       render 'edit'
@@ -42,6 +44,7 @@ class PrimitivesController < ApplicationController
       flash[:alert] = "Не может быть удалено, так как существует зависимость"
     else
       @primitive.destroy
+      log_changes(Enums::Audit::Action::DESTROY)
     end
     redirect_to primitives_path
   end
@@ -71,5 +74,15 @@ class PrimitivesController < ApplicationController
 
   def primitive_params
     params.require(:primitive).permit(:name, :category_id, :unit_id, :price)
+  end
+
+  def log_changes(action)
+    Services::Audit::Log.new(
+      user:        current_user,
+      object_type: 'primitive',
+      object_name: @primitive.name,
+      object_link: @primitive.name,
+      action:      action
+    ).call
   end
 end

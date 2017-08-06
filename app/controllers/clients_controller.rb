@@ -39,6 +39,7 @@ class ClientsController < ApplicationController
     if @client.save
       @client.assign_owner(current_user)
       @client.share(JSON.parse(params[:client_users]) << current_user.id)
+      log_changes(Enums::Audit::Action::CREATE)
       redirect_to session.delete(:return_to)
     else
       gon.push(
@@ -66,6 +67,7 @@ class ClientsController < ApplicationController
     authorize! :edit, @client
     if @client.update(client_params)
       @client.share(JSON.parse(params[:client_users]) << current_user.id)
+      log_changes(Enums::Audit::Action::UPDATE)
       redirect_to clients_path
     else
       @shared_users = UserClient.where(client: @client).where.not(user: current_user).map(&:user)
@@ -81,6 +83,7 @@ class ClientsController < ApplicationController
 
   def destroy
     @client.destroy
+    log_changes(Enums::Audit::Action::DESTROY)
     redirect_to clients_path
   end
 
@@ -106,5 +109,15 @@ class ClientsController < ApplicationController
         delete_link: Rails.application.routes.url_helpers.client_path(c.client)
       }
     end
+  end
+
+  def log_changes(action)
+    Services::Audit::Log.new(
+      user:        current_user,
+      object_type: 'client',
+      object_name: @client.full_name,
+      object_link: @client.full_name,
+      action:      action
+    ).call
   end
 end

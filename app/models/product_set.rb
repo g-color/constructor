@@ -1,6 +1,5 @@
 class ProductSet < ApplicationRecord
   acts_as_paranoid
-  audited
 
   validates :name, presence: true
   has_many  :product_template_sets

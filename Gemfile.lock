@@ -1,10 +1,3 @@
-GIT
-  remote: https://github.com/rails/rails-observers.git
-  revision: cefffa51343ba402fc336e98432e7805c1905306
-  specs:
-    rails-observers (0.1.3.alpha)
-      activemodel (>= 4.0, < 5.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -47,9 +40,6 @@ GEM
       tzinfo (~> 1.1)
     angularjs-rails (1.4.0)
     arel (7.1.4)
-    audited (4.3.0)
-      activerecord (>= 4.0, < 5.1)
-      rails-observers (~> 0.1.2)
     autoprefixer-rails (6.7.5)
       execjs
     bcrypt (3.1.11)
@@ -280,7 +270,6 @@ PLATFORMS
 
 DEPENDENCIES
   angularjs-rails
-  audited (~> 4.3)
   bootstrap-kaminari-views
   bootstrap-sass (~> 3.3.6)
   byebug
@@ -310,7 +299,6 @@ DEPENDENCIES
   pg
   puma (~> 3.0)
   rails
-  rails-observers!
   rails4-autocomplete
   rtf
   sass-rails (~> 5.0)

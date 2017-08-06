@@ -1,14 +1,14 @@
-class UserRole
-  ADMIN       = 'admin'
-  ARCHITECTOR = 'architector'
-  ENGINEER    = 'engineer'
+class Enums::User::Role
+  ADMIN       = 'admin'.freeze
+  ARCHITECTOR = 'architector'.freeze
+  ENGINEER    = 'engineer'.freeze
 
   def self.fetch(role)
     {
       ADMIN       => 'Администратор',
       ARCHITECTOR => 'Архитектор',
       ENGINEER    => 'Инженер'
-    }.fetch(role, nil)
+    }.fetch(role, role)
   end
 
   def self.values

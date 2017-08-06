@@ -1,6 +1,6 @@
 %tr
   %td= user.full_name
-  %td= UserRole.fetch(user.role)
+  %td= Enums::User::Role.fetch(user.role)
   %td
     %a{href: "https://artkarkas.megaplan.ru/staff/#{user.crm}/card/", target: 'blank', rel: 'no-follow'}= user.crm
   %td

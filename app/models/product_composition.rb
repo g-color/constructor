@@ -1,6 +1,5 @@
 class ProductComposition < ApplicationRecord
   acts_as_paranoid
-  audited
 
   belongs_to :product
   belongs_to :constructor_object

@@ -1,4 +1,4 @@
-class AuditAction
+class Enums::Audit::Action
   CREATE  = 'create'
   UPDATE  = 'update'
   DESTROY = 'destroy'

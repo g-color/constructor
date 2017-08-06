@@ -1,6 +1,5 @@
 class Solution < Budget
   acts_as_paranoid
-  audited
 
   scope :accepted, -> { where(proposed: false)}
   scope :proposed, -> { where(proposed: true) }

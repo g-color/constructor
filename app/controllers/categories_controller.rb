@@ -15,17 +15,18 @@ class CategoriesController < ApplicationController
   def create
     @category = Category.new(category_params)
     if @category.save
+      log_changes(Enums::Audit::Action::CREATE)
       redirect_to categories_path
     else
       render 'new'
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @category.update(category_params)
+      log_changes(Enums::Audit::Action::UPDATE)
       redirect_to categories_path
     else
       render 'edit'
@@ -34,9 +35,10 @@ class CategoriesController < ApplicationController
 
   def destroy
     if cantbe_destroyed?
-      flash[:alert] = "Не может быть удалено, так как существует зависимость"
+      flash[:alert] = 'Не может быть удалено, так как существует зависимость'
     else
       @category.destroy
+      log_changes(Enums::Audit::Action::DESTROY)
     end
     redirect_to categories_path
   end
@@ -44,7 +46,8 @@ class CategoriesController < ApplicationController
   private
 
   def cantbe_destroyed?
-    ConstructorObject.exists?(category_id: @category.id) || Product.exists?(category_id: @category.id)
+    ConstructorObject.exists?(category_id: @category.id) ||
+      Product.exists?(category_id: @category.id)
   end
 
   def check_ability
@@ -57,5 +60,15 @@ class CategoriesController < ApplicationController
 
   def category_params
     params.require(:category).permit(:name, :product)
+  end
+
+  def log_changes(action)
+    Services::Audit::Log.new(
+      user:        current_user,
+      object_type: 'category',
+      object_name: @category.name,
+      object_link: @category.name,
+      action:      action
+    ).call
   end
 end

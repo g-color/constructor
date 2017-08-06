@@ -1,6 +1,5 @@
 class Estimate < Budget
   acts_as_paranoid
-  audited
 
   validates :client, presence: true
   validates :name,   uniqueness: {

@@ -34,8 +34,12 @@ class SolutionsController < ApplicationController
     end
 
     if @solution.save
-      @solution.update_json_values(params[:json_stages])
+      Services::Budget::UpdateJsonValues.new(
+        budget: @solution,
+        stages: params[:json_stages]
+      ).call
       @solution.calc_parameters
+      log_changes(Enums::Audit::Action::CREATE)
       redirect_to solutions_path
     else
       discount = @solution.discount_title
@@ -60,8 +64,13 @@ class SolutionsController < ApplicationController
       @solution.discount_by_stages[key.to_i] = value
     end
     if @solution.update(solution_params)
-      @solution.update_json_values(params[:json_stages])
+      Services::Budget::UpdateJsonValues.new(
+        budget: @solution,
+        stages: params[:json_stages]
+      ).call
+
       @solution.calc_parameters
+      log_changes(Enums::Audit::Action::UPDATE)
       redirect_to solutions_path
     else
       discount = @solution.discount_title
@@ -75,6 +84,7 @@ class SolutionsController < ApplicationController
 
   def destroy
     @solution.destroy
+    log_changes(Enums::Audit::Action::DESTROY)
     redirect_to solutions_path
   end
 
@@ -138,5 +148,15 @@ class SolutionsController < ApplicationController
     (1..3).each do |i|
       @products.push(Product.includes(:unit).where(stage: 1).map_for_estimate)
     end
+  end
+
+  def log_changes(action)
+    Services::Audit::Log.new(
+      user:        current_user,
+      object_type: 'solution',
+      object_name: @solution.name,
+      object_link: @solution.name,
+      action:      action
+    ).call
   end
 end

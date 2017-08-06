@@ -24,9 +24,6 @@ gem 'jbuilder', '~> 2.5'
 gem 'listen'
 gem 'pg'
 gem "paranoia", "~> 2.2"
-gem "audited", "~> 4.3"
-# audited rails 5.0 dependency
-gem "rails-observers", github: 'rails/rails-observers'
 gem 'devise'
 gem 'kaminari'
 gem 'simple_form'

@@ -7,14 +7,14 @@
     = form_tag audits_path, :method => 'get' do
       .col-sm-2
         %select.form-control{ name: 'search[user_id]' }
-          %option{value: ''} Пользователь
+          %option{ value: '' } Пользователь
           - User.all.each do |user|
-            %option{value: user.id}= user.full_name
+            %option{ value: user.id }= user.full_name
       .col-sm-2
-        %select.form-control{ name: 'search[auditable_type]' }
+        %select.form-control{ name: 'search[object_type]' }
           %option{ value: '' } Тип объекта
-          - ObjectClassName.values.each do |val|
-            %option{value: val[0]}= val[1]
+          - Enums::Object::Type.values.each do |val|
+            %option{ value: val.first }= val.second
       .col-sm-4
         %label.col-sm-4.control-label Период от
         .col-sm-8
@@ -39,13 +39,13 @@
           %th.col-sm-3 Объект
           %th.col-sm-2 Время
       %tbody
-        - @audits.where.not(user: nil).each do |audit|
+        - @audits.each do |audit|
           %tr
-            %td= audit.user&.full_name
-            %td= UserRole.fetch(audit.user&.role)
-            %td= AuditsHelper.get_action(audit)
-            %td= AuditsHelper.get_class(audit)
-            %td= link_to AuditsHelper.get_auditable(audit).to_s, AuditsHelper.get_auditable(audit).link
+            %td= audit.user_name
+            %td= Enums::User::Role.fetch(audit.user_role)
+            %td= Enums::Audit::Action.fetch(audit.action)
+            %td= Enums::Object::Type.fetch(audit.object_type)
+            %td= audit.object_name
             %td= audit.created_at.to_s(:db)
 
   %br

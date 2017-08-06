@@ -3,7 +3,7 @@ class User < ApplicationRecord
   # :trackable, :confirmable, :lockable, :registerable, :recoverable, :timeoutable and :omniauthable
   devise :database_authenticatable, :rememberable, :validatable
 
-  scope :engineers, -> { where('role = ?', UserRole::ENGINEER) }
+  scope :engineers, -> { where('role = ?', Enums::User::Role::ENGINEER) }
 
   validates :email,      presence: true, uniqueness: true
   validates :first_name, presence: true
@@ -17,7 +17,6 @@ class User < ApplicationRecord
   has_many :estimates
 
   acts_as_paranoid
-  audited
 
   def to_s
     full_name
@@ -28,7 +27,7 @@ class User < ApplicationRecord
   end
 
   def admin?
-    role == UserRole::ADMIN
+    role == Enums::User::Role::ADMIN
   end
 
   def link

@@ -30,8 +30,13 @@ class EstimatesController < ApplicationController
       @estimate.discount_by_stages[key.to_i] = value.blank? ? 0 : value
     end
     if @estimate.save
-      @estimate.update_json_values(params[:json_stages])
+      Services::Budget::UpdateJsonValues.new(
+        budget: @estimate,
+        stages: params[:json_stages]
+      ).call
+
       @estimate.calc_parameters
+      log_changes(Enums::Audit::Action::CREATE)
       flash[:notice] = 'Смета успешно сохранена'
       redirect_to edit_estimate_path(@estimate)
     else
@@ -59,8 +64,13 @@ class EstimatesController < ApplicationController
       @estimate.discount_by_stages[key.to_i] = value.blank? ? 0 : value
     end
     if @estimate.update(estimate_params)
-      @estimate.update_json_values(params[:json_stages])
+      Services::Budget::UpdateJsonValues.new(
+        budget: @estimate,
+        stages: params[:json_stages]
+      ).call
+
       @estimate.calc_parameters
+      log_changes(Enums::Audit::Action::UPDATE)
       flash[:notice] = 'Смета успешно сохранена'
       redirect_to edit_estimate_path(@estimate)
     else
@@ -76,6 +86,7 @@ class EstimatesController < ApplicationController
   def destroy
     client_id = @estimate.client_id
     @estimate.destroy
+    log_changes(Enums::Audit::Action::DESTROY)
     redirect_to estimates_path(client_id: client_id)
   end
 
@@ -179,7 +190,17 @@ class EstimatesController < ApplicationController
     @products = [
       products.where(stage: 1).map_for_estimate,
       products.where(stage: 2).map_for_estimate,
-      products.where(stage: 3).map_for_estimate,
+      products.where(stage: 3).map_for_estimate
     ]
+  end
+
+  def log_changes(action)
+    Services::Audit::Log.new(
+      user:        current_user,
+      object_type: 'estimate',
+      object_name: @estimate.name,
+      object_link: @estimate.name,
+      action:      action
+    ).call
   end
 end

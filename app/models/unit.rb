@@ -1,6 +1,5 @@
 class Unit < ApplicationRecord
   acts_as_paranoid
-  audited
 
   validates :name, presence: true, length: { in: 2..256 }
 

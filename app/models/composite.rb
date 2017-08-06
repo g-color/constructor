@@ -1,6 +1,5 @@
 class Composite < ConstructorObject
   acts_as_paranoid
-  audited except: :price
 
   validates :name,        presence: true, length: { in: 2..256 }
   validates :unit_id,     presence: true

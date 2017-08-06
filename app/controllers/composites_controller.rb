@@ -18,6 +18,7 @@ class CompositesController < ApplicationController
     @composite = Composite.new(composite_params.merge(date: Time.now))
     if @composite.save
       PriceUpdateJob.perform_later(@composite)
+      log_changes(Enums::Audit::Action::CREATE)
       redirect_to composites_path
     else
       flash.now[:alert] = @composite.errors.messages[:base].first if @composite.errors.messages[:base].present?
@@ -31,6 +32,7 @@ class CompositesController < ApplicationController
   def update
     if at_least_one_composition? && @composite.update(composite_params)
       PriceUpdateJob.perform_later(@composite)
+      log_changes(Enums::Audit::Action::UPDATE)
       redirect_to composites_path
     else
       flash.now[:alert] = @composite.errors.messages[:base].first if @composite.errors.messages[:base].present?
@@ -43,6 +45,7 @@ class CompositesController < ApplicationController
       flash[:alert] = "Не может быть удалено, так как существует зависимость"
     else
       @composite.destroy
+      log_changes(Enums::Audit::Action::DESTROY)
     end
     redirect_to composites_path
   end
@@ -75,5 +78,15 @@ class CompositesController < ApplicationController
   def composite_params
     params.require(:composite).permit(:name, :category_id, :unit_id, :price, :divisibility,
       compositions_attributes: [ :id, :children_id, :value, :_destroy ])
+  end
+
+  def log_changes(action)
+    Services::Audit::Log.new(
+      user:        current_user,
+      object_type: 'composite',
+      object_name: @composite.name,
+      object_link: @composite.name,
+      action:      action
+    ).call
   end
 end

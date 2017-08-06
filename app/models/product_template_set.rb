@@ -1,6 +1,5 @@
 class ProductTemplateSet < ApplicationRecord
   acts_as_paranoid
-  audited
 
   belongs_to :product
   belongs_to :product_template

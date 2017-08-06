@@ -18,11 +18,11 @@
     <% @audits.each do |audit| %>
       <Row>
         <Cell><Data ss:Type="Number"><%= audit.id %></Data></Cell>
-        <Cell><Data ss:Type="String"><%= audit.user&.full_name %></Data></Cell>
-        <Cell><Data ss:Type="String"><%= UserRole.fetch(audit.user&.role) %></Data></Cell>
-        <Cell><Data ss:Type="String"><%= AuditsHelper.get_action(audit) %></Data></Cell>
-        <Cell><Data ss:Type="String"><%= AuditsHelper.get_class(audit) %></Data></Cell>
-        <Cell><Data ss:Type="String"><%= AuditsHelper.get_auditable(audit).to_s %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= audit.user_name %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= Enums::User::Role.fetch(audit.user_role) %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= Enums::Audit::Action.fetch(audit.action) %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= Enums::Object::Type.fetch(audit.object_type) %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= audit.object_name %></Data></Cell>
         <Cell><Data ss:Type="String"><%= audit.created_at.to_s(:db) %></Data></Cell>
       </Row>
     <% end %>
