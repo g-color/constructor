@@ -76,7 +76,7 @@ class UsersController < ApplicationController
       user:        current_user,
       object_type: 'user',
       object_name: @user.full_name,
-      object_link: @user.full_name,
+      object_link: @user.link,
       action:      action
     ).call
   end

@@ -65,7 +65,7 @@ class UnitsController < ApplicationController
       user:        current_user,
       object_type: 'unit',
       object_name: @unit.name,
-      object_link: @unit.name,
+      object_link: @unit.link,
       action:      action
     ).call
   end

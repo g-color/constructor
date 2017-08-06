@@ -111,7 +111,7 @@ class ProductsController < ApplicationController
       user:        current_user,
       object_type: 'product',
       object_name: @product.name,
-      object_link: @product.name,
+      object_link: @product.link,
       action:      action
     ).call
   end

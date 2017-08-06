@@ -155,7 +155,7 @@ class SolutionsController < ApplicationController
       user:        current_user,
       object_type: 'solution',
       object_name: @solution.name,
-      object_link: @solution.name,
+      object_link: @solution.link,
       action:      action
     ).call
   end

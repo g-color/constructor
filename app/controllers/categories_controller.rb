@@ -67,7 +67,7 @@ class CategoriesController < ApplicationController
       user:        current_user,
       object_type: 'category',
       object_name: @category.name,
-      object_link: @category.name,
+      object_link: @category.link,
       action:      action
     ).call
   end

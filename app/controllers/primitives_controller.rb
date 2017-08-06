@@ -81,7 +81,7 @@ class PrimitivesController < ApplicationController
       user:        current_user,
       object_type: 'primitive',
       object_name: @primitive.name,
-      object_link: @primitive.name,
+      object_link: @primitive.link,
       action:      action
     ).call
   end

@@ -45,7 +45,11 @@
             %td= Enums::User::Role.fetch(audit.user_role)
             %td= Enums::Audit::Action.fetch(audit.action)
             %td= Enums::Object::Type.fetch(audit.object_type)
-            %td= audit.object_name
+            %td
+              - unless audit.action == Enums::Audit::Action::DESTROY
+                %a{ href: audit.object_link }= audit.object_name
+              - else
+                = audit.object_name
             %td= audit.created_at.to_s(:db)
 
   %br

@@ -85,7 +85,7 @@ class CompositesController < ApplicationController
       user:        current_user,
       object_type: 'composite',
       object_name: @composite.name,
-      object_link: @composite.name,
+      object_link: @composite.link,
       action:      action
     ).call
   end

@@ -199,7 +199,7 @@ class EstimatesController < ApplicationController
       user:        current_user,
       object_type: 'estimate',
       object_name: @estimate.name,
-      object_link: @estimate.name,
+      object_link: @estimate.link,
       action:      action
     ).call
   end

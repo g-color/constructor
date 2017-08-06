@@ -116,7 +116,7 @@ class ClientsController < ApplicationController
       user:        current_user,
       object_type: 'client',
       object_name: @client.full_name,
-      object_link: @client.full_name,
+      object_link: @client.link,
       action:      action
     ).call
   end
