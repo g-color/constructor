@@ -19,9 +19,9 @@
 
   %br
 
-  - if @owned.present? || @delegated.present?
-    .row.main-content
-      .table-responsive{ ng: { show: 'ctrl.ownedPresent()' } }
+  - if @owned.present? || @delegated.present? || @archived.present?
+    .row.main-content{ ng: { show: 'ctrl.ownedPresent()' } }
+      .table-responsive
         %h4.stage Мои клиенты
         %table.table.table-hover.clients-datatable
           %thead
@@ -33,7 +33,61 @@
               %th.col-sm-1 Действия
 
           %tbody
-            %tr{ ng: { repeat: 'client in owned_users track by $index', show: 'ctrl.showClient(client)', class: 'ctrl.clientRowClass(client)' } }
+            %tr{ ng: { repeat: 'client in owned_users track by $index' } }
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.full_name }}
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
+                %span{ ng: { show: 'client.archived' } } Архивирован
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
+                %a{href: "https://artkarkas.megaplan.ru/crm/client.crm/card/", target: 'blank', rel: 'no-follow'} {{ client.crm }}
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.estimates }}
+              %td
+                %a.btn.btn-warning{ title: 'Редактировать', href: '{{client.edit_link}}'}
+                  %span.glyphicon.glyphicon-pencil
+                %a.btn.btn-danger{ title: 'Удалить', href: '{{client.delete_link}}', data: { confirm: 'Вы уверены?', method: 'delete' } }
+                  %span.glyphicon.glyphicon-trash
+
+    %br{ ng: { show: 'ctrl.delegatedPresent()' } }
+    .row.main-content{ ng: { show: 'ctrl.delegatedPresent()' } }
+      .table-responsive
+        %h4.stage Доступные клиенты
+        %table.table.table-hover.clients-datatable
+          %thead
+            %tr
+              %th.col-sm-5 Имя
+              %th.col-sm-1
+              %th.col-sm-2 ID в CRM
+              %th.col-sm-2 Количество смет
+              %th.col-sm-1 Действия
+
+          %tbody
+            %tr{ ng: { repeat: 'client in delegated_users track by $index' } }
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.full_name }}
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
+                %span{ ng: { show: 'client.archived' } } Архивирован
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
+                %a{href: "https://artkarkas.megaplan.ru/crm/client.crm/card/", target: 'blank', rel: 'no-follow'} {{ client.crm }}
+              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.estimates }}
+              %td
+                %a.btn.btn-warning{ title: 'Редактировать', href: '{{client.edit_link}}'}
+                  %span.glyphicon.glyphicon-pencil
+                %a.btn.btn-danger{ title: 'Удалить', href: '{{client.delete_link}}', data: { confirm: 'Вы уверены?', method: 'delete' } }
+                  %span.glyphicon.glyphicon-trash
+
+    %br{ ng: { show: 'ctrl.archivedPresent()' } }
+    .row.main-content{ ng: { show: 'ctrl.archivedPresent()' } }
+      .table-responsive
+        %h4.stage Архивированные клиенты
+        %table.table.table-hover.clients-datatable
+          %thead
+            %tr
+              %th.col-sm-5 Имя
+              %th.col-sm-1
+              %th.col-sm-2 ID в CRM
+              %th.col-sm-2 Количество смет
+              %th.col-sm-1 Действия
+
+          %tbody
+            %tr{ ng: { repeat: 'client in archived_users track by $index', class: 'ctrl.clientRowClass(client)' } }
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.full_name }}
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
                 %span{ ng: { show: 'client.archived' } } Архивирован

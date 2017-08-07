@@ -3,20 +3,20 @@ class ClientsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @user_clients = UserClient.joins(:client)
-    @owned        = @user_clients.owner(current_user)
-                                 .includes(client: [:estimates])
-    @delegated    = @user_clients.delegated(current_user)
-                                 .includes(client: [:estimates])
+    @owned     = UserClient.owner(current_user)
+    @delegated = UserClient.delegated(current_user)
+    @archived  = UserClient.archived(current_user)
 
     if params[:name].present?
       @owned     = @owned.select     { |m| m.client.full_name.downcase.include? params[:name].downcase }
       @delegated = @delegated.select { |m| m.client.full_name.downcase.include? params[:name].downcase }
+      @archived  = @archived.select  { |m| m.client.full_name.downcase.include? params[:name].downcase }
     end
 
     gon.push(
       owned_users:     map_to_json(@owned),
       delegated_users: map_to_json(@delegated),
+      archived_users:  map_to_json(@archived),
       show_archived:   params[:archived].present?
     )
   end
