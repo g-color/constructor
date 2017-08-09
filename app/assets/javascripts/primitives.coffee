@@ -3,23 +3,28 @@ $(document).on 'turbolinks:load', () ->
     price = $(e.target).val()
     id    = $(e.target).data('id')
     old_price = $(e.target).data('price')
-
     unless parseFloat(price) == parseFloat(old_price)
-      $('#primitive-' + id).submit()
+      $.ajax({
+        type: "PUT",
+        url:  '/primitives/' + id,
+        data: { 'primitive[price]': price }
+      })
 
   $('.update-price-link').on('click', (e) ->
     e.preventDefault()
-    primitiveId = $(this).data('id')
-    price = $('.primitive-price[data-id=' + primitiveId + ']').val()
+    id = $(this).data('id')
+    price = $('.primitive-price[data-id=' + id + ']').val()
     $.ajax({
       type: "PUT",
-      url:  '/primitives/' + primitiveId,
+      url:  '/primitives/' + id,
       data: { 'primitive[price]': price }
     })
     .done((data) ->
       date = data.date
       id   = data.id
       button = $('.primitive-actions[data-id=' + id + ']')
-      button.removeClass('btn-warning btn-danger').addClass('btn-default').html(date + ' <span class="caret"></span>')
+      button.removeClass('btn-warning btn-danger')
+            .addClass('btn-default')
+            .html(date + ' <span class="caret"></span>')
     )
   )
