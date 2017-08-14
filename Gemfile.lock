@@ -209,6 +209,8 @@ GEM
     request_store (1.2.0)
     responders (2.3.0)
       railties (>= 4.2.0, < 5.1)
+    rollbar (2.15.0)
+      multi_json
     rtf (0.3.3)
     ruby_parser (3.8.4)
       sexp_processor (~> 4.1)
@@ -300,6 +302,7 @@ DEPENDENCIES
   puma (~> 3.0)
   rails
   rails4-autocomplete
+  rollbar
   rtf
   sass-rails (~> 5.0)
   sidekiq
@@ -314,4 +317,4 @@ DEPENDENCIES
   wkhtmltopdf-binary
 
 BUNDLED WITH
-   1.15.1
+   1.15.3
