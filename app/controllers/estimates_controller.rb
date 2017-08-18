@@ -103,7 +103,8 @@ class EstimatesController < ApplicationController
     solution = estimate.copy(type: :solution)
     solution.update(proposed: true, proposer_id: current_user.id, client_id: nil)
 
-    redirect_to solutions_path
+    redirect_to solutions_path if current_user.admin?
+    redirect_to edit_estimate_path(estimate), alert: "Ваше предложение сделать смету #{estimate.name} готовым решением будет рассмотрено и одобрено в ближайшее время"
   end
 
   def files

@@ -55,3 +55,6 @@
             .modal-footer
               %button.btn.btn-default{ type: "button", data: { dismiss: "modal" } } Отмена
               = submit_tag 'Создать', class: 'btn btn-success'
+- else
+  .row.main-content
+    %p Нет данных для отображения

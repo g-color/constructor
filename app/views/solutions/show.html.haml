@@ -53,11 +53,11 @@
               .col-sm-1
                 %h5.text-right от
               .col-sm-3
-                %h5 @solution.second_floor_height_min
+                %h5= @solution.second_floor_height_min
               .col-sm-offset-1.col-sm-1
                 %h5.text-right до
               .col-sm-3
-                %h5 @solution.second_floor_height_max
+                %h5= @solution.second_floor_height_max
 
           - if @solution.third_floor_height_min > 0
             .form-group
@@ -65,11 +65,11 @@
               .col-sm-1
                 %h5.text-right от
               .col-sm-3
-                %h5 @solution.third_floor_height_min
+                %h5= @solution.third_floor_height_min
               .col-sm-offset-1.col-sm-1
                 %h5.text-right до
               .col-sm-3
-                %h5 @solution.third_floor_height_max
+                %h5= @solution.third_floor_height_max
 
           - if @solution.client_files.present?
             .form-group.client-files-div
