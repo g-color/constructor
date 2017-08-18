@@ -16,6 +16,7 @@ $(document).on 'turbolinks:load', () ->
 
   $('.clients-datatable').DataTable({
     searching: false,
+    autoWidth: false,
     bInfo: false,
     columns: [
       null,
