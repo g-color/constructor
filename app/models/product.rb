@@ -69,23 +69,23 @@ class Product < ApplicationRecord
   def save_sets(sets)
     updated_ids = []
     sets.each do |s|
-      if s['id'] < 1492000000000
-        set = ProductSet.find(s['id'])
-      else
-        set = ProductSet.find_or_initialize_by(name: s['name'])
-      end
+      set = if s['id'] < 1492000000000
+              ProductSet.find(s['id'])
+            else
+              ProductSet.find_or_initialize_by(name: s['name'])
+            end
       set.update(name: s['name'])
 
       s['items'].each do |t|
-        if t['id'] < 1492000000000
-          template = ProductTemplate.find(t['id'])
-        else
-          template = ProductTemplate.find_or_initialize_by(name: t['name'])
-        end
+        template = if t['id'] < 1492000000000
+                     ProductTemplate.find(t['id'])
+                   else
+                     ProductTemplate.find_or_initialize_by(name: t['name'])
+                   end
         template.update(name: t['name'])
 
         id = t['value']['id']
-        value = product_template_sets.find_or_initialize_by(product_template: template, product_set: set)
+        value = product_template_sets.find_or_initialize_by(product_id: id, product_template: template, product_set: set)
         id = ConstructorObject.find_by(name: t['value']['name']).id if id.blank?
         value.update(constructor_object_id: id)
         updated_ids.push(value.id)

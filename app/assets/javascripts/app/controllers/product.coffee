@@ -93,7 +93,7 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
         self.setProductCompositions()
         self.clearCompositionsFields()
       .error (response) ->
-        debugger
+        console.log(response)
 
   removeComposition: (id) ->
     @scope.compositions.splice(this.getIndex(id, @scope.compositions), 1)
@@ -185,6 +185,16 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
   clearSetsFields: () ->
     $('.set-fields').each((i, v) -> $(v).val(''))
     true
+
+  updateProductSets: () ->
+    sets = @scope.sets
+    angular.forEach(sets, (set,i) ->
+      angular.forEach(set.items, (item,k) ->
+        item.value.id = $('#edit-set-template-value-' + item.id).val()
+      )
+    )
+
+    this.setProductSets()
 
   setProductSets: () ->
     sets = JSON.stringify(@scope.sets)
