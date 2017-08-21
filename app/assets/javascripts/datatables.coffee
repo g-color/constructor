@@ -14,6 +14,7 @@ $(document).on 'turbolinks:load', () ->
     order: [[ 5, "desc" ]]
   })
 
+
   $('.clients-datatable').DataTable({
     searching: false,
     autoWidth: false,
