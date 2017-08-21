@@ -7,6 +7,7 @@
     %br
       .form-horizontal.col-sm-offset-2.col-sm-8
         %br
+        = hidden_field_tag 'export', 0
         = hidden_field_tag 'estimate[price]', nil, 'ng-value' => 'estimate.price'
         = hidden_field_tag :json_stages, nil, id: 'estimate_json_stages'
         = f.input :name, label: 'Наименование', placeholder: 'Введите наименование'
@@ -97,7 +98,7 @@
       %h3.text-center Экспорт
       %br
       .button-block.text-center
-        = link_to estimate_export_pdf_path(f.object.id), target: '_blank', class: 'btn btn-default' do
+        = link_to estimate_export_pdf_path(f.object.id), target: '_blank', class: 'btn btn-default', 'ng-click' => 'ctrl.validate(true)' do
           Экспорт в
           %b .pdf
         = link_to estimate_export_doc_path(f.object.id, format: :rtf), target: '_blank', class: 'btn btn-default' do

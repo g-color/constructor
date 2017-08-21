@@ -37,8 +37,12 @@ class EstimatesController < ApplicationController
 
       @estimate.calc_parameters
       log_changes(Enums::Audit::Action::CREATE)
-      flash[:notice] = 'Смета успешно сохранена'
-      redirect_to edit_estimate_path(@estimate)
+      if params[:export] == '1'
+        redirect_to estimate_export_pdf_path(@estimate.id)
+      else
+        flash[:notice] = 'Смета успешно сохранена'
+        redirect_to edit_estimate_path(@estimate)
+      end
     else
       discount = @estimate.discount_title
       area     = @estimate.area
@@ -71,8 +75,12 @@ class EstimatesController < ApplicationController
 
       @estimate.calc_parameters
       log_changes(Enums::Audit::Action::UPDATE)
-      flash[:notice] = 'Смета успешно сохранена'
-      redirect_to edit_estimate_path(@estimate)
+      if params[:export] == '1'
+        redirect_to estimate_export_pdf_path(@estimate.id)
+      else
+        flash[:notice] = 'Смета успешно сохранена'
+        redirect_to edit_estimate_path(@estimate)
+      end
     else
       discount = @estimate.discount_title
       area     = @estimate.area

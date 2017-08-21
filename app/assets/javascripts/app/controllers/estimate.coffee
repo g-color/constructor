@@ -29,7 +29,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     $('#floors').collapse('show') if @scope.estimate.second_floor
 
 
-  validate: ->
+  validate: (ex = false)->
     custom = @scope.custom
     stages = @scope.stages
     event.preventDefault()
@@ -53,6 +53,8 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     if validate.error
       @toaster.error(validate.message)
     else
+      if ex
+        $('#export').val(1)
       $('form').submit()
     true
 
