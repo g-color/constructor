@@ -71,46 +71,6 @@ class Budget < ApplicationRecord
     self.save
   end
 
-  def copy(type:, name: nil, client_id: nil)
-    if type == :estimate
-      new_budget = Estimate.new(self.attributes.except('id', 'type').merge(name: name, client_id: client_id, solution_id: self.solution? ? self.id : nil))
-    else
-      new_budget = Solution.new(self.attributes.except('id', 'type'))
-    end
-    new_budget.save
-
-    self.stages.includes(:stage_products).each do |stage|
-      new_stage = stage.dup
-      new_stage.update(budget: new_budget)
-      stage.stage_products.includes(:stage_product_sets).each do |product|
-        new_product = product.dup
-        new_product.update(stage: new_stage)
-        product.stage_product_sets.includes(:stage_product_set_values).each do |set|
-          new_set = set.dup
-          new_set.update(stage_product: new_product)
-
-          set.stage_product_set_values.each do |value|
-            new_value = value.dup
-            new_value.update(stage_product_set: new_set)
-          end
-        end
-      end
-    end
-
-    esimate_files = [
-      self.technical_files.includes(:asset_file),
-      self.client_files.includes(:asset_file)
-    ]
-
-    esimate_files.each do |files|
-      files.each do |tech_file|
-        new_file = tech_file.dup
-        new_file.update(budget: new_budget)
-      end
-    end
-    new_budget
-  end
-
   def get_stages
     if self.new_record?
       new_stages = []

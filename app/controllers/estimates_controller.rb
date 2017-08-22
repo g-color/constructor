@@ -1,30 +1,27 @@
 class EstimatesController < ApplicationController
-  before_action :get_products,  only: [:new,  :create, :edit, :update]
-  before_action :find_estimate, only: [:edit, :update, :destroy]
   before_action :authenticate_user!
+  before_action :get_products,  only: %i[new create edit update]
+  before_action :get_engineers, only: %i[new create edit update]
+  before_action :find_estimate, only: %i[edit update destroy]
 
   def index
     return redirect_to clients_path unless params[:client_id].present?
 
     @client    = Client.includes(:estimates).find(params[:client_id])
     @estimates = @client.estimates
-    @estimates = @estimates.where("lower(name) like ?", "%#{params[:name].downcase}%") if params[:name].present?
+    @estimates = @estimates.where('lower(name) like ?', "%#{params[:name].downcase}%") if params[:name].present?
   end
 
   def new
-    @engineers = User.engineers
-    @estimate = Estimate.new
-    @estimate = Client.find(params[:client_id]).estimates.build if params[:client_id].present?
-
-    discount  = nil
-    area      = 0
-    price     = 0
-    stages    = @estimate.get_stages
+    @estimate  = params[:client_id].present? ? Client.find(params[:client_id]).estimates.build : Estimate.new
+    discount   = nil
+    area       = 0
+    price      = 0
+    stages     = @estimate.get_stages
     gon.push(get_json_values(discount, area, price, stages))
   end
 
   def create
-    @engineers = User.engineers
     @estimate = Estimate.new(estimate_params.merge(user_id: current_user.id))
     params[:estimate][:discount_by_stages].each do |key, value|
       @estimate.discount_by_stages[key.to_i] = value.blank? ? 0 : value
@@ -33,16 +30,15 @@ class EstimatesController < ApplicationController
       Services::Budget::UpdateJsonValues.new(
         budget: @estimate,
         stages: params[:json_stages]
-      ).call
+      ).calldi
 
       @estimate.calc_parameters
       log_changes(Enums::Audit::Action::CREATE)
-      if params[:export] == '1'
-        redirect_to estimate_export_pdf_path(@estimate.id)
-      else
-        flash[:notice] = 'Смета успешно сохранена'
-        redirect_to edit_estimate_path(@estimate)
-      end
+
+      return redirect_to estimate_export_pdf_path(@estimate.id) if params[:export] == '1'
+
+      flash[:notice] = 'Смета успешно сохранена'
+      redirect_to edit_estimate_path(@estimate)
     else
       discount = @estimate.discount_title
       area     = @estimate.area
@@ -54,7 +50,6 @@ class EstimatesController < ApplicationController
   end
 
   def edit
-    @engineers   = User.engineers
     discount     = @estimate.discount_title
     area         = @estimate.area
     price        = @estimate.price
@@ -63,7 +58,6 @@ class EstimatesController < ApplicationController
   end
 
   def update
-    @engineers = User.engineers
     params[:estimate][:discount_by_stages].each do |key, value|
       @estimate.discount_by_stages[key.to_i] = value.blank? ? 0 : value
     end
@@ -100,7 +94,12 @@ class EstimatesController < ApplicationController
 
   def copy
     estimate     = Estimate.includes(:stages, :client_files, :technical_files).find(params[:estimate_id])
-    new_estimate = estimate.copy(type: :estimate, name: params[:name], client_id: params[:client_id])
+    new_estimate = Services::Budget::Copy.new(
+      budget:    estimate,
+      type:      :estimate,
+      name:      params[:name],
+      client_id: params[:client_id]
+    ).call
 
     alert = new_estimate.errors.first[1] unless new_estimate.valid?
     redirect_to estimates_path(client_id: params[:client_id]), alert: alert
@@ -108,11 +107,15 @@ class EstimatesController < ApplicationController
 
   def propose
     estimate = Estimate.includes(:stages, :client_files, :technical_files).find(params[:estimate_id])
-    solution = estimate.copy(type: :solution)
+    solution = Services::Budget::Copy.new(
+      budget: estimate,
+      type:   :solution
+    ).call
     solution.update(proposed: true, proposer_id: current_user.id, client_id: nil)
 
-    redirect_to solutions_path if current_user.admin?
-    redirect_to edit_estimate_path(estimate), alert: "Ваше предложение сделать смету #{estimate.name} готовым решением будет рассмотрено и одобрено в ближайшее время"
+    return redirect_to solutions_path if current_user.admin?
+    alert_text = "Ваше предложение сделать смету #{estimate.name} готовым решением будет рассмотрено и одобрено в ближайшее время"
+    redirect_to edit_estimate_path(estimate), alert: alert_text
   end
 
   def files
@@ -126,7 +129,7 @@ class EstimatesController < ApplicationController
 
   def export_pdf
     @estimate = Estimate.find(params[:estimate_id]).for_export_budget
-    render pdf: "export_pdf"
+    render pdf: 'export_pdf'
   end
 
   def export_doc
@@ -171,16 +174,24 @@ class EstimatesController < ApplicationController
   end
 
   def estimate_params
-    params.require(:estimate).permit(:name, :client_id, :area, :price,
-      :discount_title, :discount_by_stages, :first_floor_height,
-      :second_floor_height_min, :second_floor_height_max, :third_floor_height_min,
+    params.require(:estimate).permit(
+      :name,
+      :client_id,
+      :area,
+      :price,
+      :discount_title,
+      :discount_by_stages,
+      :first_floor_height,
+      :second_floor_height_min,
+      :second_floor_height_max,
+      :third_floor_height_min,
       :third_floor_height_max,
-      client_files_attributes:    [:id, :asset_file_id, :_destroy],
-      technical_files_attributes: [:id, :asset_file_id, :_destroy],
+      client_files_attributes:    %i[id asset_file_id _destroy],
+      technical_files_attributes: %i[id asset_file_id _destroy]
     )
   end
 
-  def get_json_values(discount, area, price, stages, second_floor = false)
+  def get_json_values(discount, area, price, stages, _second_floor = false)
     {
       expense:  { percent: Expense.sum(:percent) },
       discount: { name: discount, values: @estimate.discount_by_stages },
@@ -190,7 +201,7 @@ class EstimatesController < ApplicationController
         second_floor: @estimate.second_floor_height_min.nil? ? false : @estimate.second_floor_height_min > 0
       },
       products: @products,
-      stages:   stages,
+      stages:   stages
     }
   end
 
@@ -201,6 +212,10 @@ class EstimatesController < ApplicationController
       products.where(stage: 2).map_for_estimate,
       products.where(stage: 3).map_for_estimate
     ]
+  end
+
+  def get_engineers
+    @engineers = User.engineers
   end
 
   def log_changes(action)

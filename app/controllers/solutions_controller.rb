@@ -1,12 +1,12 @@
 class SolutionsController < ApplicationController
-  before_action :get_products,  only:   [:new,  :create, :edit, :update]
-  before_action :find_solution, only:   [:show, :edit, :update, :destroy]
   before_action :authenticate_user!
-  before_action :check_ability, except: [:show, :index]
+  before_action :get_products,  only:   %i[new create edit update]
+  before_action :find_solution, only:   %i[show edit update destroy]
+  before_action :check_ability, except: %i[show index]
 
   def index
     @solutions = Solution.all
-    @solutions = @solutions.where("lower(name) like ?", "%#{params[:name].downcase}%") if params[:name].present?
+    @solutions = @solutions.where('lower(name) like ?', "%#{params[:name].downcase}%") if params[:name].present?
   end
 
   def show
@@ -95,7 +95,12 @@ class SolutionsController < ApplicationController
 
   def copy
     solution = Solution.includes(:stages, :client_files, :technical_files).find(params[:solution_id])
-    new_estimate = solution.copy(type: :estimate, name: params[:name], client_id: params[:client_id])
+    new_estimate = Services::Budget::Copy.new(
+      budget:    solution,
+      type:      :estimate,
+      name:      params[:name],
+      client_id: params[:client_id]
+    ).call
 
     alert = new_estimate.errors.first[1] unless new_estimate.valid?
     redirect_to estimates_path(client_id: params[:client_id]), alert: alert
@@ -112,7 +117,7 @@ class SolutionsController < ApplicationController
 
   def export_pdf
     @solution = Solution.find(params[:solution_id]).for_export_budget
-    render pdf: "export_pdf"
+    render pdf: 'export_pdf'
   end
 
   private
@@ -126,10 +131,17 @@ class SolutionsController < ApplicationController
   end
 
   def solution_params
-    params.require(:solution).permit(:name, :client_id, :area, :url,
-      :first_floor_height, :discount_title, :discount_by_stages, :price,
-      client_files_attributes:    [:id, :asset_file_id, :_destroy],
-      technical_files_attributes: [:id, :asset_file_id, :_destroy],
+    params.require(:solution).permit(
+      :name,
+      :client_id,
+      :area,
+      :url,
+      :first_floor_height,
+      :discount_title,
+      :discount_by_stages,
+      :price,
+      client_files_attributes:    %i[id asset_file_id _destroy],
+      technical_files_attributes: %i[id asset_file_id _destroy]
     )
   end
 
@@ -139,7 +151,7 @@ class SolutionsController < ApplicationController
       products: @products,
       discount: { name: discount, values: @solution.discount_by_stages },
       estimate: { area: area,     price:  price },
-      stages:   stages,
+      stages:   stages
     }
   end
 
