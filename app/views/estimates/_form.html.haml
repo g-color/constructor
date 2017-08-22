@@ -106,9 +106,10 @@
           %b .doc
       %br
 
-      .button-block.text-center
-        = link_to 'Сделать готовым решением', estimate_propose_path(@estimate), class: 'btn btn-default', method: :post
-        %button.btn.btn-default{ type: "button", data: { toggle: "modal", target: "#modal-engineer" } } Экспорт для инженера
+      - unless @estimate.already_proposed
+        .button-block.text-center
+          = link_to 'Сделать готовым решением', estimate_propose_path(@estimate), class: 'btn btn-default', method: :post
+          %button.btn.btn-default{ type: "button", data: { toggle: "modal", target: "#modal-engineer" } } Экспорт для инженера
     %br
 
 - unless @estimate.new_record?

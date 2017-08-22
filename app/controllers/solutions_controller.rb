@@ -19,7 +19,6 @@ class SolutionsController < ApplicationController
 
   def new
     @solution = Solution.new
-
     discount  = nil
     area      = 0
     price     = 0

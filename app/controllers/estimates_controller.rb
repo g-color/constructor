@@ -107,11 +107,13 @@ class EstimatesController < ApplicationController
 
   def propose
     estimate = Estimate.includes(:stages, :client_files, :technical_files).find(params[:estimate_id])
+    return redirect_to edit_estimate_path(estimate) if estimate.already_proposed
     solution = Services::Budget::Copy.new(
       budget: estimate,
       type:   :solution
     ).call
     solution.update(proposed: true, proposer_id: current_user.id, client_id: nil)
+    estimate.update(already_proposed: true)
 
     return redirect_to solutions_path if current_user.admin?
     alert_text = "Ваше предложение сделать смету #{estimate.name} готовым решением будет рассмотрено и одобрено в ближайшее время"
@@ -136,7 +138,7 @@ class EstimatesController < ApplicationController
     estimate = Estimate.find(params[:estimate_id])
     respond_to do |format|
       format.html
-      format.rtf { send_data estimate.rtf(current_user), filename: "data.rtf" }
+      format.rtf { send_data estimate.rtf(current_user), filename: 'data.rtf' }
     end
   end
 
