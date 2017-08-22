@@ -48,7 +48,7 @@
       .col-xs-4.col-xs-offset-2
         %p.no-margin Дата расчета: #{l(@estimate[:date], format: "%d %b %Y г.")}
 
-    - @estimate[:stages].each do |stage|
+    - @estimate[:stages].sort_by {|s| s[:number] }.each do |stage|
       - unless stage[:products].empty?
         %section.stage-pdf
           .row
