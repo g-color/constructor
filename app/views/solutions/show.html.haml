@@ -7,12 +7,6 @@
   = simple_form_for @solution,  wrapper: :horizontal_form do |f|
     .action-buttons.row
       = link_to 'Отмена', solutions_path, class: 'btn btn-default'
-      - if @solution.proposed
-        .btn-group.pull-right
-          = link_to solution_accept_path(@solution), class: 'btn btn-success' do
-            %span.glyphicon.glyphicon-ok{"aria-hidden" => "true"}
-          = link_to solution_path(@solution), method: :delete, data: {confirm: 'Вы уверены?'}, class: 'btn btn-danger' do
-            %span.glyphicon.glyphicon-remove{"aria-hidden" => "true"}
     %p
     .row.main-content
       %br
@@ -36,6 +30,12 @@
             %label.col-sm-3.control-label Общая стоимость
             .col-sm-9
               %h5 {{ estimate.price.toFixed(2) }} руб. ({{ ctrl.getPriceByArea(estimate.price) }} руб. за м2)
+
+          - if @solution.proposer_id.present?
+            .form-group
+              %label.col-sm-3.control-label Предложение от
+              .col-sm-9
+                %h5= @solution.proposer.full_name
 
           .form-group
             %label.col-sm-3.control-label Площадь

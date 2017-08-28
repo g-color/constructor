@@ -66,7 +66,7 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
         $.each(set.items, (i, item) ->
           return false if validate.error
 
-          if item.value.id == '' || item.value.name == ''
+          if item.value.name == ''
             validate.error   = true
             validate.message = "У одной или нескольких сборок не указаны составляющие"
         )

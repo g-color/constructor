@@ -1,7 +1,7 @@
 class Unit < ApplicationRecord
   acts_as_paranoid
 
-  validates :name, presence: true, length: { in: 2..256 }
+  validates :name, uniqueness: true, presence: true, length: { in: 2..256 }
 
   def to_s
     name
