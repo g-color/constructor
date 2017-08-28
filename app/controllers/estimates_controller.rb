@@ -30,7 +30,7 @@ class EstimatesController < ApplicationController
       Services::Budget::UpdateJsonValues.new(
         budget: @estimate,
         stages: params[:json_stages]
-      ).calldi
+      ).call
 
       @estimate.calc_parameters
       log_changes(Enums::Audit::Action::CREATE)
