@@ -3,7 +3,7 @@
     = link_to 'Отмена', solutions_path, class: 'btn btn-default'
     - if @solution.proposed
       .btn-group.pull-right
-        = link_to solution_accept_path(@solution), class: 'btn btn-success' do
+        %button{ class: 'btn btn-success', ng: { click: 'ctrl.acceptSolution()' } }
           %span.glyphicon.glyphicon-ok{ 'aria-hidden' => 'true' }
         = link_to solution_path(@solution), method: :delete, data: {confirm: 'Вы уверены?'}, class: 'btn btn-danger' do
           %span.glyphicon.glyphicon-remove{ 'aria-hidden' => 'true' }
@@ -14,6 +14,7 @@
     %br
       .form-horizontal.col-sm-offset-2.col-sm-8
         %br
+        = hidden_field_tag 'accept', nil, 'ng-value' => 'accept'
         = hidden_field_tag 'solution[price]', nil, 'ng-value' => 'estimate.price'
         = hidden_field_tag :json_stages, nil, id: 'estimate_json_stages'
         = f.input :name, label: 'Наименование',   placeholder: 'Введите наименование'

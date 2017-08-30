@@ -70,7 +70,11 @@ class SolutionsController < ApplicationController
 
       @solution.calc_parameters
       log_changes(Enums::Audit::Action::UPDATE)
-      redirect_to solutions_path
+      if params[:accept] == 'true'
+        redirect_to solution_accept_path(@solution)
+      else
+        redirect_to solutions_path
+      end
     else
       discount = @solution.discount_title
       area     = @solution.area

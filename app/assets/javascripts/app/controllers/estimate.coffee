@@ -8,6 +8,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     @scope.stages   = @pHelper.get('stages')
     @scope.discount = @pHelper.get('discount')
     @scope.products = @pHelper.get('products')
+    @scope.accept   = 'false'
 
     this.initModals()
     this.parseEstimate()
@@ -89,6 +90,11 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
 
     $('#productEditHint').collapse('hide')
     $('#edit-product').modal('show')
+    true
+
+  acceptSolution: () ->
+    @scope.accept = 'true'
+    $('form').submit()
     true
 
   addProduct: () ->
