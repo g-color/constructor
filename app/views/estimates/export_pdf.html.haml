@@ -88,7 +88,6 @@
               .col-xs-6.red-text
                 %strong= "-#{money(@estimate[:discount_amount][stage[:number]-1])} руб."
 
-            - if @estimate[:stages_many]
               .col-xs-6.text-right
                 %strong Итого #{stage[:all_text]}:
               .col-xs-6
