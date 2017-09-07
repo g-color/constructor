@@ -204,10 +204,12 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     (price / estimate.area).toFixed(2)
 
   getStagePrice: (stage) ->
-    price = 0
-    for i in [1..stage.number]
-      price += this.getStage(i).price
-    price.toFixed(2)
+    if stage.number == 1
+      price = this.getStage(1).price
+    else
+      previous_stage = this.getStage(stage.number - 1)
+      price = parseFloat(this.getStageDiscountPrice(previous_stage)) + stage.price
+    parseFloat(price).toFixed(2)
 
   getStageDiscountPrice: (stage) ->
     price = 0

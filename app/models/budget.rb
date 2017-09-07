@@ -58,10 +58,10 @@ class Budget < ApplicationRecord
     discount_all = 0
     (0..2).each do |i|
       self.price_by_area_per_stage[i] = (self.price_by_stage_aggregated[i] / self.area).round 2 if self.area > 0
-      self.discount_amount[i] = (self.price_by_stage[i] * self.discount_by_stages[i] / 100.0).round 2
+      self.discount_amount[i] = (self.price_by_stage[i] * self.discount_by_stages[i] / 100.0).round(2)
       discount_all += self.discount_amount[i]
       self.price_by_stage_aggregated_discounted[i] = self.price_by_stage_aggregated[i] - discount_all
-      self.price_by_area_per_stage_discounted[i] = (self.price_by_stage_aggregated_discounted[i] / area).round 2
+      self.price_by_area_per_stage_discounted[i] = (self.price_by_stage_aggregated_discounted[i] / area).round(2)
     end
     self.second_floor_height_min ||= 0
     self.second_floor_height_max ||= 0
@@ -80,7 +80,7 @@ class Budget < ApplicationRecord
           text:                get_stage_text(i),
           products:            [],
           price:               0,
-          price_with_discount: 0,
+          price_with_discount: 0
         )
       end
       new_stages
