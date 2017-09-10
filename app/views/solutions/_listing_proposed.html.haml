@@ -1,6 +1,6 @@
 %tr
   %td= link_to solution.name, edit_solution_path(solution)
-  %td= solution.price
+  %td= solution.price.round
   %td= solution.price_by_area
   %td= solution.get_floor
   %td= solution.area
