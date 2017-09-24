@@ -31,8 +31,9 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
 
 
   validate: (ex = false)->
-    custom = @scope.custom
-    stages = @scope.stages
+    custom   = @scope.custom
+    stages   = @scope.stages
+    estimate = @scope.estimate
     event.preventDefault()
 
     validate = { error: false, message: null }
@@ -50,6 +51,20 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
         else
           if product.quantity <= 0 && !validate.error
             validate = { error: true, message: 'Неверно указано количество сметного продукта' }
+
+    if estimate.second_floor
+      second_floor = {
+        min: parseFloat($('#estimate_second_floor_height_min').val()),
+        max: parseFloat($('#estimate_second_floor_height_max').val())
+      }
+      third_floor = {
+        min: parseFloat($('#estimate_third_floor_height_min').val()),
+        max: parseFloat($('#estimate_third_floor_height_max').val())
+      }
+      if second_floor.max < second_floor.min
+        validate = { error: true, message: 'Неверно указана высота второго этажа' }
+      if third_floor.max < third_floor.min
+        validate = { error: true, message: 'Неверно указана высота третьего этажа' }
 
     if validate.error
       @toaster.error(validate.message)
