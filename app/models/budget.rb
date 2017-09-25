@@ -181,7 +181,7 @@ class Budget < ApplicationRecord
   end
 
   def for_export_budget
-    {
+    data = {
       discount_title: self.discount_title,
       discount_amount: self.discount_amount,
       price_by_stage_aggregated: self.price_by_stage_aggregated,
@@ -213,7 +213,7 @@ class Budget < ApplicationRecord
               custom:             stage_product.product.custom,
               with_work:          stage_product.with_work,
               unit:               stage_product.product.unit.name,
-              price_result:       ((stage_product.with_work ? stage_product.price_with_work : stage_product.price_without_work) * (1 + (stage_product.product.profit+Expense.sum(:percent))/100.0)).round(2),
+              price_result:       stage_product.price,
               quantity:           stage_product.quantity.to_i,
               set_name:           stage_product.product.custom ? stage_product.stage_product_sets.find_by(selected: true).product_set.name : '',
               sets:               stage_product.product.custom ? self.get_stage_product_set(stage_product) : [],
@@ -223,6 +223,14 @@ class Budget < ApplicationRecord
         }
       end
     }
+
+    data[:stages].sort_by! { |s| s[:number] }.to_a
+    data[:stages].each_with_index do |stage, index|
+      next if index.zero?
+      stage[:price] = stage[:price] + data[:stages][index - 1][:price_with_discount]
+      stage[:price_with_discount] = stage[:price_with_discount] + data[:stages][index - 1][:price_with_discount]
+    end
+    data
   end
 
   def solution?

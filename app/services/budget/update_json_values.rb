@@ -38,7 +38,8 @@ module Services
         product.update(quantity:           p['quantity'],
                        with_work:          p['with_work'],
                        price_with_work:    p['price_with_work']    || 0,
-                       price_without_work: p['price_without_work'] || 0)
+                       price_without_work: p['price_without_work'] || 0,
+                       price:              p['price'] || 0)
         return unless p['custom']
         # Удаляем сеты которые не пришли
         set_ids = p['sets'].map { |s| s['id'] }
