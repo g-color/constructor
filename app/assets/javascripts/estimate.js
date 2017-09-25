@@ -5,6 +5,7 @@ $(document).on('turbolinks:load', function() {
     var file_data = $(this).prop("files")[0];
     var form_data = new FormData();
     form_data.append('file', file_data);
+    debugger
     $.ajax({
       url: '/estimates/files',
       dataType: 'json',
@@ -18,6 +19,9 @@ $(document).on('turbolinks:load', function() {
         $(nested).find('.file-id').val(response.id);
         $(nested).find('.file-name').text(response.name);
         $(nested).find('.file-src').attr("src", response.src);
+      },
+      error: function(response) {
+          debugger;
       }
     });
   });
