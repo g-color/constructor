@@ -127,8 +127,9 @@ class Budget < ApplicationRecord
               name:   item.constructor_object.name,
               unit:   item.constructor_object.unit.name,
               price:  item.constructor_object.price,
+              price_without_work: item.constructor_object.price_without_work,
               work_primitive: item.constructor_object.work_primitive?
-            },
+            }
           }
         end
       }

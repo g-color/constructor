@@ -423,7 +423,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
               $.each(set.items, (i,item) ->
                 item.quantity = parseFloat(item.quantity)
                 price_with_work += item.value.price * parseFloat(item.quantity)
-                price_without_work += item.value.price * parseFloat(item.quantity) unless item.work_primitive
+                price_without_work += item.value.price_without_work * parseFloat(item.quantity)
               )
           )
           stage.products[i].price_with_work     = price_with_work
