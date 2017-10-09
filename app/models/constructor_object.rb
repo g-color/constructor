@@ -67,7 +67,7 @@ class ConstructorObject < ApplicationRecord
   end
 
   def work_primitive?
-    is_primitive? && category_id == ENV['WORK_CATEGORY'].to_i
+    category_id == ENV['WORK_CATEGORY'].to_i
   end
 
   def update_report_primitivies(estimate, quantity)
