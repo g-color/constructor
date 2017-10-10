@@ -159,10 +159,12 @@ class SolutionsController < ApplicationController
   end
 
   def get_products
-    @products = []
-    (1..3).each do |i|
-      @products.push(Product.includes(:unit).where(stage: 1).map_for_estimate)
-    end
+    products = Product.includes(:unit)
+    @products = [
+      products.where(stage: 1).map_for_estimate,
+      products.where(stage: 2).map_for_estimate,
+      products.where(stage: 3).map_for_estimate
+    ]
   end
 
   def log_changes(action)
