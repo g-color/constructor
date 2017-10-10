@@ -5,7 +5,7 @@
       %button.btn.btn-danger.btn-sm
         %span.glyphicon.glyphicon-trash{ 'aria-hidden': true }
 
-  %a.file-thumb{ href: f.object.asset_file.present? && f.object.asset_file.image? ? f.object.asset_file.data.url : ActionController::Base.helpers.asset_url('file-icon.png'), data: {toggle: 'lightbox', gallery: 'client-files'} }
+  %a.file-thumb{ href: f.object.asset_file.present? ? f.object.asset_file.data.url : ActionController::Base.helpers.asset_url('file-icon.png'), data: f.object.asset_file.present? && f.object.asset_file.image? ? {toggle: 'lightbox', gallery: 'client-files'} : { target: :blank } }
     %img.img-rounded.img-responsive.file-src{ src: f.object.asset_file.present? && f.object.asset_file.image? ? f.object.asset_file.data.url : ActionController::Base.helpers.asset_url('file-icon.png') }
       %p.text-center.file-name
         = f.object.asset_file.data_file_name if f.object.asset_file.present?
