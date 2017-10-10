@@ -45,9 +45,13 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       angular.forEach stage.products, (product,l) ->
         if product.custom
           angular.forEach product.sets, (set,m) ->
+            at_least_one_present = false
             angular.forEach set.items, (item,n) ->
-              if item.quantity <= 0 && !validate.error
+              at_least_one_present = item.quantity > 0 unless at_least_one_present
+              if item.quantity < 0 && !validate.error
                 validate = { error: true, message: 'Неверно указано количество составляющей сметного продукта' }
+
+            validate = { error: true, message: 'Неверно указано количество составляющей сметного продукта' } unless at_least_one_present
         else
           if product.quantity <= 0 && !validate.error
             validate = { error: true, message: 'Неверно указано количество сметного продукта' }
@@ -73,7 +77,6 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
         $('#export').val(1)
       $('form').submit()
     true
-
 
   showAddModal: (stage) ->
     @scope.addModal.header       = 'Добавление сметного продукта. Этап ' + stage
