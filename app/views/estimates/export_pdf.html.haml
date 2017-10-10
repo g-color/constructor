@@ -84,7 +84,7 @@
 
             - if @estimate[:discount_amount][stage[:number]-1] > 0
               .col-xs-6.text-right.red-text
-                %strong #{@estimate[:discount_title]} #{stage[:current_text]}:
+                %strong #{@estimate[:discount_title]} #{stage[:discount_text]}:
               .col-xs-6.red-text
                 %strong= "-#{money(@estimate[:discount_amount][stage[:number]-1])} руб."
 

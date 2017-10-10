@@ -203,6 +203,7 @@ class Budget < ApplicationRecord
         {
           number:              stage.number,
           current_text:        Stage::CURRENT[stage.number-1],
+          discount_text:       Stage::DISCOUNT[stage.number-1],
           all_text:            Stage::ALL[stage.number-1],
           price_with_discount: stage.price_with_discount,
           price:               stage.price,
