@@ -18,7 +18,7 @@ class Product < ApplicationRecord
 
 
   has_and_belongs_to_many :items,
-              class_name: "Product",
+              class_name: 'Product',
               join_table: :product_compositions,
               foreign_key: :product_id,
               association_foreign_key: :constructor_object_id
