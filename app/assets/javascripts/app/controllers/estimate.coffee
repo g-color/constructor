@@ -312,7 +312,20 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     this.saveJsonValue()
 
   productPrice: (product) ->
-    (product.price * product.quantity).toFixed(2)
+    expense = @scope.expense
+    if product.price == 0
+      original_product = this.getProduct(product.id)
+      if product.with_work
+        original_product_price = original_product.price_with_work + (original_product.price_with_work / 100 * (expense.percent + product.profit))
+      else
+        original_product_price = original_product.price_without_work + (original_product.price_without_work / 100 * (expense.percent + product.profit))
+
+      product.price = (original_product_price * product.quantity).toFixed(2)
+      for i in [1..3]
+        this.recalcStage(i)
+      product.price
+    else
+      (product.price * product.quantity).toFixed(2)
 
   recalcProduct: (template) ->
     this.updateTemplateValue(template) unless template == undefined
