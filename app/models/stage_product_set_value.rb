@@ -3,7 +3,7 @@ class StageProductSetValue < ApplicationRecord
   belongs_to :product_template
   belongs_to :constructor_object
 
-  validates :quantity, presence: true, numericality: { greater_than: 0 }
+  validates :quantity, presence: true, numericality: { greater_or_equal: 0 }
 
   def get_primitives(with_work: true)
     primitives = self.constructor_object.get_primitives(with_work: with_work)
