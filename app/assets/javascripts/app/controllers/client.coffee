@@ -20,6 +20,7 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
     @scope.owned_users && @scope.owned_users.length > 0
 
   delegatedPresent: () ->
+    debugger
     @scope.delegated_users && @scope.delegated_users.length > 0
 
   archivedPresent: () ->
