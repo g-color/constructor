@@ -320,7 +320,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       else
         original_product_price = original_product.price_without_work + (original_product.price_without_work / 100 * (expense.percent + product.profit))
 
-      product.price = (original_product_price * product.quantity).toFixed(2)
+      product.price = (original_product_price).toFixed(2)
       for i in [1..3]
         this.recalcStage(i)
       product.price
