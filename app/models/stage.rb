@@ -10,6 +10,12 @@ class Stage < ApplicationRecord
 
   scope :active, -> { where('price > 0') }
 
+  before_destroy :clear_relationship
+
+  def clear_relationship
+    stage_products.each(&:destroy)
+  end
+
   def update_report_primitivies
     self.stage_products.each do |stage_product|
       stage_product.update_report_primitivies(self.budget)

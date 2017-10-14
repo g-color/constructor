@@ -7,6 +7,12 @@ class StageProduct < ApplicationRecord
   scope :estimate_signed, ->              { joins(:stage => :budget).where('budgets.signed') }
   scope :by_product,      -> (product_id) { where('product_id = ?', product_id) }
 
+  before_destroy :clear_relationship
+
+  def clear_relationship
+    stage_product_sets.each(&:destroy)
+  end
+
   def items
     if product.custom 
       return stage_product_sets.find_by(selected: true).stage_product_set_values.includes(:product_template, :constructor_object, constructor_object: [:unit]).map do |item|

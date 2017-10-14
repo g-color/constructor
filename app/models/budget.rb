@@ -45,9 +45,14 @@ class Budget < ApplicationRecord
   accepts_nested_attributes_for :technical_files, reject_if: :all_blank, allow_destroy: true
 
   before_save :fill_empty_fields
+  before_destroy :clear_relationships
 
   def fill_empty_fields
     self.discount_by_stages = [0, 0, 0] if discount_by_stages == ['', '', '']
+  end
+
+  def clear_relationships
+    stages.each.each(&:destroy)
   end
 
   def calc_parameters
