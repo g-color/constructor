@@ -11,7 +11,10 @@ $(document).on 'turbolinks:load', () ->
       { "orderable": false },
       null
     ],
-    order: [[ 5, "desc" ]]
+    order: [[ 5, "desc" ]],
+    oLanguage: {
+      "sLengthMenu": "Показать _MENU_",
+    }
   })
 
 
@@ -25,7 +28,10 @@ $(document).on 'turbolinks:load', () ->
       null,
       { "orderable": false },
       { "orderable": false },
-    ]
+    ],
+    oLanguage: {
+      "sLengthMenu": "Показать _MENU_",
+    }
   })
 
   $('.primitives-datatable').DataTable({
@@ -38,7 +44,10 @@ $(document).on 'turbolinks:load', () ->
       { "orderable": false },
       null,
       { "orderable": false }
-    ]
+    ],
+    oLanguage: {
+      "sLengthMenu": "Показать _MENU_",
+    }
   })
 
   $('#product-popularity').DataTable({
@@ -48,7 +57,10 @@ $(document).on 'turbolinks:load', () ->
     columns: [
       null,
       null,
-    ]
+    ],
+    oLanguage: {
+      "sLengthMenu": "Показать _MENU_",
+    }
   })
 
   $('#floor-popularity').DataTable({
@@ -58,7 +70,10 @@ $(document).on 'turbolinks:load', () ->
     columns: [
       { "orderable": false },
       null,
-    ]
+    ],
+    oLanguage: {
+      "sLengthMenu": "Показать _MENU_",
+    }
   })
 
   $('#area-popularity').DataTable({
@@ -68,7 +83,10 @@ $(document).on 'turbolinks:load', () ->
     columns: [
       null,
       null,
-    ]
+    ],
+    oLanguage: {
+      "sLengthMenu": "Показать _MENU_",
+    }
   })
 
   $('#material-consumption').DataTable({
@@ -80,7 +98,10 @@ $(document).on 'turbolinks:load', () ->
       { "orderable": false },
       null,
       null,
-    ]
+    ],
+    oLanguage: {
+      "sLengthMenu": "Показать _MENU_",
+    }
   })
 
   $('#estimate-conversion').DataTable({
@@ -94,7 +115,10 @@ $(document).on 'turbolinks:load', () ->
       null,
       null,
       null,
-    ]
+    ],
+    oLanguage: {
+      "sLengthMenu": "Показать _MENU_",
+    }
   })
 
   $('#solutions-datatable').DataTable({
@@ -110,5 +134,8 @@ $(document).on 'turbolinks:load', () ->
       null,
       null,
       { "orderable": false }
-    ]
+    ],
+    oLanguage: {
+      "sLengthMenu": "Показать _MENU_",
+    }
   })

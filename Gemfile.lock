@@ -308,7 +308,6 @@ DEPENDENCIES
   angularjs-rails
   bootstrap-kaminari-views
   bootstrap-sass (~> 3.3.6)
-  byebug
   cancan
   cocoon
   coffee-rails (~> 4.2)
