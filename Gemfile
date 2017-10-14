@@ -58,7 +58,6 @@ gem 'rollbar'
 # https://github.com/rubysherpas/paranoia
 
 group :development, :test do
-  gem 'byebug', platform: :mri
   gem 'pry'
   gem 'pry-byebug'
   gem 'pry-rails'
@@ -70,4 +69,6 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'rspec-rails', '~> 3.6'
+  gem 'factory_girl_rails'
 end
