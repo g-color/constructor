@@ -28,6 +28,15 @@ class Product < ApplicationRecord
   has_many :product_templates, through: :product_template_sets
   has_many :product_sets,      through: :product_template_sets
 
+  before_destroy :clear_relationship
+
+  def clear_relationship
+    product_compositions.each(&:destroy)
+    product_sets.each(&:destroy)
+    product_templates.each(&:destroy)
+    product_template_sets.each(&:destroy)
+  end
+
   def self.map_for_estimate
     all.map do |x|
       {
