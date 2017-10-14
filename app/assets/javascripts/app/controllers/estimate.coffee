@@ -324,9 +324,9 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       product.price = (original_product_price).toFixed(2) / product.quantity
       for i in [1..3]
         this.recalcStage(i)
-      product.price
-    else
-      (product.price * product.quantity).toFixed(2)
+      product.price * product.quantity
+
+    (product.price * product.quantity).toFixed(2)
 
   recalcProduct: (template) ->
     this.updateTemplateValue(template) unless template == undefined
