@@ -1,4 +1,13 @@
 $(document).on 'turbolinks:load', () ->
+
+  buttons_translate = {
+    sLengthMenu: "Показать _MENU_",
+    oPaginate: {
+      sNext: "Вперед",
+      sPrevious: "Назад"
+    }
+  }
+
   $('.audits-datatable').DataTable({
     searching: false,
     autoWidth: false,
@@ -12,9 +21,7 @@ $(document).on 'turbolinks:load', () ->
       null
     ],
     order: [[ 5, "desc" ]],
-    oLanguage: {
-      "sLengthMenu": "Показать _MENU_",
-    }
+    oLanguage: buttons_translate
   })
 
 
@@ -29,9 +36,7 @@ $(document).on 'turbolinks:load', () ->
       { "orderable": false },
       { "orderable": false },
     ],
-    oLanguage: {
-      "sLengthMenu": "Показать _MENU_",
-    }
+    oLanguage: buttons_translate
   })
 
   $('.primitives-datatable').DataTable({
@@ -45,9 +50,7 @@ $(document).on 'turbolinks:load', () ->
       null,
       { "orderable": false }
     ],
-    oLanguage: {
-      "sLengthMenu": "Показать _MENU_",
-    }
+    oLanguage: buttons_translate
   })
 
   $('#product-popularity').DataTable({
@@ -58,9 +61,7 @@ $(document).on 'turbolinks:load', () ->
       null,
       null,
     ],
-    oLanguage: {
-      "sLengthMenu": "Показать _MENU_",
-    }
+    oLanguage: buttons_translate
   })
 
   $('#floor-popularity').DataTable({
@@ -71,9 +72,7 @@ $(document).on 'turbolinks:load', () ->
       { "orderable": false },
       null,
     ],
-    oLanguage: {
-      "sLengthMenu": "Показать _MENU_",
-    }
+    oLanguage: buttons_translate
   })
 
   $('#area-popularity').DataTable({
@@ -84,9 +83,7 @@ $(document).on 'turbolinks:load', () ->
       null,
       null,
     ],
-    oLanguage: {
-      "sLengthMenu": "Показать _MENU_",
-    }
+    oLanguage: buttons_translate
   })
 
   $('#material-consumption').DataTable({
@@ -99,9 +96,7 @@ $(document).on 'turbolinks:load', () ->
       null,
       null,
     ],
-    oLanguage: {
-      "sLengthMenu": "Показать _MENU_",
-    }
+    oLanguage: buttons_translate
   })
 
   $('#estimate-conversion').DataTable({
@@ -116,9 +111,7 @@ $(document).on 'turbolinks:load', () ->
       null,
       null,
     ],
-    oLanguage: {
-      "sLengthMenu": "Показать _MENU_",
-    }
+    oLanguage: buttons_translate
   })
 
   $('#solutions-datatable').DataTable({
@@ -135,7 +128,5 @@ $(document).on 'turbolinks:load', () ->
       null,
       { "orderable": false }
     ],
-    oLanguage: {
-      "sLengthMenu": "Показать _MENU_",
-    }
+    oLanguage: buttons_translate
   })
