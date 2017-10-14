@@ -14,7 +14,7 @@
         .form-group
           %label.col-sm-3.control-label Клиент*
           .col-sm-6
-            = f.input :client_id, label: false, as: :select, collection: Client.select(:id, :first_name, :last_name, :middle_name).collect {|c| [ c.full_name, c.id ] }, class: 'form-control'
+            = f.input :client_id, label: false, as: :select, collection: current_user.clients.collect {|c| [ c.full_name, c.id ] }, class: 'form-control'
           .col-sm-3
             = link_to 'Создать клиента', new_client_path, class: 'btn btn-default col-sm-12'
 
