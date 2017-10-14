@@ -10,7 +10,7 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
 
     @scope.archived_users    = @pHelper.get('archived_users')
     @scope.owned_users       = @pHelper.get('owned_users')
-    @scope.delegated_users   = @pHelper.get('deledated_users')
+    @scope.delegated_users   = @pHelper.get('delegated_users')
     @scope.showArchived      = @pHelper.get('show_archived')
 
     client     = @scope.client
@@ -20,7 +20,6 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
     @scope.owned_users && @scope.owned_users.length > 0
 
   delegatedPresent: () ->
-    debugger
     @scope.delegated_users && @scope.delegated_users.length > 0
 
   archivedPresent: () ->
