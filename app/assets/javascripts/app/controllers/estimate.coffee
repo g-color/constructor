@@ -1,3 +1,4 @@
+
 angular.module('Constructor').controller 'EstimateController', class EstimateController
   @$inject: ['$scope', '$http', '$filter', 'pHelper', 'toaster']
 
@@ -141,8 +142,10 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
         message = 'Необходимо выбрать сборку сметного продукта'
 
       set = product.sets.find((x) -> x.id == parseInt(set_id))
+      at_least_one_present = false
       $.each($('.template-quantity'), (i, v) ->
         quantity     = $(v).val()
+        at_least_one_present = quantity > 0 unless at_least_one_present
         set.selected = true
         set.items[i] = Object.assign(set.items[i], {quantity: parseFloat($(v).val())})
 
@@ -150,14 +153,15 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
           error = true
           message = 'Необходимо указать количество для всех составляющих сметного продукта'
 
-        if (parseFloat($(v).val()) <= 0 || regexp.exec($(v).val()) == null) && error == false
-          error = true
-          message = 'Неверно указано количество'
-
         product.price_with_work += set.items[i].value.price * $(v).val()
         unless set.items[i].value.work_primitive
           product.price_without_work += set.items[i].value.price * $(v).val()
       )
+
+      unless at_least_one_present
+        error = true
+        message = 'Неверно указано количество'
+
       product = Object.assign(product, {quantity: 1, with_work: true})
     else
       if quantity == ''
