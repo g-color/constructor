@@ -319,13 +319,12 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     expense = @scope.expense
     if product.price == 0
       original_product = this.getProduct(product.id)
-
       if product.with_work
-        original_product_price = original_product.price_with_work + (original_product.price_with_work / 100 * (expense.percent + product.profit))
+        price = original_product.price_with_work
       else
-        original_product_price = original_product.price_without_work + (original_product.price_without_work / 100 * (expense.percent + product.profit))
-
-      product.price = parseFloat((original_product_price).toFixed(2)) + 0.05
+        price = original_product.price_without_work
+      original_product_price = price + (price / 100 * (expense.percent + original_product.profit))
+      product.price = parseFloat(original_product_price)
       for i in [1..3]
         this.recalcStage(i)
 
