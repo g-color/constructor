@@ -25,8 +25,8 @@
       <Row>
         <Cell><Data ss:Type="String">Наименование</Data></Cell>
         <Cell><Data ss:Type="String">ед. изм.</Data></Cell>
-        <Cell><Data ss:Type="String">Расценка, руб.</Data></Cell>
         <Cell><Data ss:Type="String">Количество</Data></Cell>
+        <Cell><Data ss:Type="String">Расценка, руб.</Data></Cell>
         <Cell><Data ss:Type="String">Стоимость, руб.</Data></Cell>
       </Row>
       <% primitives.each do |key, value| %>
@@ -37,8 +37,8 @@
           <Row>
             <Cell><Data ss:Type="String"><%= primitive.name %></Data></Cell>
             <Cell><Data ss:Type="String"><%= primitive.unit.name %></Data></Cell>
-            <Cell><Data ss:Type="Number"><%= primitive.price %></Data></Cell>
             <Cell><Data ss:Type="Number"><%= value %></Data></Cell>
+            <Cell><Data ss:Type="Number"><%= primitive.price %></Data></Cell>
             <Cell ss:Formula="<%= formula %>"></Cell>
           </Row>
         <% end %>
