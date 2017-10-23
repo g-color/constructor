@@ -10,7 +10,7 @@ class Budget < ApplicationRecord
     '2'   => 'Двухэтажный',
     '2.5' => 'Двухэтажный с мансардой',
     '3'   => 'Трехэтажный'
-  }
+  }.freeze
 
   AREA_MIN  = 10
   AREA_MAX  = 250
@@ -34,8 +34,8 @@ class Budget < ApplicationRecord
   validates :third_floor_height_max, numericality: { greater_than_or_equal_to: 0 }, float_with_precision_three: true
 
   belongs_to :solution
-  belongs_to :user
-  belongs_to :proposer, class_name: 'User', foreign_key: :proposer_id
+  belongs_to :user,     -> { with_deleted }
+  belongs_to :proposer, -> { with_deleted }, class_name: 'User', foreign_key: :proposer_id
 
   has_many :stages
   has_many :client_files
