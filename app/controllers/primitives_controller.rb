@@ -4,7 +4,7 @@ class PrimitivesController < ApplicationController
   before_action :check_ability
 
   def index
-    @primitives = Primitive.includes(:category, :unit).order(:created_at).all
+    @primitives = Primitive.includes(:category, :unit).all
     @primitives.where!('lower(name) like ?', "%#{params[:name].downcase}%") if params[:name].present?
     @primitives.where!(category_id: params[:category])                      if params[:category].present?
   end

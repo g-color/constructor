@@ -147,6 +147,8 @@ class EstimatesController < ApplicationController
     engineer = User.find_by(id: params[:engineer])
     signed = params[:signed]
 
+    return if @estimate.nil? || engineer.nil?
+
     @estimate.user = current_user
     if signed.present?
       @estimate.signed = true
@@ -165,7 +167,7 @@ class EstimatesController < ApplicationController
 
     render json: {
       engineer: engineer,
-      signed: signed
+      signed:   signed
     }
   end
 

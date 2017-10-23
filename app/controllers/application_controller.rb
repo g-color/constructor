@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   after_action :set_csrf_cookie_for_ng
 
-
   def render *args
     global_js_variables
     super
@@ -19,10 +18,10 @@ class ApplicationController < ActionController::Base
   end
 
   def global_js_variables
-    gon.push({
+    gon.push(
       url_find_user_by_name: find_user_by_name_path,
       url_composition_info:  info_constructor_objects_path,
-    })
+    )
   end
 
   def ajax_error(errors)
