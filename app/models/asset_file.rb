@@ -5,7 +5,6 @@ class AssetFile < ApplicationRecord
 
 
   def image?
-    self.data_content_type.index('image').present?
+    data_content_type.index(/jpg|png|jpeg/).present?
   end
-
 end
