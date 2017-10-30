@@ -18,14 +18,14 @@ class PrimitivesController < ApplicationController
     if @primitive.save
       PriceUpdateJob.perform_later(@primitive)
       log_changes(Enums::Audit::Action::CREATE)
-      redirect_to primitives_path
+      flash[:notice] = 'Примитив успешно сохранен'
+      redirect_to edit_primitive_path(@primitive)
     else
       render 'new'
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     params = primitive_params
@@ -35,7 +35,10 @@ class PrimitivesController < ApplicationController
       log_changes(Enums::Audit::Action::UPDATE)
       respond_to do |format|
         format.json { render json: { id: @primitive.id, date: l(@primitive.date, format: "%d %b, %Y") } }
-        format.html { redirect_to primitives_path }
+        format.html do
+          flash[:notice] = 'Примитив успешно сохранен'
+          redirect_to edit_primitive_path(@primitive)
+        end
       end
     else
       respond_to do |format|

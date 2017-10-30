@@ -30,7 +30,8 @@ class ProductsController < ApplicationController
         @product.save_compositions(JSON.parse(params[:product_compositions]))
       end
       log_changes(Enums::Audit::Action::CREATE)
-      redirect_to products_path
+      flash[:notice] = 'Продукт успешно сохранен'
+      redirect_to edit_product_path(@product)
     else
       flash.now[:alert] = @product.errors.messages[:base].first if @product.errors.messages[:base].present?
       gon.push(
@@ -60,7 +61,8 @@ class ProductsController < ApplicationController
         @product.save_compositions(JSON.parse(params[:product_compositions]))
       end
       log_changes(Enums::Audit::Action::UPDATE)
-      redirect_to products_path
+      flash[:notice] = 'Продукт успешно сохранен'
+      redirect_to edit_product_path(@product)
     else
       flash.now[:alert] = @product.errors.messages[:base].first if @product.errors.messages[:base].present?
       gon.push(

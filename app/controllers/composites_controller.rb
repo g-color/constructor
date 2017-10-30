@@ -19,21 +19,22 @@ class CompositesController < ApplicationController
     if @composite.save
       PriceUpdateJob.perform_later(@composite)
       log_changes(Enums::Audit::Action::CREATE)
-      redirect_to composites_path
+      flash[:notice] = 'Объект успешно сохранен'
+      redirect_to edit_composite_path(@composite)
     else
       flash.now[:alert] = @composite.errors.messages[:base].first if @composite.errors.messages[:base].present?
       render 'new'
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if at_least_one_composition? && @composite.update(composite_params)
       PriceUpdateJob.perform_later(@composite)
       log_changes(Enums::Audit::Action::UPDATE)
-      redirect_to composites_path
+      flash[:notice] = 'Объект успешно сохранен'
+      redirect_to edit_composite_path(@composite)
     else
       flash.now[:alert] = @composite.errors.messages[:base].first if @composite.errors.messages[:base].present?
       render 'edit'
@@ -42,7 +43,7 @@ class CompositesController < ApplicationController
 
   def destroy
     if cantbe_destroy?
-      flash[:alert] = "Не может быть удалено, так как существует зависимость"
+      flash[:alert] = 'Не может быть удалено, так как существует зависимость'
     else
       @composite.destroy
       log_changes(Enums::Audit::Action::DESTROY)
