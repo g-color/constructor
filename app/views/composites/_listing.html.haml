@@ -2,7 +2,7 @@
   %td= composite.name
   %td= composite.unit.name
   %td= composite.category.name
-  %td= composite.price
+  %td= format('%0.2f', composite.price)
   %td
     = link_to edit_composite_path(composite), title: 'Редактировать', class: 'btn btn-warning' do
       %span.glyphicon.glyphicon-pencil
