@@ -11,6 +11,9 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     @scope.products = @pHelper.get('products')
     @scope.accept   = 'false'
 
+    if @pHelper.get('export_pdf')
+      window.open($('#export_pdf_button').attr('href'), '_blank')
+
     this.initModals()
     this.parseEstimate()
     this.parseProducts()

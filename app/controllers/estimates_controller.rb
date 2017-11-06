@@ -35,10 +35,9 @@ class EstimatesController < ApplicationController
       @estimate.calc_parameters
       log_changes(Enums::Audit::Action::CREATE)
 
-      return redirect_to estimate_export_pdf_path(@estimate.id) if params[:export] == '1'
-
+      @show_export_pdf = params[:export] == '1'
       flash[:notice] = 'Смета успешно сохранена'
-      redirect_to edit_estimate_path(@estimate)
+      redirect_to edit_estimate_path(@estimate, export_pdf: params[:export] == '1')
     else
       discount = @estimate.discount_title
       area     = @estimate.area
@@ -54,7 +53,7 @@ class EstimatesController < ApplicationController
     area         = @estimate.area
     price        = @estimate.price
     stages       = @estimate.get_stages
-    gon.push(get_json_values(discount, area, price, stages))
+    gon.push(get_json_values(discount, area, price, stages).merge(export_pdf: params['export_pdf'] == 'true'))
   end
 
   def update
@@ -69,12 +68,8 @@ class EstimatesController < ApplicationController
 
       @estimate.calc_parameters
       log_changes(Enums::Audit::Action::UPDATE)
-      if params[:export] == '1'
-        redirect_to estimate_export_pdf_path(@estimate.id)
-      else
-        flash[:notice] = 'Смета успешно сохранена'
-        redirect_to edit_estimate_path(@estimate)
-      end
+      flash[:notice] = 'Смета успешно сохранена'
+      redirect_to edit_estimate_path(@estimate, export_pdf: params[:export] == '1')
     else
       discount = @estimate.discount_title
       area     = @estimate.area

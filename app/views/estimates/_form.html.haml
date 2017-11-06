@@ -3,6 +3,7 @@
     = link_to 'Отмена', estimates_path(client_id: params[:client_id] || @estimate.client_id), class: 'btn btn-default'
     = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right', 'ng-click' => 'ctrl.validate()'
   %p
+  %a{ href: estimate_export_pdf_url(@estimate.id), hidden: true, id: 'export_pdf_button', target: '_blank' }
   .row.main-content
     %br
       .form-horizontal.col-sm-offset-2.col-sm-8
