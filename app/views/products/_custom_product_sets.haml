@@ -44,14 +44,14 @@
             %span{ aria: { hidden: true } } &times;
           %h4.modal-title Редактирование сборки
         .modal-body
-          .form-horizontal
+          .form-horizontal{ 'ng-attr-id' => "{{ 'edit-set-form-' + set.id }}" }
             .form-group
               %label.col-sm-3.control-label Наименование
               .col-sm-9= text_field_tag :set_name, nil, class: 'form-control', 'ng-model' => 'set.name', 'ng-change' => 'ctrl.setProductSets()'
             .form-group{ ng: { repeat: 'item in set.items' } }
               %label.col-sm-3.control-label {{ item.name }}
               = hidden_field_tag :search_id, '', 'ng-attr-id'=> "{{ 'edit-set-template-value-' + item.id }}", 'ng-model' => 'item.value.id', class: 'edit-set-template-value', data: { set: "{{ set.id }}", template: "{{ item.id }}"}
-              .col-sm-9= autocomplete_field_tag :search, '', '/constructor_objects/autocomplete_constructor_object_name', class: 'form-control', placeholder: 'Введите наименование объекта или примитива', 'ng-attr-data-id-element' => "{{ '#edit-set-template-value-' + item.id }}", 'ng-model' => 'item.value.name', 'ng-change' => 'ctrl.updateProductSets()', data: { 'update-elements' => 'false' }
+              .col-sm-9= autocomplete_field_tag :search, '', '/constructor_objects/autocomplete_constructor_object_name', class: 'form-control', placeholder: 'Введите наименование объекта или примитива', 'ng-attr-data-id-element' => "{{ '#edit-set-template-value-' + item.id }}", 'ng-model' => 'item.value.name', 'ng-change' => 'ctrl.updateProductSets(set, item)', data: { 'update-elements' => 'false' }
         .modal-footer
           %a.btn.btn-default{ data: { dismiss: 'modal' } } Закрыть
 

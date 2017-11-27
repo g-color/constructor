@@ -1,7 +1,7 @@
 = simple_form_for @product, html: {class: 'form-horizontal'}, wrapper: :horizontal_form do |f|
   .action-buttons.row
     = link_to 'Отмена', products_path, class: 'btn btn-default'
-    = f.button :submit, 'Сохранить', class: 'btn btn-success pull-right', 'ng-click' => 'ctrl.validate()'
+    = f.button :button, 'Сохранить', class: 'btn btn-success pull-right', 'ng-click' => 'ctrl.validate($event)'
   %br
   .row.main-content
     .form-horizontal.col-sm-offset-1.col-sm-10

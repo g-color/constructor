@@ -17,10 +17,9 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     item = scope.find((x) -> x.id == id)
     scope.indexOf(item)
 
-  validate: ->
+  validate: (event) ->
     custom = @scope.custom
     event.preventDefault()
-
     validate = if custom then this.validateCustom() else this.validateRegular()
 
     if validate.error
@@ -39,11 +38,10 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
 
     if validate.error == false
       reg = new RegExp(/^\d+[\.,]*\d{0,4}$/)
-      $.each(compositions, (i, composition) ->
+      $.each compositions, (i, composition) ->
         if composition.quantity <= 0 || reg.exec(composition.quantity.toString()) == null
           validate.error   = true
           validate.message = "У одного или нескольких примитивов или объектов неверно указано количество"
-      )
 
     validate
 
@@ -59,13 +57,11 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     else
       $.each(sets, (i, set) ->
         return false if validate.error
-
         if set.name == ''
           validate.error   = true
           validate.message = "У одной или нескольких сборок не указано название"
         $.each(set.items, (i, item) ->
           return false if validate.error
-
           if item.value.name == ''
             validate.error   = true
             validate.message = "У одной или нескольких сборок не указаны составляющие"
@@ -186,15 +182,27 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     $('.set-fields').each((i, v) -> $(v).val(''))
     true
 
-  updateProductSets: () ->
-    sets = @scope.sets
-    angular.forEach(sets, (set,i) ->
-      angular.forEach(set.items, (item,k) ->
-        item.value.id = $('#edit-set-template-value-' + item.id).val()
-      )
-    )
+  updateProductSets: (set, item) ->
 
-    this.setProductSets()
+    item_names = []
+    edit_div = $('#edit-set-form-' + set.id)
+    angular.forEach edit_div.find('.form-group.ng-scope'), (group,i) ->
+      item_input = $(group).find('.col-sm-9').children(0)
+      if item_input.val().length > 0
+        item_names.push(item_input.val().replace(' (Объект)', '').replace(' (Примитив)', ''))
+
+    valid = new Set(item_names).size == item_names.length
+    if valid
+      sets = @scope.sets
+      angular.forEach sets, (set,i) ->
+        angular.forEach set.items, (item,k) ->
+          item.value.id = $('#edit-set-template-value-' + item.id).val()
+      this.setProductSets()
+    else
+      $('#edit-set-template-value-' + item.id).next('div').find('input').val('').blur()
+      angular.forEach set.items, (set_item,i) ->
+        set_item.value.name = '' if set_item.id == item.id
+      @toaster.error('Дублирование составляющей в сборке')
 
   setProductSets: () ->
     sets = JSON.stringify(@scope.sets)
