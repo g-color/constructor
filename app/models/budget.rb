@@ -117,12 +117,12 @@ class Budget < ApplicationRecord
   end
 
   def get_stage_product_set(stage_product)
-    stage_product.stage_product_sets.includes(:stage_product_set_values).map do |product_set|
+    stage_product.stage_product_sets.order(:id).includes(:stage_product_set_values).map do |product_set|
       {
         id:       product_set.product_set.id,
         name:     product_set.product_set.name,
         selected: product_set.selected,
-        items: product_set.stage_product_set_values.includes(:product_template, :constructor_object, constructor_object: [:unit]).map do |item|
+        items: product_set.stage_product_set_values.order(:id).includes(:product_template, :constructor_object, constructor_object: [:unit]).map do |item|
           {
             id:       item.product_template.id,
             name:     item.product_template.name,

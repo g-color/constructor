@@ -53,6 +53,7 @@ gem 'wkhtmltopdf-binary'
 gem 'rtf'
 gem 'mail'
 gem 'rollbar'
+gem 'grape'
 
 # gem 'cancancan'
 # https://github.com/rubysherpas/paranoia
