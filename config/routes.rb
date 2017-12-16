@@ -2,7 +2,7 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   mount GrapeSwaggerRails::Engine => '/swagger'
-  mount Constructor::Api => '/api'
+  mount Root => '/api'
 
   resources :primitives do
     post :update_price, to: 'primitives#update_price', as: :update_price
