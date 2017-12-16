@@ -11,6 +11,7 @@ gem 'puma', '~> 3.0'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2'
+gem 'webpacker'
 
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -53,6 +54,10 @@ gem 'wkhtmltopdf-binary'
 gem 'rtf'
 gem 'mail'
 gem 'rollbar'
+
+gem 'grape'
+gem 'grape-swagger'
+gem 'grape-swagger-rails'
 
 # gem 'cancancan'
 # https://github.com/rubysherpas/paranoia
