@@ -1,0 +1,140 @@
+@import 'bootstrap/dist/css/bootstrap.css';
+@import 'font-awesome/css/font-awesome.css';
+
+
+.main-content, #shared-users {
+    border: 3px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.logo {
+    height: 40px;
+}
+.clickable-row {
+    cursor: pointer;
+}
+
+.navbar-brand {
+    padding: 5px 20px;
+}
+
+.table>tbody>tr>td {
+    vertical-align: middle;
+}
+
+#login-screen {
+    display: block;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.jumbotron {
+    margin-top: 50px;
+}
+
+.stage {
+    margin-left: 50px;
+}
+
+.navbar {
+    border-radius: 0;
+}
+.choose {
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.remove-button {
+    border-radius: 3px;
+    position: absolute;
+    top: 0;
+    right: 15px;
+    box-shadow: #000 -1px 1px 4px;
+}
+
+.table-responsive {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+}
+
+#creator {
+    font-size: 10px;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 9999;
+}
+
+td > .form-group {
+  margin-bottom: 0;
+}
+
+.dropdown-menu > li > a {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+.ui-helper-hidden-accessible {
+  display: none !important;
+}
+
+.ui-autocomplete {
+    position: absolute;
+    z-index: 3000;
+    cursor: default;
+    padding: 0;
+    margin-top: 2px;
+    list-style: none;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+       -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+.ui-autocomplete > li {
+  padding: 3px 20px;
+}
+.ui-autocomplete > li.ui-state-focus {
+  background-color: #DDD;
+}
+.ui-menu-item:hover, .ui-state-active {
+  background-color: #DDD;
+}
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.cursor-pointer:hover {
+  cursor: pointer;
+}
+
+.archived-client {
+  background: #eee
+}
+
+table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after {
+  display: inline-block !important;
+  padding-left: 5px !important;
+  position: initial !important;
+}

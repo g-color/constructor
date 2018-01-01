@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
     gon.push(
       url_find_user_by_name: find_user_by_name_path,
       url_composition_info:  info_constructor_objects_path,
+      current_user: current_user,
     )
   end
 

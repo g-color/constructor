@@ -2,7 +2,7 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   mount GrapeSwaggerRails::Engine => '/swagger'
-  mount Root => '/api'
+  mount Root => '/'
 
   resources :primitives do
     post :update_price, to: 'primitives#update_price', as: :update_price
@@ -36,12 +36,15 @@ Rails.application.routes.draw do
   get  :expenses,                     to: 'expenses#index',               as: :expenses
   post :expenses,                     to: 'expenses#update',              as: :expenses_update
 
-  get :reports,                       to: 'reports#index',                as: :reports
-  get 'reports/product-popularity',   to: 'reports#product_popularity',   as: :reports_product_popularity
-  get 'reports/floor-popularity',     to: 'reports#floor_popularity',     as: :reports_floor_popularity
-  get 'reports/area-popularity',      to: 'reports#area_popularity',      as: :reports_area_popularity
-  get 'reports/material-consumption', to: 'reports#material_consumption', as: :reports_material_consumption
-  get 'reports/estimate-conversion',  to: 'reports#estimate_conversion',  as: :reports_estimate_conversion
+  get :reports,                 to: 'reports#index',                as: :reports
+  namespace :reports do
+    get 'product-popularity',   to: 'reports#product_popularity',   as: :reports_product_popularity
+    get 'floor-popularity',     to: 'reports#floor_popularity',     as: :reports_floor_popularity
+    get 'area-popularity',      to: 'reports#area_popularity',      as: :reports_area_popularity
+    get 'material-consumption', to: 'reports#material_consumption', as: :reports_material_consumption
+    get 'estimate-conversion',  to: 'reports#estimate_conversion',  as: :reports_estimate_conversion
+  end
+  
 
   resources :users
   post :find_user_by_name, to: 'users#find_by_name'

@@ -4,6 +4,7 @@ class ExpensesController < ApplicationController
 
   def index
     @expenses = Expense.order(:id).all
+    render layout: 'react'
   end
 
   def update

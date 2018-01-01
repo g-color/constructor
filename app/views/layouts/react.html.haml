@@ -1,0 +1,17 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title Конструктор сметы - Арт СИП Строй
+    = csrf_meta_tags
+    = stylesheet_pack_tag 'application'
+
+  %body
+    = Gon::Base.render_data
+
+    %toaster_container
+    
+    #root{ data: { alert: alert, notice: notice } }
+
+    = javascript_pack_tag 'application'
+    

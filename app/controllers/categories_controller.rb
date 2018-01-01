@@ -6,10 +6,12 @@ class CategoriesController < ApplicationController
 
   def index
     @categories = Category.all
+    render layout: 'react'
   end
 
   def new
     @category = Category.new
+    render layout: 'react'
   end
 
   def create
@@ -22,7 +24,9 @@ class CategoriesController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    render layout: 'react'
+  end
 
   def update
     if @category.update(category_params)
