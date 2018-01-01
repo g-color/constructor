@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
-import { Alert, Row, Col, NavDropdown, Navbar, Nav, MenuItem, NavItem } from 'react-bootstrap'
+import { Alert, Row, Col, NavDropdown, Navbar, Nav, MenuItem, NavItem, Button } from 'react-bootstrap'
 import _ from 'lodash'
 
 import logo from '../../images/logo.png'
@@ -17,17 +17,6 @@ export default class Header extends React.Component {
     };
 
     this.signOut = this.signOut.bind(this);
-  }
-
-  componentWillMount() {
-    var self = this
-    axios.get('/auth/signed_in')
-      .then(function (response) {
-        self.setState(response.data);
-      })
-      .catch(error => {
-        console.error(error)
-      })
   }
 
   signOut() {
@@ -46,9 +35,9 @@ export default class Header extends React.Component {
   }
 
   getMetaContent(name) {
-    var metas = document.getElementsByTagName('meta');
-    for (var i=0; i<metas.length; i++) {
-      if (metas[i].getAttribute("name") == name) {
+    let metas = document.getElementsByTagName('meta');
+    for (let i=0; i < metas.length; i++) {
+      if (metas[i].getAttribute("name") === name) {
         return metas[i].getAttribute("content");
       }
     }
@@ -83,6 +72,7 @@ export default class Header extends React.Component {
             </NavDropdown>
             <NavItem href="#">Клиенты</NavItem>
             <NavItem href="#">Готовые решения</NavItem>
+            <Button href="/estimates/new" bsStyle="primary" className="navbar-btn">Создать смету</Button>
           </Nav>
           <Nav pullRight>
             <NavItem href="#">{`${this.state.user.last_name} ${this.state.user.first_name}`}</NavItem>

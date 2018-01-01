@@ -44,7 +44,7 @@ task :setup do
 end
 
 desc "Deploys the current version to the server."
-task :deploy do
+task deploy: :environment do
   # uncomment this line to make sure you pushed your local branch to the remote origin
   # invoke :'git:ensure_pushed'
   deploy do
@@ -58,7 +58,7 @@ task :deploy do
     invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
 
-    on :launch do
+    on launch: :environment do
       invoke :'sidekiq:restart'
       command %{touch tmp/restart.txt}
     end
