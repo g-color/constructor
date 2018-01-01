@@ -2,7 +2,7 @@ class Modules::Categories < Grape::API
   resource :categories do
     desc 'Return a categories'
     get do
-      Category.all
+      Category.order(:id).all
     end
 
     desc 'Return a category'
@@ -19,9 +19,13 @@ class Modules::Categories < Grape::API
       requires :product, type: Boolean, desc: 'Category type'
     end
     post do
-      authenticate!
-      Category.create!(name:    params[:name],
-                       product: params[:product])
+      binding.pry
+      category = Category.new(
+        name:    params[:name],
+        product: params[:product]
+      )
+      category.save
+      category.errors if category.errors.present?
     end
 
     desc 'Update a category'
@@ -31,9 +35,12 @@ class Modules::Categories < Grape::API
       requires :product, type: Boolean, desc: 'Category type'
     end
     put ':id' do
-      authenticate!
-      Category.find(params[:id]).update(name:    params[:name],
-                                        product: params[:status])
+      category = Category.find(params[:id])
+      category.update(
+        name:    params[:name],
+        product: params[:product]
+      )
+      category.errors if category.errors.present?
     end
 
     desc 'Delete a category'
@@ -41,7 +48,6 @@ class Modules::Categories < Grape::API
       requires :id, type: String, desc: 'Category ID'
     end
     delete ':id' do
-      authenticate!
       Category.find(params[:id]).destroy
     end
   end
