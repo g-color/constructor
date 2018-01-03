@@ -19,7 +19,6 @@ class Modules::Categories < Grape::API
       requires :product, type: Boolean, desc: 'Category type'
     end
     post do
-      binding.pry
       category = Category.new(
         name:    params[:name],
         product: params[:product]

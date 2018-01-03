@@ -4,8 +4,9 @@ import { Row, Col }      from 'react-bootstrap'
 
 import Header     from './Header'
 import Units      from './Units'
-import Categories from './Categories'
 import Expenses   from './Expenses'
+
+import {category as CategoryRoutes} from '../routes'
 
 const App = (props) => (
   <div>
@@ -15,11 +16,11 @@ const App = (props) => (
     <div className={'container'}>
         <Row style={{paddingTop: '1rem'}}>
           <Col lg={12}>
+            <CategoryRoutes />
             <Switch>
-              <Route path='/expenses'   component={Expenses} />
-              <Route path='/categories' component={Categories} />
-              <Route path='/units'      component={Units} />
-              <Route exact path='/'     component={Units} />
+                <Route path='/expenses'   component={Expenses} />
+                <Route path='/units'      component={Units} />
+                <Route exact path='/'     component={Units} />
             </Switch>
           </Col>
         </Row>

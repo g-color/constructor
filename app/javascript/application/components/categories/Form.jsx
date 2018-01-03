@@ -3,13 +3,13 @@ import axios       from 'axios';
 import queryString from 'query-string'
 
 import { Link } from 'react-router-dom'
-import { Row, Col, Button, FormGroup, ControlLabel, Form, FormControl, Checkbox } from 'react-bootstrap'
+import { Row, Col, Button, FormGroup, ControlLabel, Form as BootstrapForm, FormControl, Checkbox } from 'react-bootstrap'
 import { cloneDeep, isObject } from 'lodash';
 
 import FieldGroup from '../../helpers/FieldGroup'
 import CheckboxGroup from '../../helpers/CheckboxGroup'
 
-export default class CategoryForm extends React.Component {
+export default class Form extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -75,7 +75,7 @@ export default class CategoryForm extends React.Component {
     render() {
 		return (
 			<div>
-                <Form onSubmit={this.sendCategory}>
+                <BootstrapForm onSubmit={this.sendCategory}>
                     <Row className={'action-buttons'}>
                         <Link to='/categories' className={'btn btn-default'}>Отмена</Link>
                         <Button type='submit' bsStyle='success' className='pull-right'>Сохранить</Button>
@@ -101,7 +101,7 @@ export default class CategoryForm extends React.Component {
                             />
                         </div>
                     </Row>
-                </Form>
+                </BootstrapForm>
 			</div>
 		)
 	}

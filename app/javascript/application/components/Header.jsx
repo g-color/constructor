@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { Alert, Row, Col, NavDropdown, Navbar, Nav, MenuItem, NavItem, Button } from 'react-bootstrap'
 import _ from 'lodash'
+import getMetaContent from '../helpers/getMetaContent'
 
 import logo from '../../images/logo.png'
 
@@ -20,28 +21,16 @@ export default class Header extends React.Component {
   }
 
   signOut() {
-    var instance = axios.create({
-      headers: {'X-CSRF-Token': this.getMetaContent("csrf-token")}
-    });
-    instance.delete('/users/sign_out.json', {
-        authenticity_token: this.getMetaContent("csrf-token")
+    axios.delete('/signout', {
+        authenticity_token: getMetaContent("csrf-token")
       })
       .then(function (response) {
         location.reload();
       })
       .catch(error => {
+        location.reload();
         console.error(error)
       })
-  }
-
-  getMetaContent(name) {
-    let metas = document.getElementsByTagName('meta');
-    for (let i=0; i < metas.length; i++) {
-      if (metas[i].getAttribute("name") === name) {
-        return metas[i].getAttribute("content");
-      }
-    }
-    return "";
   }
 
   render() {
@@ -70,13 +59,14 @@ export default class Header extends React.Component {
               <MenuItem href="/audits">История изменений</MenuItem>
               <MenuItem href="/reports">Отчеты</MenuItem>
             </NavDropdown>
-            <NavItem href="#">Клиенты</NavItem>
-            <NavItem href="#">Готовые решения</NavItem>
-            <Button href="/estimates/new" bsStyle="primary" className="navbar-btn">Создать смету</Button>
+            <NavItem href="/clients">Клиенты</NavItem>
+            <NavItem href="/solutions">Готовые решения</NavItem>
           </Nav>
           <Nav pullRight>
-            <NavItem href="#">{`${this.state.user.last_name} ${this.state.user.first_name}`}</NavItem>
-            {this.state.signed_in  && <NavItem href="#">Выйти</NavItem>}
+            <NavItem href={`/users/${this.state.user.id}/edit`}>
+                {`${this.state.user.last_name} ${this.state.user.first_name}`}
+            </NavItem>
+            {this.state.signed_in  && <NavItem href="#" onClick={this.signOut}>Выйти</NavItem>}
             {!this.state.signed_in && <NavItem href="#">Войти</NavItem>}
           </Nav>
         </Navbar.Collapse>
