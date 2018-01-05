@@ -57,10 +57,11 @@ task deploy: :environment do
     invoke :'rails:db_migrate'
     invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
+    invoke :'webpacker:compile'
+    command %{touch tmp/restart.txt}
 
     on launch: :environment do
       invoke :'sidekiq:restart'
-      command %{touch tmp/restart.txt}
     end
   end
 
