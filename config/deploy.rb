@@ -1,7 +1,7 @@
 require 'mina/rails'
 require 'mina/git'
-# require 'mina/rbenv'  # for rbenv support. (https://rbenv.org)
-require 'mina/rvm'    # for rvm support. (https://rvm.io)
+require 'mina/rbenv'  # for rbenv support. (https://rbenv.org)
+# require 'mina/rvm'    # for rvm support. (https://rvm.io)
 require 'mina_sidekiq/tasks'
 
 # Basic settings:
@@ -31,10 +31,10 @@ set :shared_files, fetch(:shared_files, []).push('.env', 'public/system')
 task :environment do
   # If you're using rbenv, use this to load the rbenv environment.
   # Be sure to commit your .ruby-version or .rbenv-version to your repository.
-  # invoke :'rbenv:load'
+  invoke :'rbenv:load'
 
   # For those using RVM, use this to load an RVM version@gemset.
-  invoke :'rvm:use', '2.4.1'
+  # invoke :'rvm:use', '2.4.1'
 end
 
 # Put any custom commands you need to run at setup
