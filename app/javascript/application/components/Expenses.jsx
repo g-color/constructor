@@ -18,10 +18,10 @@ export default class Expenses extends React.Component {
 	fetchExpenses() {
 		axios.get(`api/expenses`)
 			.then(response => {
-				let total = 0
+				let total = 0;
 				_.each(response.data, (expense) => {
 					total += parseFloat(expense.percent)
-				})
+				});
 				this.setState({ 
 					expenses: response.data, 
 					total: total 
@@ -61,10 +61,10 @@ export default class Expenses extends React.Component {
 	handleChange(e) {
 		let expenses = _.cloneDeep(this.state.expenses)
 		_.each(expenses, (expense) => {
-			if (expense.id == e.target.dataset.id) {
+			if (expense.id === e.target.dataset.id) {
 				expense.percent = e.target.value.replace(/,/, '.')
 			}
-		})
+		});
 		this.setState({expenses: expenses})
 	}
 
