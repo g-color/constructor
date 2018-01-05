@@ -40,7 +40,7 @@ end
 # Put any custom commands you need to run at setup
 # All paths in `shared_dirs` and `shared_paths` will be created on their own.
 task :setup do
-  # command %{rbenv install 2.3.0}
+  command %{yarn install}
 end
 
 desc 'Deploys the current version to the server.'
@@ -57,7 +57,7 @@ task deploy: :environment do
     invoke :'rails:db_migrate'
     invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
-    invoke :'webpacker:compile'
+    command %{rails webpacker:compile}
     command %{touch tmp/restart.txt}
 
     on launch: :environment do
