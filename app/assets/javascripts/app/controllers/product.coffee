@@ -111,13 +111,20 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
 
   addTemplate: () ->
     templates = @scope.templates
-    templates.push({
-      id:   new Date().getTime(),
-      name: $('#template_name').val()
-    })
-    this.clearTemplatesFields()
-    this.recalcSetItems()
-    this.setProductTemplates()
+    name = $('#template_name').val()
+    same = templates.filter((templ) -> templ.name == $('#template_name').val())
+
+    if same.length > 0
+      $('#template_name').val('')
+      @toaster.error('Составляющая с таким именем уже существует!')
+    else
+      templates.push({
+        id:   new Date().getTime(),
+        name: name
+      })
+      this.clearTemplatesFields()
+      this.recalcSetItems()
+      this.setProductTemplates()
 
   editTemplate: (id) ->
     $('#edit-template-' + id).modal('show')

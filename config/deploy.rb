@@ -58,7 +58,6 @@ task deploy: :environment do
     invoke :'rails:db_migrate'
     command %{yarn install}
     invoke :'rails:assets_precompile'
-    invoke :'webpacker:compile'
     invoke :'deploy:cleanup'
     command %{touch tmp/restart.txt}
 
