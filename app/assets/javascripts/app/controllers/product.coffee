@@ -159,23 +159,28 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     sets = @scope.sets
     templates = @scope.templates
     items = []
-    $('.set-template-value').each (i, v) ->
-      id_input = $(v).data('id-element')
-      items.push({
-        id:    templates[i].id,
-        name:  templates[i].name,
-        value: {
-          name: $(v).val(),
-          id:   $(id_input).val(),
-        }
+
+    set_name = $('#set_name').val()
+    if sets.find((set) -> set.name == set_name)
+      @toaster.error('Сборка с таким названием уже существует!')
+    else
+      $('.set-template-value').each (i, v) ->
+        id_input = $(v).data('id-element')
+        items.push({
+          id:    templates[i].id,
+          name:  templates[i].name,
+          value: {
+            name: $(v).val(),
+            id:   $(id_input).val(),
+          }
+        })
+      sets.push({
+        id:     new Date().getTime(),
+        name:   set_name,
+        items:  items
       })
-    sets.push({
-      id:     new Date().getTime(),
-      name:   $('#set_name').val(),
-      items:  items
-    })
-    this.clearSetsFields()
-    this.setProductSets()
+      this.clearSetsFields()
+      this.setProductSets()
 
   editSet: (id) ->
     $('#edit-set-' + id).modal('show')
