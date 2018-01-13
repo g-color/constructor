@@ -78,7 +78,7 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     name         = $('#autocomplete_composition_name').val()
 
     if this.getIndex(id, compositions) == -1
-      @http.post(@pHelper.get('url_composition_info'), id: id)
+      $.post(@pHelper.get('url_composition_info'), id: id)
       .success (response) ->
         compositions.push({
           id:       id,
