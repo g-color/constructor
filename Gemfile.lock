@@ -195,6 +195,8 @@ GEM
       rake
     mina-sidekiq (1.0.3)
       mina (>= 1.0.2)
+    mina-webpacker (0.1.0)
+      mina (~> 1.0)
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.10.3)
@@ -416,6 +418,7 @@ DEPENDENCIES
   mail
   mina
   mina-sidekiq
+  mina-webpacker
   ng-toaster-rails
   paperclip
   paranoia (~> 2.2)
@@ -446,4 +449,4 @@ DEPENDENCIES
   wkhtmltopdf-binary
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
