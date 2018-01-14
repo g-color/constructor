@@ -65,7 +65,7 @@ class Product < ApplicationRecord
   def get_compositions
     return [] if custom
 
-    self.product_compositions.includes(:constructor_object).map do |x|
+    product_compositions.order(:created_at).includes(:constructor_object).map do |x|
       {
         id:       x.constructor_object.id,
         name:     x.constructor_object.name,
