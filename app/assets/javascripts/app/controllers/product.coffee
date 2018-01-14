@@ -78,19 +78,20 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     name         = $('#autocomplete_composition_name').val()
 
     if this.getIndex(id, compositions) == -1
-      $.post(@pHelper.get('url_composition_info'), id: id)
-      .success (response) ->
-        debugger
+      @http({
+        method: 'POST',
+        url: @pHelper.get('url_composition_info'),
+        data: { id: id }
+      })
+      .then (response) ->
         compositions.push({
           id:       id,
-          name:     response.name,
+          name:     response.data.name,
           quantity: 0,
-          unit:     response.unit
+          unit:     response.data.unit
         })
         self.setProductCompositions()
         self.clearCompositionsFields()
-      .error (response) ->
-        console.log(response)
 
   removeComposition: (id) ->
     @scope.compositions.splice(this.getIndex(id, @scope.compositions), 1)
