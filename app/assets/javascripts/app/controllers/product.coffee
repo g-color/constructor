@@ -76,20 +76,26 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     compositions = @scope.compositions
     id           = $('#autocomplete_composition_id').val()
     name         = $('#autocomplete_composition_name').val()
-
+    debugger
     if this.getIndex(id, compositions) == -1
+<<<<<<< Updated upstream
       $.post(@pHelper.get('url_composition_info'), id: id)
       .success (response) ->
+=======
+      @http({
+        method: 'POST',
+        url: @pHelper.get('url_composition_info'),
+        data: { id: id }
+      }).then (response) ->
+>>>>>>> Stashed changes
         compositions.push({
           id:       id,
-          name:     response.name,
+          name:     response.data.name,
           quantity: 0,
-          unit:     response.unit
+          unit:     response.data.unit
         })
         self.setProductCompositions()
         self.clearCompositionsFields()
-      .error (response) ->
-        console.log(response)
 
   removeComposition: (id) ->
     @scope.compositions.splice(this.getIndex(id, @scope.compositions), 1)
