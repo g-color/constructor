@@ -80,6 +80,7 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     if this.getIndex(id, compositions) == -1
       $.post(@pHelper.get('url_composition_info'), id: id)
       .success (response) ->
+        debugger
         compositions.push({
           id:       id,
           name:     response.name,
