@@ -78,16 +78,12 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     name         = $('#autocomplete_composition_name').val()
     debugger
     if this.getIndex(id, compositions) == -1
-<<<<<<< Updated upstream
-      $.post(@pHelper.get('url_composition_info'), id: id)
-      .success (response) ->
-=======
       @http({
         method: 'POST',
         url: @pHelper.get('url_composition_info'),
         data: { id: id }
-      }).then (response) ->
->>>>>>> Stashed changes
+      })
+      .then (response) ->
         compositions.push({
           id:       id,
           name:     response.data.name,
