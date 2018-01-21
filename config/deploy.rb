@@ -60,7 +60,10 @@ task deploy: :environment do
     invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
     command %{touch tmp/restart.txt}
-    invoke :'sidekiq:start'
+
+    on launch: :remote_enviroment do
+      invoke :'sidekiq:restart'
+    end
   end
 
   # you can use `run :local` to run tasks on local machine before of after the deploy scripts

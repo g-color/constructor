@@ -116,7 +116,9 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     name = $('#template_name').val()
     same = templates.filter((templ) -> templ.name == $('#template_name').val())
 
-    if same.length > 0
+    if name.length < 1
+      @toaster.error('Составляющая с таким именем уже существует!')
+    else if same.length > 0
       $('#template_name').val('')
       @toaster.error('Составляющая с таким именем уже существует!')
     else

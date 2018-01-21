@@ -23,10 +23,9 @@ export default class RemoveDialog extends React.Component {
         return (
             <Modal show={this.state.showModal} onHide={this.close}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>Удаление {this.props.type}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h4>Удаление {this.props.type}</h4>
                     <p>Вы действительно хотите удалить {this.props.type} <b>{this.props.name}</b></p>
                 </Modal.Body>
                 <Modal.Footer>
