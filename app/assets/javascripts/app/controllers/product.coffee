@@ -116,6 +116,8 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     name = $('#template_name').val()
     same = templates.filter((templ) -> templ.name == $('#template_name').val())
 
+    debugger;
+
     if name.length < 1
       @toaster.error('Составляющая с таким именем уже существует!')
     else if same.length > 0
@@ -207,18 +209,23 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
       if item_input.val().length > 0
         item_names.push(item_input.val().replace(' (Объект)', '').replace(' (Примитив)', ''))
 
-    valid = new Set(item_names).size == item_names.length
-    if valid
-      sets = @scope.sets
-      angular.forEach sets, (set,i) ->
-        angular.forEach set.items, (item,k) ->
-          item.value.id = $('#edit-set-template-value-' + item.id).val()
-      this.setProductSets()
-    else
-      $('#edit-set-template-value-' + item.id).next('div').find('input').val('').blur()
-      angular.forEach set.items, (set_item,i) ->
-        set_item.value.name = '' if set_item.id == item.id
-      @toaster.error('Дублирование составляющей в сборке')
+#    valid = new Set(item_names).size == item_names.length
+#    if valid
+#      sets = @scope.sets
+#      angular.forEach sets, (set,i) ->
+#        angular.forEach set.items, (item,k) ->
+#          item.value.id = $('#edit-set-template-value-' + item.id).val()
+#      this.setProductSets()
+#    else
+#      $('#edit-set-template-value-' + item.id).next('div').find('input').val('').blur()
+#      angular.forEach set.items, (set_item,i) ->
+#        set_item.value.name = '' if set_item.id == item.id
+#      @toaster.error('Дублирование составляющей в сборке')
+    sets = @scope.sets
+    angular.forEach sets, (set,i) ->
+      angular.forEach set.items, (item,k) ->
+        item.value.id = $('#edit-set-template-value-' + item.id).val()
+    this.setProductSets()
 
   setProductSets: () ->
     sets = JSON.stringify(@scope.sets)
