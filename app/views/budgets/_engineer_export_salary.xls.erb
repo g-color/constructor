@@ -33,7 +33,7 @@
         <% primitive = ConstructorObject.find(key.to_i) %>
         <% if primitive.category.id == ENV['WORK_CATEGORY'].to_i %>
           <% number += 1 %>
-          <% formula = "=[.C#{number}]*[.D#{number}]"%>
+          <% formula = "=C#{number}*D#{number}"%>
           <Row>
             <Cell><Data ss:Type="String"><%= primitive.name %></Data></Cell>
             <Cell><Data ss:Type="String"><%= primitive.unit.name %></Data></Cell>

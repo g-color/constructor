@@ -44,7 +44,7 @@
               <Cell><Data ss:Type="Number"><%= value[product].present? ? value[product] : '' %></Data></Cell>
             <% end %>
             <% last_column = "#{column}#{number}"%>
-            <Cell ss:Formula="=SUM([.C<%= number %>]:[.<%= last_column %>])"></Cell>
+            <Cell ss:Formula="=SUM(C<%= number %>:<%= last_column %>)"></Cell>
           </Row>
         <% end %>
       <% end %>
