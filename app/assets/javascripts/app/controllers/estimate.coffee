@@ -273,7 +273,9 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     product = @scope.selectedProduct
     set_id = @scope.selectedSetId
     if set_id != 'Выберите сборку'
-      @scope.selectedSet = this.getSet(set_id, product.sets)
+      selected_set = $.extend({}, this.getSet(set_id, product.sets))
+      $.each(selected_set.items, (i, v) -> v.quantity = 0 )
+      @scope.selectedSet = selected_set
     else
       @scope.selectedSet = null
 

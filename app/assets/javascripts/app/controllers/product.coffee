@@ -167,7 +167,9 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     items = []
 
     set_name = $('#set_name').val()
-    if sets.find((set) -> set.name == set_name)
+    if set_name.length == 0
+      @toaster.error('Необходимо указать название сборки!')
+    else if sets.find((set) -> set.name == set_name)
       @toaster.error('Сборка с таким названием уже существует!')
     else
       $('.set-template-value').each (i, v) ->
