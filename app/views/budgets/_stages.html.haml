@@ -58,7 +58,7 @@
               %span.glyphicon.glyphicon.glyphicon-info-sign{"aria-hidden" => "true"}
             %p
             #productHint.collapse{ "ng-show" => "selectedProduct.hint" }
-              .well {{ selectedProduct.hint }}
+              .well <%= simple_format {{ selectedProduct.hint }} %>
 
             .form-group
               %label.col-sm-3.control-label Сметный продукт
