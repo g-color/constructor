@@ -46,7 +46,7 @@
             %p.no-margin Высота потолка третьего этажа: от #{@estimate[:third_floor_height_min]} м до #{@estimate[:third_floor_height_max]} м
         %p.no-margin Площадь строительства: #{@estimate[:area]} м2
       .col-xs-4.col-xs-offset-2
-        %p.no-margin Дата расчета: #{l(@estimate[:date], format: "%d %b %Y г.")}
+        %p.no-margin Дата расчета: #{l(Time.new, format: '%d %b %Y г.')}
 
     - @estimate[:stages].each_with_index do |stage, index|
       - unless stage[:products].empty?
