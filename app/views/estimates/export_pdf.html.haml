@@ -70,7 +70,7 @@
                 - if product[:custom] && product[:display_components]
                   - product[:items].each do |item|
                     %p.no-margin= "- #{item[:name]} - #{item[:quantity].to_s} #{item[:unit]}"
-                %p.no-margin= product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа")
+                %p.no-margin= simple_format(product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа"))
               .col-xs-4
                 %p.no-margin
                   %strong= money(product[:price_result] * product[:quantity])
