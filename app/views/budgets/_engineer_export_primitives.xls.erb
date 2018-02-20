@@ -36,18 +36,16 @@
         </Row>
         <% number += 1 %>
         <% primitives.each do |primitive, value|%>
-          <% if products.any? { |p| value[p].present? && value[p].to_i > 0 } %>
-            <%= number += 1 %>
-            <Row>
-              <Cell><Data ss:Type="String"><%= primitive %></Data></Cell>
-              <Cell><Data ss:Type="String"><%= value[:unit] %></Data></Cell>
-              <% products.each do |product| %>
-                  <Cell><Data ss:Type="Number"><%= value[product].present? ? value[product] : '' %></Data></Cell>
-              <% end %>
-              <% last_column = "#{column}#{number}"%>
-              <Cell ss:Formula="=SUM(C<%= number %>:<%= last_column %>)"></Cell>
-            </Row>
-          <% end %>
+          <%= number += 1 %>
+          <Row>
+            <Cell><Data ss:Type="String"><%= primitive %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= value[:unit] %></Data></Cell>
+            <% products.each do |product| %>
+                <Cell><Data ss:Type="Number"><%= value[product].present? ? value[product] : '' %></Data></Cell>
+            <% end %>
+            <% last_column = "#{column}#{number}"%>
+            <Cell ss:Formula="=SUM(C<%= number %>:<%= last_column %>)"></Cell>
+          </Row>
         <% end %>
       <% end %>
       <Row></Row>

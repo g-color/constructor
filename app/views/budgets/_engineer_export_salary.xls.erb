@@ -31,7 +31,7 @@
       </Row>
       <% primitives.each do |key, value| %>
         <% primitive = ConstructorObject.find(key.to_i) %>
-        <% if primitive.category.id == ENV['WORK_CATEGORY'].to_i && value && value.to_i > 0 %>
+        <% if primitive.category.id == ENV['WORK_CATEGORY'].to_i %>
           <% number += 1 %>
           <% formula = "=C#{number}*D#{number}"%>
           <Row>
