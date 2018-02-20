@@ -36,7 +36,7 @@
         </Row>
         <% number += 1 %>
         <% primitives.each do |primitive, value|%>
-          <%= if products.any? { |p| value[p].present? && value[p].to_i > 0 } %>
+          <% if products.any? { |p| value[p].present? && value[p].to_i > 0 } %>
             <%= number += 1 %>
             <Row>
               <Cell><Data ss:Type="String"><%= primitive %></Data></Cell>
