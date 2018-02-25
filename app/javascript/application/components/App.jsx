@@ -3,7 +3,6 @@ import { Switch, Route } from 'react-router-dom'
 import { Row, Col }      from 'react-bootstrap'
 
 import Header     from './Header'
-import Units      from './Units'
 import Expenses   from './Expenses'
 
 import {category as CategoryRoutes} from '../routes'
@@ -18,8 +17,8 @@ const App = (props) => (
           <Col lg={12}>
             <CategoryRoutes />
             <Switch>
-                <Route path='/expenses'   component={Expenses} />
-                <Route exact path='/'     component={Expenses} />
+                <Route path='/expenses' component={Expenses} />
+                <Route exact path='/'   component={Expenses} />
             </Switch>
           </Col>
         </Row>

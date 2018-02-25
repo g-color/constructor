@@ -59,9 +59,9 @@ export default class Expenses extends React.Component {
 	}
 
 	handleChange(e) {
-		let expenses = _.cloneDeep(this.state.expenses)
+		let expenses = _.cloneDeep(this.state.expenses);
 		_.each(expenses, (expense) => {
-			if (expense.id === e.target.dataset.id) {
+			if (expense.id === parseInt(e.target.dataset.id)) {
 				expense.percent = e.target.value.replace(/,/, '.')
 			}
 		});
