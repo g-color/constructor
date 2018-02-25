@@ -19,8 +19,7 @@ const App = (props) => (
             <CategoryRoutes />
             <Switch>
                 <Route path='/expenses'   component={Expenses} />
-                <Route path='/units'      component={Units} />
-                <Route exact path='/'     component={Units} />
+                <Route exact path='/'     component={Expenses} />
             </Switch>
           </Col>
         </Row>
