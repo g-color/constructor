@@ -28,6 +28,7 @@ class StageProduct < ApplicationRecord
   def update_report_primitivies(estimate)
     if self.product.custom
       product_set = self.stage_product_sets.find_by(selected: true)
+      return if product_set.nil?
       product_set.stage_product_set_values.each do |set_value|
         set_value.constructor_object.update_report_primitivies(estimate, self.quantity * set_value.quantity)
       end
