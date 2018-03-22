@@ -33,4 +33,12 @@ class User < ApplicationRecord
   def link
     Rails.application.routes.url_helpers.edit_user_path(self)
   end
+
+  def clients
+    if admin?
+      Client.all
+    else
+      Client.where(id: UserClient.find_by(user_id: id).pluck(:client_id))
+    end
+  end
 end
