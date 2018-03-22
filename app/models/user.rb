@@ -13,7 +13,7 @@ class User < ApplicationRecord
   validates :phone,      presence: true, numericality: { only_integer: true }
 
   has_many :user_clients
-  has_many :clients, through: :user_clients
+  # has_many :clients, through: :user_clients
   has_many :estimates
 
   acts_as_paranoid
@@ -38,7 +38,7 @@ class User < ApplicationRecord
     if admin?
       Client.all
     else
-      Client.where(id: UserClient.find_by(user_id: id).pluck(:client_id))
+      Client.where(id: UserClient.where(user_id: id).pluck(:client_id))
     end
   end
 end
