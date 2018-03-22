@@ -1,7 +1,7 @@
 %section{ ng: { controller: 'EstimateController' } }
   %h1 Редактирование сметы
   %ol.breadcrumb.row
-    %li= link_to @estimate.client.full_name, edit_client_path(@estimate.client)
+    %li= link_to @estimate.client.&full_name, edit_client_path(@estimate.client)
     %li= link_to 'Сметы', estimates_path(client_id: @estimate.client_id)
     %li.active= @estimate.name
 
