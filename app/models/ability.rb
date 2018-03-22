@@ -13,7 +13,10 @@ class Ability
       UserClient.exists?(user: user, client: client)
     end
     can :edit, Client do |client|
-      client.new_record? || UserClient.find_by(user: user, client: client).owner
+      puts "CHECK ABILITY: EDIT CLIENT"
+      puts "USER: #{user.inspect}, CLIENT: #{client.inspect}"
+      user_client = UserClient.find_by(user_id: user.id, client: client.id)
+      client.new_record? || (user_client && user_client.try(:owner))
     end
   end
 end
