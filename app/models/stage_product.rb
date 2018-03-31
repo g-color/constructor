@@ -17,7 +17,7 @@ class StageProduct < ApplicationRecord
     if product.custom 
       return stage_product_sets.find_by(selected: true).stage_product_set_values.includes(:product_template, :constructor_object, constructor_object: [:unit]).map do |item|
         {
-          name:   item.constructor_object.name,
+          name:   item.product_template.name,
           quantity: item.quantity,
           unit:   item.constructor_object.unit.name
         }

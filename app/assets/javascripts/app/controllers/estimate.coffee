@@ -338,8 +338,10 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
   recalcProduct: (template) ->
     this.updateTemplateValue(template) unless template == undefined
 
+    debugger;
+
     expense = @scope.expense
-    stage = @scope.currentStage
+    stage   = @scope.currentStage
     product = @scope.selectedEditProduct
 
     product.price_with_work    = 0
@@ -446,8 +448,8 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
             if set.selected
               $.each(set.items, (i,item) ->
                 item.quantity = parseFloat(item.quantity)
-                price_with_work += item.value.price * parseFloat(item.quantity)
-                price_without_work += item.value.price_without_work * parseFloat(item.quantity)
+                price_with_work += parseFloat(item.value.price) * parseFloat(item.quantity)
+                price_without_work += parseFloat(item.value.price_without_work) * parseFloat(item.quantity)
               )
           )
           stage.products[i].price_with_work     = price_with_work
