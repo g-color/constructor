@@ -69,7 +69,8 @@
                   %strong= product[:name] + (product[:custom] ? " | #{product[:set_name]}" : (product[:display_components] ? ", #{product[:quantity].to_s} #{product[:unit]}" : ""))
                 - if product[:custom] && product[:display_components]
                   - product[:items].each do |item|
-                    %p.no-margin= "- #{item[:name]} - #{item[:quantity].to_s} #{item[:unit]}"
+                    - if item[:quantity] > 0
+                    %p.no-margin= "- #{item[:name]} - #{item[:quantity]} #{item[:unit]}"
                 %p.no-margin= simple_format(product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа"))
               .col-xs-4
                 %p.no-margin
