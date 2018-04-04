@@ -212,7 +212,7 @@ class Budget < ApplicationRecord
           all_text:            Stage::ALL[stage.number-1],
           price_with_discount: stage.price_with_discount,
           price:               stage.price,
-          products:            stage.stage_products.includes(:stage_product_sets, :product, product: [:unit] ).map do |stage_product|
+          products:            stage.stage_products.order(:id).includes(:stage_product_sets, :product, product: [:unit] ).map do |stage_product|
             {
               name:               stage_product.product.name,
               description:        stage_product.product.description,
