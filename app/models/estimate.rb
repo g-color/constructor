@@ -24,6 +24,64 @@ class Estimate < Budget
     result
   end
 
+  def export_salary(engineer)
+    file_path  = Rails.root.join("export/xls/engineer_salary_#{id}_#{Date.today}.xlsx")
+    primitives = get_primitives
+    workbook   = WriteXLSX.new(file_path)
+
+    # Add a worksheet
+    worksheet = workbook.add_worksheet
+
+    worksheet.write(0, 0, 'Объект:')
+
+    worksheet.write(2, 0, 'Наименование')
+    worksheet.write(2, 1, 'ед. изм.')
+    worksheet.write(2, 2, 'Количество')
+    worksheet.write(2, 3, 'Расценка, руб.')
+    worksheet.write(2, 4, 'Стоимость, руб.')
+
+    row = 3
+    primitives.each do |key, value|
+      primitive = ConstructorObject.find(key.to_i)
+      next unless primitive.category.id == ENV['WORK_CATEGORY'].to_i
+
+      worksheet.write(row, 0, primitive.name)
+      worksheet.write(row, 1, primitive.unit.name)
+      worksheet.write(row, 2, value)
+      worksheet.write(row, 3, primitive.price)
+      worksheet.write(row, 4, "=C#{row + 1}*D#{row + 1}")
+      row += 1
+    end
+
+    row += 1
+
+    worksheet.write("D#{row}", 'Итого:')
+    worksheet.write("E#{row}", "=SUM(E4:E#{row - 1})")
+
+    row += 1
+
+    worksheet.write("A#{row}", 'В обязанности рабочего входят:
+      - погрузочно-разгрузочные работы при приеме-передаче материала
+      - выполнять работы добросовестно и качественно, в соответствии с предписаниями, соблюдением технологии. Любые отклонения могут быть только по согласованию с технадзором
+      - следить за чистотой и порядком на объекте
+      - ответственность за инструмент и материал
+      - сообщать технадзору при обнаружении несостыковок в схемах сборки
+      - сообщать технадзору, если клиент обратился с просьбой о дополнительных работах, с просьбой внести изменения в проект
+      - при сдаче объекта рабочий должен:
+      1. сдать весь оставщийся материал, крепеж и инструмент (если таковой выдала фирма) фирме
+      2. убрать объект и подготовить мусор к вывозу')
+
+    row += 5
+
+    worksheet.write("A#{row}", 'Технадзор:')
+    worksheet.write("B#{row}", "#{engineer.full_name} #{engineer.phone}")
+
+    # Write xlsx file to disk.
+    workbook.close
+
+    file_path
+  end
+
   def for_export_salary(engineer)
     primitives = get_primitives
     view       = ActionView::Base.new(ActionController::Base.view_paths, {})
@@ -81,8 +139,8 @@ class Estimate < Budget
     col
   end
 
-  def send_email_engineer(engineer_id)
-    EstimateMailer.export_engineer(engineer_id, self.id).deliver_now
+  def send_email_engineer(engineer_id, salary_path)
+    EstimateMailer.export_engineer(engineer_id, id, salary_path).deliver_later
   end
 
   def link

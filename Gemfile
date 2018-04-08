@@ -25,14 +25,14 @@ gem 'turbolinks', '~> 5'
 # gem 'capistrano-rails', group: :development
 
 gem 'devise'
-gem "paranoia", "~> 2.2"
+gem 'paranoia', '~> 2.2'
 gem 'kaminari'
 gem 'simple_form'
 gem 'unicode_utils'
-gem "cancan"
+gem 'cancan'
 gem 'lightbox-bootstrap-rails', '5.1.0.1'
 
-gem "gon"
+gem 'gon'
 gem 'haml'
 gem 'haml-rails', '~> 0.9'
 gem 'ng-toaster-rails'
@@ -59,6 +59,8 @@ gem 'grape'
 gem 'grape'
 gem 'grape-swagger'
 gem 'grape-swagger-rails'
+
+gem 'write_xlsx'
 
 # gem 'cancancan'
 # https://github.com/rubysherpas/paranoia
