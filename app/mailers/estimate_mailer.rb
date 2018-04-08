@@ -8,7 +8,7 @@ class EstimateMailer < ApplicationMailer
     attachments['Перечень материалов на объект.xls'] = File.read(primitives_path)
     mail(to: @user.email, subject: "Смета #{@estimate.name} по клиенту #{@estimate.client.full_name}")
 
-    File.delete(salary_path)
-    File.delete(primitives_path)
+    # File.delete(salary_path)
+    # File.delete(primitives_path)
   end
 end
