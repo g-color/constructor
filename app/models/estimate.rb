@@ -43,7 +43,7 @@ class Estimate < Budget
     row = 3
     primitives.each do |key, value|
       primitive = ConstructorObject.find(key.to_i)
-      next unless primitive.category.id == ENV['WORK_CATEGORY'].to_i
+      next if primitive.category.id != ENV['WORK_CATEGORY'].to_i || value.zero?
 
       worksheet.write(row, 0, primitive.name)
       worksheet.write(row, 1, primitive.unit.name)
