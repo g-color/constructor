@@ -152,11 +152,9 @@ class EstimatesController < ApplicationController
     @estimate.save
 
     salary_path = @estimate.export_salary(engineer)
-    File.open(Rails.root.join('export/xls/Перечень материалов на объект.xls'), 'wb') do |file|
-      file << @estimate.for_export_primitives
-    end
+    primitives_path = @estimate.export_primitives
 
-    @estimate.send_email_engineer(params[:engineer], salary_path)
+    @estimate.send_email_engineer(params[:engineer], salary_path, primitives_path)
 
     render json: {
       engineer: engineer,

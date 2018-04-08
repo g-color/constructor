@@ -82,6 +82,92 @@ class Estimate < Budget
     file_path
   end
 
+  def export_primitives
+    stage_products = []
+    stages.each do |stage|
+      stage_products += stage.stage_products.to_a
+    end
+
+    result = {}
+    products = []
+    stage_products.each do |stage_product|
+      primitives = stage_product.get_primitives
+      product = stage_product.product
+      products << product.name
+      primitives.each do |p, quantity|
+        primitive = ConstructorObject.find(p)
+        if primitive.category.id != ENV['WORK_CATEGORY'].to_i && primitive.category.id != ENV['STOCK_CATEGORY'].to_i
+          result[primitive.category.name] = {} if result[primitive.category.name].blank?
+          if result[primitive.category.name][primitive.name].nil?
+            result[primitive.category.name][primitive.name]        = {}
+            result[primitive.category.name][primitive.name][:unit] = primitive.unit.name
+          end
+          result[primitive.category.name][primitive.name][product.name]  = 0 if result[primitive.category.name][primitive.name][product.name].nil?
+          result[primitive.category.name][primitive.name][product.name] += quantity
+        end
+      end
+    end
+    products = products.uniq
+
+    file_path  = Rails.root.join("export/xls/engineer_primitives_#{id}_#{Date.today}.xlsx")
+    workbook   = WriteXLSX.new(file_path)
+
+    # Add a worksheet
+    worksheet = workbook.add_worksheet
+
+    worksheet.write(0, 0, 'Объект:')
+
+    worksheet.write(2, 0, 'Наименование')
+    worksheet.write(2, 1, 'ед. изм.')
+
+    product_col = 2
+    products.each do |product|
+      worksheet.write(2, product_col, product)
+      product_col += 1
+    end
+    worksheet.write(2, product_col, 'Общее количество')
+
+    row = 3
+    result.each do |category, primitives|
+      worksheet.write(row, 0, category)
+      row += 1
+      primitives.each do |primitive, value|
+        next unless products.any? { |p| value.key?(p) && value[p] > 0 }
+
+        worksheet.write(row, 0, primitive)
+        worksheet.write(row, 1, value[:unit])
+
+        col = 2
+        products.each do |product|
+          worksheet.write(row, col, value[product].present? ? value[product] : 0)
+          col += 1
+        end
+
+        worksheet.write(row, product_col, "=SUM(C#{row + 1}:#{get_column_csv(products.size + 1)}#{row + 1}")
+
+        row += 1
+      end
+    end
+
+    row += 1
+
+    worksheet.write(row, 0, 'Общестроительный элементы:')
+    row += 1
+    worksheet.write(row, 0, 'Перчатки')
+    worksheet.write(row, 1, 'шт.')
+    row += 1
+    worksheet.write(row, 0, 'Пакеты для мусора')
+    worksheet.write(row, 1, 'шт.')
+    row += 1
+    worksheet.write(row, 0, 'Леса строительные')
+    worksheet.write(row, 1, 'комплект')
+
+    # Write xlsx file to disk.
+    workbook.close
+
+    file_path
+  end
+
   def for_export_salary(engineer)
     primitives = get_primitives
     view       = ActionView::Base.new(ActionController::Base.view_paths, {})
@@ -139,8 +225,8 @@ class Estimate < Budget
     col
   end
 
-  def send_email_engineer(engineer_id, salary_path)
-    EstimateMailer.export_engineer(engineer_id, id, salary_path).deliver_later
+  def send_email_engineer(engineer_id, salary_path, primitives_path)
+    EstimateMailer.export_engineer(engineer_id, id, salary_path, primitives_path).deliver_later
   end
 
   def link
