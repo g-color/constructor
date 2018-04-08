@@ -226,7 +226,7 @@ class Estimate < Budget
   end
 
   def send_email_engineer(engineer_id, salary_path, primitives_path)
-    EstimateMailer.export_engineer(engineer_id, id, salary_path, primitives_path).deliver_later
+    EstimateMailer.export_engineer(engineer_id, id, salary_path, primitives_path).deliver_now
   end
 
   def link
