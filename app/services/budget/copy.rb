@@ -36,7 +36,7 @@ module Services
         @budget.stages.includes(:stage_products).each do |stage|
           new_stage = stage.dup
           new_stage.update(budget: @new_budget)
-          copy_stage_products(new_stage, stage.stage_products.includes(:stage_product_sets))
+          copy_stage_products(new_stage, stage.stage_products.order(:id).includes(:stage_product_sets))
         end
       end
 
@@ -44,7 +44,7 @@ module Services
         stage_products.each do |product|
           new_product = product.dup
           new_product.update(stage: new_stage)
-          copy_stage_product_sets(new_product, product.stage_product_sets.includes(:stage_product_set_values))
+          copy_stage_product_sets(new_product, product.stage_product_sets.order(:id).includes(:stage_product_set_values))
         end
       end
 
