@@ -43,8 +43,9 @@
               %td
                 %a.btn.btn-warning{ title: 'Редактировать', href: '{{client.edit_link}}'}
                   %span.glyphicon.glyphicon-pencil
-                %a.btn.btn-danger{ title: 'Удалить', href: '{{client.delete_link}}', data: { confirm: 'Вы уверены?', method: 'delete' } }
-                  %span.glyphicon.glyphicon-trash
+                - if current_user.admin?
+                  %a.btn.btn-danger{ title: 'Удалить', href: '{{client.delete_link}}', data: { confirm: 'Вы уверены?', method: 'delete' } }
+                    %span.glyphicon.glyphicon-trash
 
     %br{ ng: { show: 'ctrl.delegatedPresent()' } }
     .row.main-content{ ng: { show: 'ctrl.delegatedPresent()' } }
