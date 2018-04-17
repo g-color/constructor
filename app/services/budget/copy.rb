@@ -52,7 +52,7 @@ module Services
         product_sets.each do |set|
           new_set = set.dup
           new_set.update(stage_product: new_product)
-          copy_stage_product_set_values(new_set, set.stage_product_set_values)
+          copy_stage_product_set_values(new_set, set.stage_product_set_values.order(:id))
         end
       end
 
