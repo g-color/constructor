@@ -18,7 +18,7 @@ set :deploy_to, '/var/www/constructor'
 set :repository, 'git@github.com:g-color/constructor.git'
 set :branch, 'master'
 
-set :rvm_use_path, '/usr/local/rvm/scripts/rvm'
+# set :rvm_use_path, '/usr/local/rvm/scripts/rvm'
 
 # Optional settings:
 set :user, 'deploy'          # Username in the server to SSH to.
@@ -38,7 +38,7 @@ task :environment do
   # invoke :'rbenv:load'
 
   # For those using RVM, use this to load an RVM version@gemset.
-  invoke :'rvm:use', '2.4.3'
+  invoke :'rvm:use', '2.4.3@default'
 end
 
 # Put any custom commands you need to run at setup
