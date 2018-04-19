@@ -62,10 +62,10 @@ task deploy: :environment do
     command %{yarn install}
     # invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
-    command %{touch tmp/restart.txt}
 
     on launch: :remote_enviroment do
       invoke :'sidekiq:restart'
+      invoke :'puma:phased_restart'
     end
   end
 
