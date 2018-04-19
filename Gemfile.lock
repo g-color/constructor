@@ -435,7 +435,7 @@ DEPENDENCIES
   pry
   pry-byebug
   pry-rails
-  puma (~> 3.7)
+  puma
   rails (~> 5.1.4)
   rails-controller-testing
   rails4-autocomplete
