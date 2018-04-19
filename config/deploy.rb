@@ -17,6 +17,8 @@ set :deploy_to, '/var/www/constructor'
 set :repository, 'git@github.com:g-color/constructor.git'
 set :branch, 'master'
 
+set :rvm_use_path, '/usr/local/rvm/scripts/rvm'
+
 # Optional settings:
 set :user, 'deploy'          # Username in the server to SSH to.
 #   set :port, '30000'           # SSH port number.
