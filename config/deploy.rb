@@ -60,7 +60,7 @@ task deploy: :environment do
     invoke :'bundle:install'
     invoke :'rails:db_migrate'
     command %{yarn install}
-    # invoke :'rails:assets_precompile'
+    invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
 
     on launch: :remote_enviroment do
