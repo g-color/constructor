@@ -62,6 +62,8 @@ gem 'grape-swagger-rails'
 
 gem 'write_xlsx'
 
+gem 'mina-puma', :require => false
+
 # gem 'cancancan'
 # https://github.com/rubysherpas/paranoia
 

@@ -4,6 +4,7 @@ require 'mina/git'
 require 'mina/rvm'    # for rvm support. (https://rvm.io)
 require 'mina_sidekiq/tasks'
 require 'mina/webpacker'
+require 'mina/puma'
 
 # Basic settings:
 #   domain       - The hostname to SSH to.
