@@ -26,7 +26,7 @@ set :user, 'deploy'          # Username in the server to SSH to.
 #   set :forward_agent, true     # SSH forward_agent.
 
 # shared dirs and files will be symlinked into the app-folder by the 'deploy:link_shared_paths' step.
-set :shared_dirs, fetch(:shared_dirs, []).push('public')
+set :shared_dirs, fetch(:shared_dirs, []).push('public', 'tmp/pids', 'tmp/sockets')
 # set :shared_files, fetch(:shared_files, []).push('config/database.yml', 'config/secrets.yml')
 set :shared_files, fetch(:shared_files, []).push('.env')
 
@@ -44,7 +44,12 @@ end
 # Put any custom commands you need to run at setup
 # All paths in `shared_dirs` and `shared_paths` will be created on their own.
 task :setup do
-  # command %{yarn install}
+  command %{yarn install}
+  # Puma needs a place to store its pid file and socket file.
+  queue! %(mkdir -p "#{deploy_to}/#{shared_path}/tmp/sockets")
+  queue! %(chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/tmp/sockets")
+  queue! %(mkdir -p "#{deploy_to}/#{shared_path}/tmp/pids")
+  queue! %(chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/tmp/pids")
 end
 
 desc 'Deploys the current version to the server.'
@@ -59,7 +64,6 @@ task deploy: :environment do
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
     invoke :'rails:db_migrate'
-    command %{yarn install}
     invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
 
