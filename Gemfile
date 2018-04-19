@@ -7,7 +7,7 @@ end
 
 gem 'dotenv-rails'
 gem 'pg', '~> 0.18'
-gem 'puma', '~> 3.7'
+gem 'puma'
 gem 'rails', '~> 5.1.4'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
@@ -62,7 +62,7 @@ gem 'grape-swagger-rails'
 
 gem 'write_xlsx'
 
-gem 'mina-puma', :require => false
+gem 'mina-puma'
 
 # gem 'cancancan'
 # https://github.com/rubysherpas/paranoia
