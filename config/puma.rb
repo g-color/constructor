@@ -13,7 +13,6 @@ port            ENV.fetch('PORT') { 3000 }
 
 pidfile         '/var/www/constructor/shared/tmp/pids/puma.pid'
 state_path      '/var/www/constructor/shared/tmp/pids/puma.state'
-stdout_redirect '/var/www/constructor/sharedlog/puma_access.log', '/var/www/constructor/sharedlog/puma_error.log', true
 
 # Specifies the `environment` that Puma will run in.
 
