@@ -44,7 +44,6 @@ end
 # Put any custom commands you need to run at setup
 # All paths in `shared_dirs` and `shared_paths` will be created on their own.
 task :setup do
-  command %{yarn install}
   # Puma needs a place to store its pid file and socket file.
   queue! %(mkdir -p "#{deploy_to}/#{shared_path}/tmp/sockets")
   queue! %(chmod g+rx,u+rwx "#{deploy_to}/#{shared_path}/tmp/sockets")
@@ -68,6 +67,7 @@ task deploy: :environment do
     invoke :'deploy:cleanup'
 
     on launch: :remote_enviroment do
+      command %{yarn install}
       invoke :'sidekiq:restart'
       invoke :'puma:phased_restart'
     end

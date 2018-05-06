@@ -46,7 +46,7 @@
         %p.no-margin Площадь строительства: #{@solution[:area]} м2
       .col-xs-4.col-xs-offset-2
         %p.no-margin Проект: #{@solution[:project]}
-        %p.no-margin Дата расчета: #{l(@solution[:date], format: "%d %b %Y г.")}
+        %p.no-margin Дата расчета: #{l(Time.new, format: '%d %b %Y г.')}
 
     - @solution[:stages].each do |stage|
       - unless stage[:products].empty?
@@ -69,8 +69,9 @@
                   %strong= product[:name] + (product[:custom] ? " | #{product[:set_name]}" : (product[:display_components] ? ", #{product[:quantity].to_s} #{product[:unit]}" : ""))
                 - if product[:custom] && product[:display_components]
                   - product[:items].each do |item|
-                    %p.no-margin= "- #{item[:name]} - #{item[:quantity].to_s} #{item[:unit]}"
-                %p.no-margin= product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа")
+                    - if item[:quantity] > 0
+                      %p.no-margin= "- #{item[:name]} - #{item[:quantity]} #{item[:unit]}"
+                %p.no-margin= simple_format(product[:description] + (product[:with_work] ? ", монтаж" : ", без монтажа"))
               .col-xs-4
                 %p.no-margin
                   %strong= money(product[:price_result] * product[:quantity])
@@ -80,26 +81,25 @@
             .col-xs-6.text-right
               %strong= "Итого #{stage[:current_text]}:"
             .col-xs-6
-              %strong= "#{money(@solution[:price_by_stage_aggregated][stage[:number]-1])} руб. (~ #{money(@solution[:price_by_area_per_stage][stage[:number]-1])} руб. за м2)"
+              %strong= "#{money(stage[:price])} руб. (~ #{money(@solution[:price_by_area_per_stage][stage[:number]-1])} руб. за м2)"
 
             - if @solution[:discount_amount][stage[:number]-1] > 0
               .col-xs-6.text-right.red-text
-                %strong #{@solution[:discount_title]} #{stage[:current_text]}:
+                %strong #{@solution[:discount_title]} #{stage[:discount_text]}:
               .col-xs-6.red-text
-                %strong= "-#{money(@solution[:discount_amount][stage[:number]-1])} руб."
+                %strong= "-#{money(@estimate[:discount_amount][stage[:number]-1])} руб."
 
-            - if @solution[:stages_many]
               .col-xs-6.text-right
                 %strong Итого #{stage[:all_text]}:
               .col-xs-6
-                %strong= "#{money(@solution[:price_by_stage_aggregated_discounted][stage[:number]-1])} руб. (~ #{money(@solution[:price_by_area_per_stage_discounted][stage[:number]-1])} руб. за м2)"
+                %strong= "#{money(stage[:price_with_discount])} руб. (~ #{money(@estimate[:price_by_area_per_stage_discounted][stage[:number]-1])} руб. за м2)"
 
     %br
 
     .row
       .col-xs-12
         %p Жилье для бригады рабочих из 2-3 человек на период монтажа (2-3 недели) обеспечивается Заказчиком (кроме г. Симферополь и Симферопольского района).
-        %p Доставка по всему Крыму – бесплатно. Гарантия на дом — не менее 10 лет. Срок эксплуатации – 70 лет. Только сертифицированные и качественные строительные материалы.
+        %p Доставка по всему Крыму – бесплатно. Гарантия на дом — 10 лет. Срок эксплуатации – не менее 70 лет. Только сертифицированные и качественные строительные материалы.
 
     - if @solution[:area] > 99
       .row
