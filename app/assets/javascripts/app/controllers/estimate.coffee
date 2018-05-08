@@ -283,6 +283,13 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     set_id = @scope.selectedEditSetId
     stage = this.getStage(@scope.currentStage)
     product = @scope.selectedEditProduct
+
+    $.each(product.sets, (i,s) ->
+      $.each(s.items, (j,v) ->
+        v.quantity = parseFloat(v.quantity)
+      )
+    )
+
     $.each(product.sets, (i,v) ->
       product.sets[i].selected = v.id == set_id
       true
@@ -338,8 +345,6 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
   recalcProduct: (template) ->
     this.updateTemplateValue(template) unless template == undefined
 
-    debugger;
-
     expense = @scope.expense
     stage   = @scope.currentStage
     product = @scope.selectedEditProduct
@@ -350,8 +355,8 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     $.each(product.sets, (i,v) ->
       if v.selected
         $.each(v.items, (y,x) ->
-          product.price_with_work    += x.quantity * x.value.price
-          product.price_without_work += x.quantity * x.value.price unless x.value.work_primitive
+          product.price_with_work    += parseFloat(x.quantity) * x.value.price
+          product.price_without_work += parseFloat(x.quantity) * x.value.price unless x.value.work_primitive
         )
     )
 

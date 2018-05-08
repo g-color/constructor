@@ -57,9 +57,10 @@ module Services
         # Добавляем или обновляем значения для сета
         stage_set['items'].each do |i|
           value = set.stage_product_set_values.find_or_initialize_by(product_template_id: i['id'])
+          byebug
           value.update(
             constructor_object_id: i['value']['id'],
-            quantity:              i['quantity']
+            quantity:              i['quantity'] || 0
           )
         end
       end

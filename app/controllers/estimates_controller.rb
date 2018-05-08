@@ -17,7 +17,7 @@ class EstimatesController < ApplicationController
     discount   = nil
     area       = 0
     price      = 0
-    stages     = @estimate.get_stages
+      stages     = @estimate.get_stages
     gon.push(get_json_values(discount, area, price, stages))
   end
 
