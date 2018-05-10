@@ -52,7 +52,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
             at_least_one_present = false
             angular.forEach set.items, (item,n) ->
               at_least_one_present = item.quantity > 0 unless at_least_one_present
-              if item.quantity < 0 && !validate.error
+              if (item.quantity < 0 || item.quantity == null) && !validate.error
                 validate = { error: true, message: 'Неверно указано количество составляющей сметного продукта' }
 
             validate = { error: true, message: 'Неверно указано количество составляющей сметного продукта' } unless at_least_one_present
