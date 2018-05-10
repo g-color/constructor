@@ -284,12 +284,6 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     stage = this.getStage(@scope.currentStage)
     product = @scope.selectedEditProduct
 
-    $.each(product.sets, (i,s) ->
-      $.each(s.items, (j,v) ->
-        v.quantity = parseFloat(v.quantity)
-      )
-    )
-
     $.each(product.sets, (i,v) ->
       product.sets[i].selected = v.id == set_id
       true
