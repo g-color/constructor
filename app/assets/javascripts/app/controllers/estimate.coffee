@@ -51,8 +51,9 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
           angular.forEach product.sets, (set,m) ->
             at_least_one_present = false
             angular.forEach set.items, (item,n) ->
+              item.quantity == 0 if item.quantity == null
               at_least_one_present = item.quantity > 0 unless at_least_one_present
-              if (item.quantity < 0 || item.quantity == null) && !validate.error
+              if item.quantity < 0 && !validate.error
                 validate = { error: true, message: 'Неверно указано количество составляющей сметного продукта' }
 
             validate = { error: true, message: 'Неверно указано количество составляющей сметного продукта' } unless at_least_one_present
@@ -443,14 +444,27 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
         if stage.products[i].custom
           price_with_work = 0
           price_without_work = 0
+
+          quantities = []
+
           $.each(product.sets, (i,set) ->
             if set.selected
               $.each(set.items, (i,item) ->
-                item.quantity = parseFloat(item.quantity)
+                quantity = parseFloat(item.quantity)
+                item.quantity = quantity
+                quantities.push(quantity)
                 price_with_work += parseFloat(item.value.price) * parseFloat(item.quantity)
                 price_without_work += parseFloat(item.value.price_without_work) * parseFloat(item.quantity)
               )
           )
+
+          $.each(product.sets, (i,set) ->
+            unless set.selected
+              $.each(set.items, (i,item) ->
+                item.quantity = quantities[i]
+              )
+          )
+
           stage.products[i].price_with_work     = price_with_work
           stage.products[i].price_without_work  = price_without_work
           stage.products[i].profit = parseFloat(product.profit)
