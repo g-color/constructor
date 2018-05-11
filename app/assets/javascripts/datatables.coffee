@@ -130,3 +130,19 @@ $(document).on 'turbolinks:load', () ->
     ],
     oLanguage: buttons_translate
   })
+
+  $('#estimates-datatable').DataTable({
+    searching: false,
+    paging: false,
+    bInfo: false,
+    autoWidth: false,
+    columns: [
+      null,
+      null,
+      null,
+      null,
+      null,
+      { "orderable": false }
+    ],
+    oLanguage: buttons_translate
+  })
