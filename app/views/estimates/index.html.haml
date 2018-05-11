@@ -20,12 +20,12 @@
     .table-responsive
       %table.table.table-hover#estimates-datatable
         %thead
-          %th.col-sm-3 Наименование
-          %th.col-sm-2 Общая стоимость
-          %th.col-sm-2 Стоимость м2
-          %th.col-sm-1 Площадь
-          %th.col-sm-2 Дата изменения
-          %th.col-sm-2 Действия
+          %th Наименование
+          %th Общая стоимость
+          %th Стоимость м2
+          %th Площадь
+          %th Дата изменения
+          %th Действия
         %tbody
           - @estimates.each do |estimate|
             = render 'listing', estimate: estimate
