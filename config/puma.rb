@@ -11,14 +11,14 @@ threads threads_count, threads_count
 #
 port            ENV.fetch('PORT') { 3000 }
 
-pidfile         '/var/www/constructor/shared/tmp/pids/puma.pid'
-state_path      '/var/www/constructor/shared/tmp/pids/puma.state'
+pidfile         '/Users/oleg/dev/constructor/tmp/pids/puma.pid'
+state_path      '/Users/oleg/dev/constructor/tmp/pids/puma.state'
 
 # Specifies the `environment` that Puma will run in.
 
 environment ENV.fetch('RAILS_ENV') { 'production' }
 
-bind 'unix:///var/www/constructor/shared/tmp/sockets/puma.sock'
+bind 'unix:///Users/oleg/dev/constructor/tmp/sockets/puma.sock'
 
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked webserver processes. If using threads and workers together
