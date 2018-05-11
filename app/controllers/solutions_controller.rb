@@ -2,7 +2,7 @@ class SolutionsController < ApplicationController
   before_action :authenticate_user!
   before_action :get_products,  only:   %i[new create edit update]
   before_action :find_solution, only:   %i[show edit update destroy]
-  before_action :check_ability, except: %i[show index]
+  before_action :check_ability, except: %i[show index copy]
 
   def index
     @solutions = Solution.all
