@@ -148,7 +148,7 @@
                     %tr{ ng: { repeat: 'template in selectedEditSet.items' } }
                       %td {{ template.name }}
                       %td
-                        %input.form-control{ placeholder: "Введите количество", ng: { model: 'template.quantity', change: 'ctrl.recalcProduct(template)' } }
+                        %input.form-control{ placeholder: "Введите количество", type: 'number', ng: { model: 'template.quantity', change: 'ctrl.recalcProduct(template)' } }
                       %td {{ template.value.unit }}
         .modal-footer
           %button.btn.btn-default{ type: "button", data: { dismiss: "modal" } } Закрыть
