@@ -95,7 +95,7 @@
                     %tr{ ng: { repeat: 'template in selectedSet.items' } }
                       %td {{ template.name }}
                       %td
-                        %input.form-control.template-quantity{ placeholder: "Введите количество", type: 'number', ng: { model: 'template.quantity', change: 'ctrl.updateTemplateValue(template)' } }
+                        %input.form-control.template-quantity{ placeholder: "Введите количество", ng: { model: 'template.quantity', change: 'ctrl.updateTemplateValue(template)' } }
                       %td {{ template.value.unit }}
         .modal-footer
           %button.btn.btn-default{ type: "button", 'data-dismiss': "modal" } Отмена
