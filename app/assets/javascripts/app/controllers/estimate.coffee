@@ -147,21 +147,33 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
 
       set = product.sets.find((x) -> x.id == parseInt(set_id))
       at_least_one_present = false
+
+      item_quantites = []
+
       $.each($('.template-quantity'), (i, v) ->
-        quantity     = $(v).val()
+        quantity     = parseFloat($(v).val())
         at_least_one_present = quantity > 0 unless at_least_one_present
+
         set.selected = true
-        set.items[i] = Object.assign(set.items[i], {quantity: parseFloat($(v).val())})
+        set.items[i] = Object.assign(set.items[i], {quantity: quantity})
 
         if $(v).val() == '' && error == false
           error = true
           message = 'Необходимо указать количество для всех составляющих сметного продукта'
 
-        product.price_with_work += set.items[i].value.price * $(v).val()
+        item_quantites.push(quantity)
+        product.price_with_work += set.items[i].value.price * quantity
         unless set.items[i].value.work_primitive
-          product.price_without_work += set.items[i].value.price * $(v).val()
+          product.price_without_work += set.items[i].value.price * quantity
       )
 
+      $.each(product.sets, (i, s) ->
+        if !s.selected
+          $.each(s.items, (j, item) ->
+            item.quantity = item_quantites[j]
+          )
+      )
+      
       unless at_least_one_present
         error = true
         message = 'Неверно указано количество'
