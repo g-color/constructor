@@ -33,10 +33,10 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
 
   shareClient: () ->
     scope = @scope
-    name  = $('select option:selected').val()
+    id  = $('select option:selected').val()
 
-    $.post(@pHelper.get('url_find_user_by_name'), name: name)
-    .done (response) ->
+    $.post(@pHelper.get('url_find_user_by_name'), id: id)
+    .success (response) ->
       scope.ctrl.addSharedUser(response.user)
     .error (response) ->
       console.log(response)

@@ -4,8 +4,14 @@ class UsersController < ApplicationController
   before_action :check_ability, except: [:show, :find_by_name]
 
   def find_by_name
-    name = params[:name].split
-    user = User.find_by(last_name: name[0], first_name: name[1])
+    user = nil
+    if params[:name]
+      name = params[:name].split
+      user = User.find_by(last_name: name[0], first_name: name[1])
+    end
+    if params[:id]
+      user = User.find(params[:id])
+    end
     ajax_ok(user: user) if user
   end
 
