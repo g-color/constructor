@@ -123,11 +123,11 @@ class Product < ApplicationRecord
     self.product_sets.includes(
       :product_template_sets,
       product_template_sets: [:product_template, :constructor_object, constructor_object: [:unit]]
-    ).map do |x|
+    ).distinct.map do |x|
       {
         id: x.id,
         name: x.name,
-        items: x.product_template_sets.order(:id).where(product: self).map do |y|
+        items: x.product_template_sets.order(:id).where(product: self).uniq.map do |y|
           {
             id: y.product_template.id,
             name: y.product_template.name,
