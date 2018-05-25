@@ -123,7 +123,7 @@ class Product < ApplicationRecord
     self.product_sets.includes(
       :product_template_sets,
       product_template_sets: [:product_template, :constructor_object, constructor_object: [:unit]]
-    ).distinct.map do |x|
+    ).map do |x|
       {
         id: x.id,
         name: x.name,
