@@ -125,7 +125,7 @@ class Product < ApplicationRecord
       {
         id: x.id,
         name: x.name,
-        items: x.product_template_sets.where(product: self).map do |y|
+        items: x.product_template_sets.order(:id).where(product: self).map do |y|
           {
             id: y.product_template.id,
             name: y.product_template.name,
