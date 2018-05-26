@@ -9,6 +9,8 @@ angular.module('Constructor').controller 'ProductController', class ProductContr
     @scope.templates    = @pHelper.get('templates')
     @scope.sets         = @pHelper.get('sets')
 
+    @scope.templates = @scope.templates.reverse()
+
     this.setProductCompositions()
     this.setProductTemplates()
     this.setProductSets()
