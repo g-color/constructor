@@ -109,7 +109,7 @@ class Product < ApplicationRecord
   def get_templates
     return [] unless custom
 
-    product_templates.order(:id).map do |x|
+    product_templates.distinct.map do |x|
       {
         id:   x.id,
         name: x.name
