@@ -173,7 +173,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
             item.quantity = item_quantites[j]
           )
       )
-      
+
       unless at_least_one_present
         error = true
         message = 'Неверно указано количество'
@@ -288,6 +288,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     if set_id != 'Выберите сборку'
       selected_set = $.extend({}, this.getSet(set_id, product.sets))
       $.each(selected_set.items, (i, v) -> v.quantity = 0 )
+      selected_set.item = selected_set.items.sort((a, b) -> b.id - a.id)
       @scope.selectedSet = selected_set
     else
       @scope.selectedSet = null
