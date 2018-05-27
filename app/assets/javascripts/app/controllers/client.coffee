@@ -36,7 +36,7 @@ angular.module('Constructor').controller 'ClientController', class ClientControl
     id  = $('select option:selected').val()
 
     $.post(@pHelper.get('url_find_user_by_name'), id: id)
-    .success (response) ->
+    .done (response) ->
       scope.ctrl.addSharedUser(response.user)
     .error (response) ->
       console.log(response)

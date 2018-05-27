@@ -288,7 +288,6 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     if set_id != 'Выберите сборку'
       selected_set = $.extend({}, this.getSet(set_id, product.sets))
       $.each(selected_set.items, (i, v) -> v.quantity = 0 )
-      selected_set.item = selected_set.items.sort((a, b) -> b.id - a.id)
       @scope.selectedSet = selected_set
     else
       @scope.selectedSet = null
@@ -472,10 +471,10 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
           )
 
           $.each(product.sets, (i,set) ->
-            set.items = set.items.sort((a, b) -> b.id - a.id)
-
             unless set.selected
-              $.each(set.items, (i,item) -> item.quantity = quantities[i])
+              $.each(set.items, (i,item) ->
+                item.quantity = quantities[i]
+              )
           )
 
           stage.products[i].price_with_work     = price_with_work
