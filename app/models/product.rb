@@ -27,10 +27,16 @@ class Product < ApplicationRecord
 
   has_many :product_compositions
   has_many :product_template_sets
-  has_many :product_templates, through: :product_template_sets
-  has_many :product_sets,      through: :product_template_sets
+  # has_many :product_templates
+  has_many :product_sets
 
   before_destroy :clear_relationship
+
+  def product_templates
+    ProductTemplateSet.where(product_set_id: self.product_sets.first.id).map do |pts|
+      ProductTemplate.find(pts.product_template_id)
+    end
+  end
 
   def clear_relationship
     product_compositions.each(&:destroy)
@@ -109,7 +115,7 @@ class Product < ApplicationRecord
   def get_templates
     return [] unless custom
 
-    product_templates.distinct.map do |x|
+    product_templates.map do |x|
       {
         id:   x.id,
         name: x.name
