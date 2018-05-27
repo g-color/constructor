@@ -472,10 +472,10 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
           )
 
           $.each(product.sets, (i,set) ->
+            set.items = set.items.sort((a, b) -> b.id - a.id)
+
             unless set.selected
-              $.each(set.items, (i,item) ->
-                item.quantity = quantities[i]
-              )
+              $.each(set.items, (i,item) -> item.quantity = quantities[i])
           )
 
           stage.products[i].price_with_work     = price_with_work
