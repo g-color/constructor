@@ -28,7 +28,7 @@ class Product < ApplicationRecord
   has_many :product_compositions
   has_many :product_template_sets
   # has_many :product_templates
-  has_many :product_sets
+  has_many :product_sets, through: :product_template_sets
 
   before_destroy :clear_relationship
 
@@ -126,7 +126,7 @@ class Product < ApplicationRecord
   def get_sets
     return [] unless custom
 
-    self.product_sets.includes(
+    self.product_sets.distinct.includes(
       :product_template_sets,
       product_template_sets: [:product_template, :constructor_object, constructor_object: [:unit]]
     ).distinct.map do |x|
