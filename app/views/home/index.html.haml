@@ -27,5 +27,5 @@
               %td
                 = link_to estimate.name, edit_estimate_path(estimate)
               %td= estimate.client.full_name
-              %td= estimate.price.round
+              %td= estimate.price.round rescue 0
               %td= estimate.updated_at.strftime('%Y-%m-%d')
