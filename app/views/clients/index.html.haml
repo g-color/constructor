@@ -37,7 +37,7 @@
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.full_name }}
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
                 %span{ ng: { show: 'client.archived' } } Архивирован
-              %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
+              %td
                 %a{href: "https://artkarkas.megaplan.ru/crm/{{ client.crm }}/card/", target: 'blank', rel: 'no-follow'} {{ client.crm }}
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.estimates }}
               %td

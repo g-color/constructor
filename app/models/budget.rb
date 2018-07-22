@@ -426,7 +426,7 @@ class Budget < ApplicationRecord
     end
     if data[:area] > 99
       document.paragraph(styles['PS_TEXT']) do |p|
-        p << "Черновая рабочая лестница из сосны камерной сушки или кондиционер — В ПОДАРОК!"
+        p << "Черновая рабочая лестница из сосны камерной сушки В ПОДАРОК!"
       end
     end
 

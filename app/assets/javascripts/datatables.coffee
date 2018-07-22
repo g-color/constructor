@@ -144,5 +144,6 @@ $(document).on 'turbolinks:load', () ->
       null,
       { "orderable": false }
     ],
+    order: [[4, "desc"]]
     oLanguage: buttons_translate
   })
