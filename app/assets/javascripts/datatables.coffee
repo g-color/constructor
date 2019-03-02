@@ -148,4 +148,4 @@ $(document).on 'turbolinks:load', () ->
       [5, "desc"]
     ],
     oLanguage: buttons_translate
-  })
+  }).draw()
