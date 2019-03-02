@@ -38,7 +38,7 @@
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
                 %span{ ng: { show: 'client.archived' } } Архивирован
               %td
-                %a{href: "https://artkarkas.megaplan.ru/crm/{{ client.crm }}/card/", target: 'blank', rel: 'no-follow'} {{ client.crm }}
+                %a{href: "https://artkarkas.megaplan.ru/crm/#{client.crm}/card/", target: 'blank', rel: 'no-follow'}= client.crm
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.estimates }}
               %td
                 %a.btn.btn-warning{ title: 'Редактировать', href: '{{client.edit_link}}'}
@@ -66,7 +66,7 @@
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
                 %span{ ng: { show: 'client.archived' } } Архивирован
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
-                %a{href: "https://artkarkas.megaplan.ru/crm/client.crm/card/", target: 'blank', rel: 'no-follow'} {{ client.crm }}
+                %a{href: "https://artkarkas.megaplan.ru/crm/#{client.crm}/card/", target: 'blank', rel: 'no-follow'}= client.crm
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.estimates }}
               %td
                 %a.btn.btn-warning{ title: 'Редактировать', href: '{{client.edit_link}}'}
@@ -93,7 +93,7 @@
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
                 %span{ ng: { show: 'client.archived' } } Архивирован
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } }
-                %a{href: "https://artkarkas.megaplan.ru/crm/client.crm/card/", target: 'blank', rel: 'no-follow'} {{ client.crm }}
+                %a{href: "https://artkarkas.megaplan.ru/crm/#{client.crm}/card/", target: 'blank', rel: 'no-follow'}= client.crm
               %td.cursor-pointer{ ng: { click: "ctrl.openEstimates(client.id)" } } {{ client.estimates }}
               %td
                 %a.btn.btn-warning{ title: 'Редактировать', href: '{{client.edit_link}}'}
