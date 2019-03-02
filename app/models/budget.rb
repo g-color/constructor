@@ -168,10 +168,10 @@ class Budget < ApplicationRecord
   end
 
   def get_floor
-    return 3   if third_floor_height_min  > 0 && third_floor_height_max  > 1800
-    return 2.5 if third_floor_height_min  > 0 && third_floor_height_max  < 1800
-    return 2   if second_floor_height_min > 0 && second_floor_height_max > 1800
-    return 1.5 if second_floor_height_min > 0 && second_floor_height_max < 1800
+    return 3   if third_floor_height_min  > 0 && third_floor_height_max  > 1.8
+    return 2.5 if third_floor_height_min  > 0 && third_floor_height_max  < 1.8
+    return 2   if second_floor_height_min > 0 && second_floor_height_max > 1.8
+    return 1.5 if second_floor_height_min > 0 && second_floor_height_max < 1.8
     1
   end
 
