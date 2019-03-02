@@ -120,7 +120,7 @@ class SolutionsController < ApplicationController
 
   def export_pdf
     @solution = Solution.find(params[:solution_id]).for_export_budget
-    render pdf: 'export_pdf'
+    # render pdf: 'export_pdf'
   end
 
   private
