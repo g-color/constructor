@@ -8,7 +8,7 @@ class EstimatesController < ApplicationController
     return redirect_to clients_path unless params[:client_id].present?
 
     @client    = Client.includes(:estimates).find(params[:client_id])
-    @estimates = @client.estimates.order(created_at: :desc)
+    @estimates = @client.estimates.order(updated_at: :desc)
     @estimates = @estimates.where('lower(name) like ?', "%#{params[:name].downcase}%").order(created_at: :desc) if params[:name].present?
   end
 
