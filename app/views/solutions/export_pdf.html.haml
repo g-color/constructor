@@ -60,10 +60,10 @@
               %span Наименование выполняемых работ и материалов
             .col-xs-4
               %span Стоимость, рублей
-          %hr{ style: 'margin: 5px 0' }
+          %hr{ style: 'margin: 0' }
 
           - stage[:products].each do |product|
-            .row
+            .row.no-margin
               .col-xs-8
                 %p.no-margin
                   %strong= product[:name] + (product[:custom] ? " | #{product[:set_name]}" : (product[:display_components] ? ", #{product[:quantity].to_s} #{product[:unit]}" : ""))
@@ -75,7 +75,7 @@
               .col-xs-4
                 %p.no-margin
                   %strong= money(product[:price_result] * product[:quantity])
-            %hr{ style: 'margin: 5px 0' }
+            %hr{ style: 'margin: 0' }
 
           .row
             .col-xs-6.text-right
