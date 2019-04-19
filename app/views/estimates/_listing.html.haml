@@ -1,8 +1,8 @@
 %tr
   %td= estimate.name
-  %td= estimate.price.nil? ? '' : estimate.price.try(:round)
-  %td= estimate.price_by_area.nil? ? '' : estimate.price_by_area.try(:round)
-  %td= estimate.area.nil? ? '' : estimate.area.try(:round, 2)
+  %td= estimate.price.nil? || estimate.price.nan? ? '' : estimate.price.try(:round)
+  %td= estimate.price_by_area.nil? || estimate.price_by_area.nan? ? '' : estimate.price_by_area.try(:round)
+  %td= estimate.area.nil? || estimate.area.nan? ? '' : estimate.area.try(:round, 2)
   %td= estimate.updated_at.strftime('%Y-%m-%d')
   %td
     %button.btn.btn-default{ title: "Создать копию сметы", data: { toggle: "modal", target: "#duplicate-estimate-#{estimate.id}"} }
