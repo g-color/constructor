@@ -93,7 +93,7 @@ class Product < ApplicationRecord
       set = if s['id'] < 1492000000000
               ProductSet.find(s['id'])
             else
-              ProductSet.new(name: s['name'])
+              ProductSet.find_or_initialize_by(name: s['name'], product_id: id)
             end
       set.update(name: s['name'])
 
@@ -101,7 +101,7 @@ class Product < ApplicationRecord
         template = if t['id'] < 1492000000000
                      ProductTemplate.find(t['id'])
                    else
-                     ProductTemplate.new(name: t['name'])
+                     ProductTemplate.find_or_initialize_by(name: t['name'], product_id: id)
                    end
         template.update(name: t['name'])
 
