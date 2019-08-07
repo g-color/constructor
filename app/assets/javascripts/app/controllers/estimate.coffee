@@ -121,6 +121,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
     true
 
   addProduct: () ->
+    debugger
     estimate     = @scope.estimate
     discount     = @scope.discount
     stage_number = @scope.currentStage
@@ -203,6 +204,7 @@ angular.module('Constructor').controller 'EstimateController', class EstimateCon
       @toaster.error(message)
 
   deleteProduct: (stage, id) ->
+    debugger
     product = stage.products.find((x) -> x.id == parseInt(id))
     index = stage.products.indexOf(product)
     stage.products.splice(index, 1)
