@@ -11,7 +11,7 @@
     "font-awesome": "^4.7.0",
     "foreman": "^2.0.0",
     "jquery": "^3.2.1",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "popper.js": "^1.12.9",
     "postcss-smart-import": "^0.7.6",
     "prop-types": "^15.6.0",
